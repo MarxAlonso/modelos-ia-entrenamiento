@@ -1,9 +1,9 @@
 # Entorno virtual y Python
 venv/
+node_modules/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-
 # Datasets pesados (re-descargables / regenerables con los scripts de src/)
 sistema-recomendador-productos/data/raw_amazon/
 sistema-recomendador-productos/data/amazon/resenas.csv

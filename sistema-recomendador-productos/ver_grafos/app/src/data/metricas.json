@@ -1,0 +1,89 @@
+{
+  "productos": {
+    "labels": [
+      "Popularidad",
+      "Contenido TF-IDF",
+      "NCF red neuronal",
+      "Afinidad categorias",
+      "KNN item-item",
+      "HIBRIDO V2"
+    ],
+    "valores": [
+      0.0024070021881838076,
+      0.004157549234135667,
+      0.00437636761487965,
+      0.005470459518599563,
+      0.006126914660831511,
+      0.003719912472647703
+    ],
+    "colores": [
+      "#94a3b8",
+      "#94a3b8",
+      "#94a3b8",
+      "#94a3b8",
+      "#94a3b8",
+      "#ef4444"
+    ]
+  },
+  "categorias": {
+    "labels": [
+      "Precision categoria @10",
+      "HitRate categoria @10"
+    ],
+    "valores": [
+      0.9625250501002004,
+      1.0
+    ],
+    "colores": [
+      "#10b981",
+      "#059669"
+    ]
+  },
+  "niveles34": {
+    "Popularidad": {
+      "precision_producto": 0.006,
+      "precision_categoria": 0.3496
+    },
+    "SVD": {
+      "precision_producto": 0.71,
+      "precision_categoria": 0.9668
+    },
+    "NCF red neuronal": {
+      "precision_producto": 0.0964,
+      "precision_categoria": 0.6384
+    },
+    "Hibrido v2 (fase 6)": {
+      "precision_producto": 0.003,
+      "precision_categoria": 0.9658
+    },
+    "Word2Vec historial": {
+      "precision_producto": 0.011,
+      "precision_categoria": 0.7282
+    },
+    "Semantico Transformer": {
+      "precision_producto": 0.0104,
+      "precision_categoria": 0.6188
+    },
+    "Two-Tower": {
+      "precision_producto": 0.0172,
+      "precision_categoria": 0.961
+    },
+    "LightGCN": {
+      "precision_producto": 0.0084,
+      "precision_categoria": 0.491
+    },
+    "NLP resenas": {
+      "precision_producto": 0.0116,
+      "precision_categoria": 0.7036
+    },
+    "KNN item-item": {
+      "precision_producto": 0.016,
+      "precision_categoria": 0.8916
+    },
+    "HIBRIDO V4": {
+      "precision_producto": 0.094,
+      "precision_categoria": 0.9618
+    }
+  },
+  "nota_svd": "SVD/NCF/Hibrido provienen de fases previas; SVD muestra fuga de datos al evaluar sobre este split unificado."
+}

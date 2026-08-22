@@ -1,0 +1,46 @@
+{
+  "Popularidad": {
+    "precision_producto": 0.006,
+    "precision_categoria": 0.3496
+  },
+  "SVD": {
+    "precision_producto": 0.71,
+    "precision_categoria": 0.9668
+  },
+  "NCF red neuronal": {
+    "precision_producto": 0.0964,
+    "precision_categoria": 0.6384
+  },
+  "Hibrido v2 (fase 6)": {
+    "precision_producto": 0.003,
+    "precision_categoria": 0.9658
+  },
+  "Word2Vec historial": {
+    "precision_producto": 0.011,
+    "precision_categoria": 0.7282
+  },
+  "Semantico Transformer": {
+    "precision_producto": 0.0104,
+    "precision_categoria": 0.6188
+  },
+  "Two-Tower": {
+    "precision_producto": 0.0172,
+    "precision_categoria": 0.961
+  },
+  "LightGCN": {
+    "precision_producto": 0.0084,
+    "precision_categoria": 0.491
+  },
+  "NLP resenas": {
+    "precision_producto": 0.0116,
+    "precision_categoria": 0.7036
+  },
+  "KNN item-item": {
+    "precision_producto": 0.016,
+    "precision_categoria": 0.8916
+  },
+  "HIBRIDO V4": {
+    "precision_producto": 0.094,
+    "precision_categoria": 0.9618
+  }
+}

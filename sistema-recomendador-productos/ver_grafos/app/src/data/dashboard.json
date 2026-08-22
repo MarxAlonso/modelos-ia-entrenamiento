@@ -1,0 +1,10 @@
+{
+  "fecha": "2026-08-22 15:29",
+  "metricas": {
+    "precision_categoria": "96.3%",
+    "hitrate": "100%",
+    "precision_producto": "0.0037",
+    "recall": "0.0100",
+    "n_capas": 22
+  }
+}

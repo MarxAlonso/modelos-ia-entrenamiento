@@ -1,501 +1,501 @@
-user_id,categorias_favoritas
-u0000,pasabocas
-u0001,despensa|dulces-y-postres
-u0002,panaderia-y-pasteleria
-u0003,carne-y-pollo
-u0004,pescados-y-mariscos|panaderia-y-pasteleria
-u0005,dulces-y-postres|lacteos-huevos-y-refrigerados|carne-y-pollo
-u0006,despensa|charcuteria
-u0007,pasabocas|frutas-y-verduras|despensa
-u0008,charcuteria|carne-y-pollo
-u0009,vinos-y-licores|pasabocas|bebidas
-u0010,pasabocas
-u0011,cuidado-personal|vinos-y-licores|bebidas
-u0012,charcuteria|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
-u0013,frutas-y-verduras|bebidas
-u0014,frutas-y-verduras|panaderia-y-pasteleria|pescados-y-mariscos
-u0015,pescados-y-mariscos|cuidado-personal
-u0016,dulces-y-postres
-u0017,dulces-y-postres|carne-y-pollo|vinos-y-licores
-u0018,charcuteria
-u0019,vinos-y-licores|lacteos-huevos-y-refrigerados
-u0020,pasabocas
-u0021,carne-y-pollo|lacteos-huevos-y-refrigerados
-u0022,despensa|panaderia-y-pasteleria|pasabocas
-u0023,panaderia-y-pasteleria|charcuteria|pescados-y-mariscos
-u0024,carne-y-pollo|panaderia-y-pasteleria|bebidas
-u0025,panaderia-y-pasteleria|dulces-y-postres|frutas-y-verduras
-u0026,dulces-y-postres|frutas-y-verduras
-u0027,carne-y-pollo
-u0028,carne-y-pollo
-u0029,vinos-y-licores|lacteos-huevos-y-refrigerados
-u0030,dulces-y-postres|pasabocas|bebidas
-u0031,frutas-y-verduras|carne-y-pollo
-u0032,bebidas|cuidado-personal|frutas-y-verduras
-u0033,charcuteria|cuidado-personal|despensa
-u0034,charcuteria
-u0035,pasabocas|bebidas|cuidado-personal
-u0036,lacteos-huevos-y-refrigerados|carne-y-pollo
-u0037,panaderia-y-pasteleria|vinos-y-licores
-u0038,despensa|dulces-y-postres
-u0039,charcuteria
-u0040,carne-y-pollo|bebidas
-u0041,pescados-y-mariscos|lacteos-huevos-y-refrigerados|dulces-y-postres
-u0042,dulces-y-postres|carne-y-pollo|pescados-y-mariscos
-u0043,carne-y-pollo|despensa
-u0044,cuidado-personal
-u0045,pescados-y-mariscos|frutas-y-verduras|despensa
-u0046,carne-y-pollo|despensa
-u0047,pasabocas|dulces-y-postres
-u0048,charcuteria|pasabocas
-u0049,pasabocas
-u0050,panaderia-y-pasteleria
-u0051,panaderia-y-pasteleria|cuidado-personal|despensa
-u0052,carne-y-pollo|pasabocas
-u0053,charcuteria|lacteos-huevos-y-refrigerados|cuidado-personal
-u0054,carne-y-pollo|dulces-y-postres
-u0055,pasabocas
-u0056,vinos-y-licores|lacteos-huevos-y-refrigerados
-u0057,lacteos-huevos-y-refrigerados
-u0058,lacteos-huevos-y-refrigerados
-u0059,lacteos-huevos-y-refrigerados
-u0060,pasabocas|bebidas
-u0061,carne-y-pollo|dulces-y-postres|bebidas
-u0062,panaderia-y-pasteleria|carne-y-pollo
-u0063,lacteos-huevos-y-refrigerados
-u0064,carne-y-pollo|cuidado-personal|vinos-y-licores
-u0065,cuidado-personal|lacteos-huevos-y-refrigerados
-u0066,bebidas
-u0067,vinos-y-licores
-u0068,dulces-y-postres|vinos-y-licores
-u0069,bebidas
-u0070,dulces-y-postres
-u0071,vinos-y-licores|pescados-y-mariscos|despensa
-u0072,pasabocas|dulces-y-postres
-u0073,dulces-y-postres|cuidado-personal|frutas-y-verduras
-u0074,bebidas
-u0075,pasabocas|bebidas
-u0076,carne-y-pollo|cuidado-personal
-u0077,carne-y-pollo
-u0078,carne-y-pollo|lacteos-huevos-y-refrigerados
-u0079,lacteos-huevos-y-refrigerados
-u0080,pescados-y-mariscos|pasabocas|lacteos-huevos-y-refrigerados
-u0081,vinos-y-licores|pescados-y-mariscos
-u0082,bebidas
-u0083,frutas-y-verduras
-u0084,despensa|cuidado-personal
-u0085,vinos-y-licores|panaderia-y-pasteleria
-u0086,vinos-y-licores
-u0087,cuidado-personal|lacteos-huevos-y-refrigerados
-u0088,pescados-y-mariscos|vinos-y-licores|charcuteria
-u0089,cuidado-personal|bebidas
-u0090,pescados-y-mariscos|carne-y-pollo|pasabocas
-u0091,pescados-y-mariscos|charcuteria|panaderia-y-pasteleria
-u0092,cuidado-personal|bebidas
-u0093,despensa|lacteos-huevos-y-refrigerados
-u0094,vinos-y-licores|bebidas|panaderia-y-pasteleria
-u0095,vinos-y-licores
-u0096,carne-y-pollo|bebidas|charcuteria
-u0097,carne-y-pollo|charcuteria|panaderia-y-pasteleria
-u0098,bebidas|charcuteria|panaderia-y-pasteleria
-u0099,lacteos-huevos-y-refrigerados|vinos-y-licores|cuidado-personal
-u0100,vinos-y-licores|carne-y-pollo
-u0101,charcuteria
-u0102,carne-y-pollo
-u0103,panaderia-y-pasteleria
-u0104,carne-y-pollo|cuidado-personal|frutas-y-verduras
-u0105,dulces-y-postres|despensa|charcuteria
-u0106,panaderia-y-pasteleria
-u0107,panaderia-y-pasteleria
-u0108,carne-y-pollo|vinos-y-licores|despensa
-u0109,despensa
-u0110,cuidado-personal|dulces-y-postres|carne-y-pollo
-u0111,vinos-y-licores
-u0112,cuidado-personal|vinos-y-licores
-u0113,bebidas|lacteos-huevos-y-refrigerados
-u0114,lacteos-huevos-y-refrigerados
-u0115,lacteos-huevos-y-refrigerados|carne-y-pollo|vinos-y-licores
-u0116,vinos-y-licores
-u0117,lacteos-huevos-y-refrigerados
-u0118,vinos-y-licores
-u0119,panaderia-y-pasteleria|dulces-y-postres|despensa
-u0120,carne-y-pollo|lacteos-huevos-y-refrigerados|bebidas
-u0121,pasabocas
-u0122,charcuteria|despensa
-u0123,frutas-y-verduras|pescados-y-mariscos|vinos-y-licores
-u0124,despensa
-u0125,despensa
-u0126,despensa|carne-y-pollo|lacteos-huevos-y-refrigerados
-u0127,dulces-y-postres
-u0128,cuidado-personal|charcuteria
-u0129,pasabocas|lacteos-huevos-y-refrigerados|vinos-y-licores
-u0130,lacteos-huevos-y-refrigerados|bebidas|dulces-y-postres
-u0131,pasabocas
-u0132,cuidado-personal
-u0133,vinos-y-licores|carne-y-pollo|pescados-y-mariscos
-u0134,cuidado-personal
-u0135,dulces-y-postres|carne-y-pollo
-u0136,panaderia-y-pasteleria|bebidas
-u0137,charcuteria
-u0138,bebidas|lacteos-huevos-y-refrigerados|despensa
-u0139,cuidado-personal|pasabocas|vinos-y-licores
-u0140,vinos-y-licores|panaderia-y-pasteleria|pescados-y-mariscos
-u0141,pescados-y-mariscos|carne-y-pollo
-u0142,charcuteria
-u0143,vinos-y-licores|frutas-y-verduras
-u0144,bebidas
-u0145,despensa
-u0146,carne-y-pollo|pasabocas|dulces-y-postres
-u0147,bebidas
-u0148,panaderia-y-pasteleria|pescados-y-mariscos
-u0149,vinos-y-licores|pescados-y-mariscos|panaderia-y-pasteleria
-u0150,pasabocas
-u0151,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
-u0152,vinos-y-licores|panaderia-y-pasteleria
-u0153,dulces-y-postres|cuidado-personal|frutas-y-verduras
-u0154,despensa|panaderia-y-pasteleria|vinos-y-licores
-u0155,cuidado-personal
-u0156,carne-y-pollo
-u0157,carne-y-pollo|dulces-y-postres
-u0158,despensa|charcuteria
-u0159,panaderia-y-pasteleria|despensa
-u0160,despensa|charcuteria
-u0161,cuidado-personal
-u0162,lacteos-huevos-y-refrigerados|pasabocas|pescados-y-mariscos
-u0163,cuidado-personal|dulces-y-postres|frutas-y-verduras
-u0164,lacteos-huevos-y-refrigerados|charcuteria
-u0165,dulces-y-postres|pasabocas
-u0166,cuidado-personal
-u0167,panaderia-y-pasteleria
-u0168,charcuteria
-u0169,lacteos-huevos-y-refrigerados|frutas-y-verduras
-u0170,lacteos-huevos-y-refrigerados|carne-y-pollo|pescados-y-mariscos
-u0171,frutas-y-verduras|lacteos-huevos-y-refrigerados
-u0172,panaderia-y-pasteleria|pescados-y-mariscos
-u0173,pasabocas|vinos-y-licores|carne-y-pollo
-u0174,panaderia-y-pasteleria|vinos-y-licores
-u0175,pasabocas|bebidas|cuidado-personal
-u0176,carne-y-pollo
-u0177,charcuteria|frutas-y-verduras
-u0178,frutas-y-verduras
-u0179,frutas-y-verduras
-u0180,dulces-y-postres|panaderia-y-pasteleria
-u0181,pasabocas|lacteos-huevos-y-refrigerados|pescados-y-mariscos
-u0182,lacteos-huevos-y-refrigerados
-u0183,vinos-y-licores
-u0184,panaderia-y-pasteleria|carne-y-pollo|vinos-y-licores
-u0185,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
-u0186,charcuteria|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
-u0187,pasabocas|panaderia-y-pasteleria|pescados-y-mariscos
-u0188,dulces-y-postres|vinos-y-licores|cuidado-personal
-u0189,vinos-y-licores|carne-y-pollo|bebidas
-u0190,panaderia-y-pasteleria|carne-y-pollo|cuidado-personal
-u0191,vinos-y-licores|pasabocas|cuidado-personal
-u0192,despensa
-u0193,pescados-y-mariscos|bebidas
-u0194,carne-y-pollo|despensa|pasabocas
-u0195,frutas-y-verduras|vinos-y-licores|carne-y-pollo
-u0196,panaderia-y-pasteleria
-u0197,carne-y-pollo|bebidas
-u0198,despensa|panaderia-y-pasteleria|cuidado-personal
-u0199,dulces-y-postres
-u0200,cuidado-personal
-u0201,pescados-y-mariscos|panaderia-y-pasteleria
-u0202,carne-y-pollo|despensa
-u0203,pescados-y-mariscos
-u0204,panaderia-y-pasteleria|pescados-y-mariscos|charcuteria
-u0205,pescados-y-mariscos|bebidas
-u0206,lacteos-huevos-y-refrigerados
-u0207,bebidas|panaderia-y-pasteleria
-u0208,vinos-y-licores|bebidas|charcuteria
-u0209,charcuteria|panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
-u0210,lacteos-huevos-y-refrigerados
-u0211,pescados-y-mariscos|vinos-y-licores|bebidas
-u0212,pescados-y-mariscos|frutas-y-verduras|pasabocas
-u0213,pescados-y-mariscos
-u0214,bebidas
-u0215,vinos-y-licores|pescados-y-mariscos|panaderia-y-pasteleria
-u0216,pescados-y-mariscos|frutas-y-verduras|pasabocas
-u0217,carne-y-pollo|charcuteria
-u0218,dulces-y-postres|panaderia-y-pasteleria|pescados-y-mariscos
-u0219,pescados-y-mariscos
-u0220,carne-y-pollo|pasabocas
-u0221,charcuteria
-u0222,cuidado-personal
-u0223,panaderia-y-pasteleria
-u0224,pescados-y-mariscos|panaderia-y-pasteleria
-u0225,bebidas|vinos-y-licores
-u0226,bebidas
-u0227,pescados-y-mariscos
-u0228,despensa|lacteos-huevos-y-refrigerados
-u0229,pasabocas|carne-y-pollo
-u0230,lacteos-huevos-y-refrigerados|pescados-y-mariscos
-u0231,panaderia-y-pasteleria|cuidado-personal
-u0232,carne-y-pollo|despensa|dulces-y-postres
-u0233,cuidado-personal|dulces-y-postres
-u0234,lacteos-huevos-y-refrigerados|cuidado-personal
-u0235,carne-y-pollo|pescados-y-mariscos
-u0236,panaderia-y-pasteleria|dulces-y-postres
-u0237,carne-y-pollo|despensa|vinos-y-licores
-u0238,cuidado-personal|charcuteria|carne-y-pollo
-u0239,despensa|frutas-y-verduras|lacteos-huevos-y-refrigerados
-u0240,despensa
-u0241,lacteos-huevos-y-refrigerados|charcuteria|pescados-y-mariscos
-u0242,dulces-y-postres|bebidas|cuidado-personal
-u0243,charcuteria
-u0244,frutas-y-verduras
-u0245,frutas-y-verduras|lacteos-huevos-y-refrigerados
-u0246,lacteos-huevos-y-refrigerados|vinos-y-licores
-u0247,cuidado-personal|charcuteria
-u0248,charcuteria|frutas-y-verduras
-u0249,vinos-y-licores|frutas-y-verduras
-u0250,dulces-y-postres|vinos-y-licores|panaderia-y-pasteleria
-u0251,vinos-y-licores
-u0252,frutas-y-verduras|panaderia-y-pasteleria|dulces-y-postres
-u0253,cuidado-personal
-u0254,despensa|pasabocas
-u0255,carne-y-pollo
-u0256,bebidas
-u0257,pasabocas|bebidas|panaderia-y-pasteleria
-u0258,dulces-y-postres|cuidado-personal
-u0259,bebidas|cuidado-personal|panaderia-y-pasteleria
-u0260,pasabocas|panaderia-y-pasteleria
-u0261,panaderia-y-pasteleria|despensa
-u0262,lacteos-huevos-y-refrigerados
-u0263,carne-y-pollo|despensa|dulces-y-postres
-u0264,vinos-y-licores
-u0265,dulces-y-postres|panaderia-y-pasteleria
-u0266,carne-y-pollo|frutas-y-verduras|panaderia-y-pasteleria
-u0267,cuidado-personal|frutas-y-verduras|bebidas
-u0268,pescados-y-mariscos|dulces-y-postres|carne-y-pollo
-u0269,pasabocas|vinos-y-licores
-u0270,dulces-y-postres|charcuteria|pescados-y-mariscos
-u0271,frutas-y-verduras|carne-y-pollo
-u0272,cuidado-personal|pescados-y-mariscos|bebidas
-u0273,dulces-y-postres
-u0274,vinos-y-licores|dulces-y-postres
-u0275,charcuteria
-u0276,pescados-y-mariscos
-u0277,frutas-y-verduras|charcuteria|bebidas
-u0278,dulces-y-postres
-u0279,lacteos-huevos-y-refrigerados|vinos-y-licores|dulces-y-postres
-u0280,charcuteria
-u0281,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados|pasabocas
-u0282,lacteos-huevos-y-refrigerados|pasabocas
-u0283,panaderia-y-pasteleria|bebidas
-u0284,dulces-y-postres|pasabocas|despensa
-u0285,dulces-y-postres
-u0286,panaderia-y-pasteleria|vinos-y-licores
-u0287,dulces-y-postres|vinos-y-licores
-u0288,lacteos-huevos-y-refrigerados
-u0289,pescados-y-mariscos
-u0290,frutas-y-verduras|cuidado-personal
-u0291,pescados-y-mariscos|carne-y-pollo|dulces-y-postres
-u0292,lacteos-huevos-y-refrigerados|pasabocas|frutas-y-verduras
-u0293,despensa
-u0294,charcuteria
-u0295,bebidas
-u0296,panaderia-y-pasteleria|pescados-y-mariscos
-u0297,cuidado-personal|carne-y-pollo
-u0298,despensa|bebidas
-u0299,panaderia-y-pasteleria
-u0300,frutas-y-verduras|panaderia-y-pasteleria
-u0301,frutas-y-verduras|pasabocas|dulces-y-postres
-u0302,pasabocas|frutas-y-verduras
-u0303,vinos-y-licores
-u0304,panaderia-y-pasteleria|dulces-y-postres
-u0305,carne-y-pollo
-u0306,pasabocas|panaderia-y-pasteleria
-u0307,frutas-y-verduras|vinos-y-licores
-u0308,pescados-y-mariscos|carne-y-pollo
-u0309,cuidado-personal
-u0310,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados|pescados-y-mariscos
-u0311,carne-y-pollo
-u0312,bebidas
-u0313,vinos-y-licores|panaderia-y-pasteleria
-u0314,dulces-y-postres|pescados-y-mariscos|pasabocas
-u0315,despensa
-u0316,pasabocas
-u0317,bebidas|charcuteria
-u0318,panaderia-y-pasteleria|cuidado-personal
-u0319,charcuteria|pasabocas
-u0320,despensa
-u0321,bebidas|despensa|carne-y-pollo
-u0322,pasabocas|pescados-y-mariscos|lacteos-huevos-y-refrigerados
-u0323,pasabocas|lacteos-huevos-y-refrigerados|despensa
-u0324,lacteos-huevos-y-refrigerados|carne-y-pollo|charcuteria
-u0325,bebidas|vinos-y-licores
-u0326,panaderia-y-pasteleria
-u0327,pasabocas|bebidas
-u0328,frutas-y-verduras|vinos-y-licores|panaderia-y-pasteleria
-u0329,frutas-y-verduras|pasabocas
-u0330,panaderia-y-pasteleria|pasabocas|cuidado-personal
-u0331,carne-y-pollo|despensa
-u0332,pescados-y-mariscos|pasabocas
-u0333,bebidas|despensa|lacteos-huevos-y-refrigerados
-u0334,panaderia-y-pasteleria|frutas-y-verduras
-u0335,pasabocas|cuidado-personal
-u0336,carne-y-pollo|vinos-y-licores
-u0337,vinos-y-licores
-u0338,panaderia-y-pasteleria|vinos-y-licores|lacteos-huevos-y-refrigerados
-u0339,charcuteria|pescados-y-mariscos
-u0340,vinos-y-licores|carne-y-pollo
-u0341,bebidas
-u0342,frutas-y-verduras|charcuteria
-u0343,dulces-y-postres
-u0344,despensa|frutas-y-verduras|pasabocas
-u0345,pasabocas|vinos-y-licores|pescados-y-mariscos
-u0346,pescados-y-mariscos|charcuteria|cuidado-personal
-u0347,cuidado-personal|pescados-y-mariscos
-u0348,frutas-y-verduras
-u0349,lacteos-huevos-y-refrigerados|vinos-y-licores|charcuteria
-u0350,cuidado-personal
-u0351,cuidado-personal|vinos-y-licores|charcuteria
-u0352,bebidas|pasabocas
-u0353,frutas-y-verduras
-u0354,pasabocas
-u0355,lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
-u0356,despensa|vinos-y-licores|pescados-y-mariscos
-u0357,pasabocas
-u0358,vinos-y-licores|pasabocas|charcuteria
-u0359,frutas-y-verduras
-u0360,carne-y-pollo
-u0361,lacteos-huevos-y-refrigerados|cuidado-personal
-u0362,pescados-y-mariscos|vinos-y-licores|dulces-y-postres
-u0363,panaderia-y-pasteleria|carne-y-pollo|pasabocas
-u0364,charcuteria
-u0365,vinos-y-licores|bebidas
-u0366,frutas-y-verduras
-u0367,bebidas|cuidado-personal|vinos-y-licores
-u0368,pasabocas|despensa
-u0369,despensa|frutas-y-verduras|charcuteria
-u0370,charcuteria|despensa
-u0371,bebidas
-u0372,carne-y-pollo
-u0373,carne-y-pollo|pasabocas
-u0374,frutas-y-verduras
-u0375,dulces-y-postres
-u0376,cuidado-personal
-u0377,despensa|frutas-y-verduras
-u0378,frutas-y-verduras|pasabocas
-u0379,cuidado-personal
-u0380,pescados-y-mariscos|charcuteria
-u0381,cuidado-personal|frutas-y-verduras|charcuteria
-u0382,vinos-y-licores
-u0383,dulces-y-postres|bebidas
-u0384,carne-y-pollo|lacteos-huevos-y-refrigerados|charcuteria
-u0385,carne-y-pollo
-u0386,vinos-y-licores
-u0387,bebidas
-u0388,panaderia-y-pasteleria|bebidas|carne-y-pollo
-u0389,charcuteria|dulces-y-postres|frutas-y-verduras
-u0390,lacteos-huevos-y-refrigerados
-u0391,bebidas|dulces-y-postres|panaderia-y-pasteleria
-u0392,dulces-y-postres|frutas-y-verduras
-u0393,pescados-y-mariscos|vinos-y-licores|lacteos-huevos-y-refrigerados
-u0394,vinos-y-licores
-u0395,despensa|vinos-y-licores
-u0396,pasabocas|bebidas|despensa
-u0397,cuidado-personal
-u0398,panaderia-y-pasteleria|carne-y-pollo
-u0399,charcuteria
-u0400,lacteos-huevos-y-refrigerados|despensa
-u0401,pasabocas|bebidas|vinos-y-licores
-u0402,panaderia-y-pasteleria|bebidas
-u0403,lacteos-huevos-y-refrigerados|pescados-y-mariscos
-u0404,panaderia-y-pasteleria
-u0405,pescados-y-mariscos|carne-y-pollo|cuidado-personal
-u0406,carne-y-pollo
-u0407,lacteos-huevos-y-refrigerados|panaderia-y-pasteleria|carne-y-pollo
-u0408,carne-y-pollo|vinos-y-licores|dulces-y-postres
-u0409,bebidas|vinos-y-licores|frutas-y-verduras
-u0410,carne-y-pollo|frutas-y-verduras
-u0411,pescados-y-mariscos
-u0412,dulces-y-postres|carne-y-pollo
-u0413,cuidado-personal
-u0414,despensa|lacteos-huevos-y-refrigerados|bebidas
-u0415,lacteos-huevos-y-refrigerados|vinos-y-licores
-u0416,bebidas
-u0417,lacteos-huevos-y-refrigerados
-u0418,charcuteria
-u0419,panaderia-y-pasteleria|cuidado-personal|pasabocas
-u0420,frutas-y-verduras
-u0421,despensa|pasabocas
-u0422,lacteos-huevos-y-refrigerados|pasabocas
-u0423,pasabocas
-u0424,pasabocas|carne-y-pollo|dulces-y-postres
-u0425,bebidas|pasabocas|pescados-y-mariscos
-u0426,vinos-y-licores|despensa
-u0427,despensa|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
-u0428,carne-y-pollo|despensa
-u0429,charcuteria
-u0430,carne-y-pollo|pescados-y-mariscos|vinos-y-licores
-u0431,charcuteria
-u0432,dulces-y-postres|pescados-y-mariscos
-u0433,lacteos-huevos-y-refrigerados|pasabocas
-u0434,dulces-y-postres|carne-y-pollo
-u0435,panaderia-y-pasteleria|frutas-y-verduras
-u0436,dulces-y-postres|despensa|carne-y-pollo
-u0437,vinos-y-licores|panaderia-y-pasteleria|pasabocas
-u0438,charcuteria
-u0439,dulces-y-postres|panaderia-y-pasteleria
-u0440,vinos-y-licores
-u0441,cuidado-personal|panaderia-y-pasteleria|vinos-y-licores
-u0442,lacteos-huevos-y-refrigerados|despensa
-u0443,frutas-y-verduras|vinos-y-licores
-u0444,despensa|bebidas
-u0445,frutas-y-verduras|pescados-y-mariscos
-u0446,charcuteria
-u0447,vinos-y-licores|despensa
-u0448,vinos-y-licores|cuidado-personal|carne-y-pollo
-u0449,despensa
-u0450,vinos-y-licores
-u0451,charcuteria|carne-y-pollo|pescados-y-mariscos
-u0452,despensa|pasabocas
-u0453,vinos-y-licores|charcuteria
-u0454,bebidas|dulces-y-postres
-u0455,carne-y-pollo|charcuteria
-u0456,dulces-y-postres
-u0457,vinos-y-licores
-u0458,lacteos-huevos-y-refrigerados
-u0459,pasabocas|carne-y-pollo|despensa
-u0460,cuidado-personal
-u0461,pasabocas
-u0462,pescados-y-mariscos
-u0463,pasabocas|vinos-y-licores|carne-y-pollo
-u0464,lacteos-huevos-y-refrigerados|pescados-y-mariscos
-u0465,vinos-y-licores|carne-y-pollo
-u0466,frutas-y-verduras
-u0467,carne-y-pollo|pasabocas
-u0468,vinos-y-licores|frutas-y-verduras|despensa
-u0469,cuidado-personal
-u0470,carne-y-pollo|vinos-y-licores
-u0471,frutas-y-verduras|vinos-y-licores
-u0472,pasabocas|charcuteria|despensa
-u0473,pasabocas
-u0474,pasabocas
-u0475,charcuteria
-u0476,despensa|pescados-y-mariscos
-u0477,pescados-y-mariscos
-u0478,cuidado-personal|despensa|carne-y-pollo
-u0479,lacteos-huevos-y-refrigerados|carne-y-pollo
-u0480,dulces-y-postres
-u0481,charcuteria
-u0482,lacteos-huevos-y-refrigerados|pescados-y-mariscos|carne-y-pollo
-u0483,dulces-y-postres|cuidado-personal|frutas-y-verduras
-u0484,charcuteria
-u0485,carne-y-pollo
-u0486,vinos-y-licores
-u0487,pescados-y-mariscos
-u0488,pasabocas
-u0489,frutas-y-verduras
-u0490,dulces-y-postres
-u0491,dulces-y-postres|despensa
-u0492,carne-y-pollo|despensa|cuidado-personal
-u0493,vinos-y-licores
-u0494,dulces-y-postres
-u0495,pasabocas|vinos-y-licores|carne-y-pollo
-u0496,carne-y-pollo|charcuteria|cuidado-personal
-u0497,carne-y-pollo|vinos-y-licores
-u0498,cuidado-personal
-u0499,bebidas|frutas-y-verduras|dulces-y-postres
+user_id,nombre,categorias_favoritas
+u0000,Lucas Mendoza Cruz,pasabocas
+u0001,Laura Rodríguez Ramírez,despensa|dulces-y-postres
+u0002,Rafael García Díaz,panaderia-y-pasteleria
+u0003,Javier Martínez Gómez,carne-y-pollo
+u0004,Daniela Sánchez Gutiérrez,pescados-y-mariscos|panaderia-y-pasteleria
+u0005,Isabella Gómez Díaz,dulces-y-postres|lacteos-huevos-y-refrigerados|carne-y-pollo
+u0006,Emiliano Paredes Rojas,despensa|charcuteria
+u0007,Carlos Torres Paredes,pasabocas|frutas-y-verduras|despensa
+u0008,Andrea González Castro,charcuteria|carne-y-pollo
+u0009,Emma Gómez García,vinos-y-licores|pasabocas|bebidas
+u0010,Ignacio Gómez Rojas,pasabocas
+u0011,Rafael Gómez Díaz,cuidado-personal|vinos-y-licores|bebidas
+u0012,Paula Sánchez Paredes,charcuteria|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
+u0013,María Paredes Gutiérrez,frutas-y-verduras|bebidas
+u0014,Elena Flores Díaz,frutas-y-verduras|panaderia-y-pasteleria|pescados-y-mariscos
+u0015,Alejandro Ortiz López,pescados-y-mariscos|cuidado-personal
+u0016,Beatriz Mendoza González,dulces-y-postres
+u0017,Emiliano Gutiérrez Morales,dulces-y-postres|carne-y-pollo|vinos-y-licores
+u0018,Joaquín Martínez Sánchez,charcuteria
+u0019,Emiliano Morales Castro,vinos-y-licores|lacteos-huevos-y-refrigerados
+u0020,Emma Cruz Martínez,pasabocas
+u0021,Valentina Cruz Torres,carne-y-pollo|lacteos-huevos-y-refrigerados
+u0022,Paula Rojas Rivera,despensa|panaderia-y-pasteleria|pasabocas
+u0023,Manuel Flores Cruz,panaderia-y-pasteleria|charcuteria|pescados-y-mariscos
+u0024,Benjamín Morales Reyes,carne-y-pollo|panaderia-y-pasteleria|bebidas
+u0025,Marta Cruz Gómez,panaderia-y-pasteleria|dulces-y-postres|frutas-y-verduras
+u0026,Valentina Rivera Rojas,dulces-y-postres|frutas-y-verduras
+u0027,Mateo Aguilar Pérez,carne-y-pollo
+u0028,Alejandro Ramírez Díaz,carne-y-pollo
+u0029,Miguel Reyes López,vinos-y-licores|lacteos-huevos-y-refrigerados
+u0030,Joaquín Aguilar Morales,dulces-y-postres|pasabocas|bebidas
+u0031,Rafael Ramírez López,frutas-y-verduras|carne-y-pollo
+u0032,Laura Aguilar Sánchez,bebidas|cuidado-personal|frutas-y-verduras
+u0033,Julia Flores Mendoza,charcuteria|cuidado-personal|despensa
+u0034,Martín Cruz Rodríguez,charcuteria
+u0035,Paula Pérez Pérez,pasabocas|bebidas|cuidado-personal
+u0036,Beatriz Castro Cruz,lacteos-huevos-y-refrigerados|carne-y-pollo
+u0037,Joaquín Gómez Torres,panaderia-y-pasteleria|vinos-y-licores
+u0038,Mateo García Chávez,despensa|dulces-y-postres
+u0039,Paula Mendoza López,charcuteria
+u0040,Sebastián Ortiz Chávez,carne-y-pollo|bebidas
+u0041,Benjamín Rivera Castro,pescados-y-mariscos|lacteos-huevos-y-refrigerados|dulces-y-postres
+u0042,Valentina Cruz Sánchez,dulces-y-postres|carne-y-pollo|pescados-y-mariscos
+u0043,Marta Mendoza Díaz,carne-y-pollo|despensa
+u0044,Carlos Mendoza Paredes,cuidado-personal
+u0045,Diego Ramírez García,pescados-y-mariscos|frutas-y-verduras|despensa
+u0046,Felipe Rojas Ortiz,carne-y-pollo|despensa
+u0047,Camila Castro Rojas,pasabocas|dulces-y-postres
+u0048,Carla Morales Díaz,charcuteria|pasabocas
+u0049,Carlos Martínez Chávez,pasabocas
+u0050,Sofía González Mendoza,panaderia-y-pasteleria
+u0051,Paula Flores Torres,panaderia-y-pasteleria|cuidado-personal|despensa
+u0052,Miguel Cruz Paredes,carne-y-pollo|pasabocas
+u0053,Daniela Martínez Aguilar,charcuteria|lacteos-huevos-y-refrigerados|cuidado-personal
+u0054,Luciana Paredes López,carne-y-pollo|dulces-y-postres
+u0055,Emiliano Mendoza Mendoza,pasabocas
+u0056,Martín Cruz Rojas,vinos-y-licores|lacteos-huevos-y-refrigerados
+u0057,Benjamín Flores Rivera,lacteos-huevos-y-refrigerados
+u0058,Mateo Rodríguez Sánchez,lacteos-huevos-y-refrigerados
+u0059,Benjamín Reyes Aguilar,lacteos-huevos-y-refrigerados
+u0060,Laura Rojas Ortiz,pasabocas|bebidas
+u0061,Lucas López Morales,carne-y-pollo|dulces-y-postres|bebidas
+u0062,Santiago Torres Morales,panaderia-y-pasteleria|carne-y-pollo
+u0063,Paula González Rodríguez,lacteos-huevos-y-refrigerados
+u0064,Isabella Mendoza Rojas,carne-y-pollo|cuidado-personal|vinos-y-licores
+u0065,Andrea Chávez Morales,cuidado-personal|lacteos-huevos-y-refrigerados
+u0066,Sofía Cruz Gómez,bebidas
+u0067,Marta López Paredes,vinos-y-licores
+u0068,Luciana Morales Rivera,dulces-y-postres|vinos-y-licores
+u0069,Emma Chávez Rodríguez,bebidas
+u0070,María Vargas Gutiérrez,dulces-y-postres
+u0071,Javier Castro Martínez,vinos-y-licores|pescados-y-mariscos|despensa
+u0072,Lucas Rojas Chávez,pasabocas|dulces-y-postres
+u0073,Miguel Rojas Mendoza,dulces-y-postres|cuidado-personal|frutas-y-verduras
+u0074,Sofía García Rivera,bebidas
+u0075,María Gutiérrez Sánchez,pasabocas|bebidas
+u0076,Beatriz Cruz Sánchez,carne-y-pollo|cuidado-personal
+u0077,Alejandro Martínez González,carne-y-pollo
+u0078,Mateo García Gómez,carne-y-pollo|lacteos-huevos-y-refrigerados
+u0079,Nicolás Castro Reyes,lacteos-huevos-y-refrigerados
+u0080,Benjamín Ortiz Pérez,pescados-y-mariscos|pasabocas|lacteos-huevos-y-refrigerados
+u0081,Emma Vargas Cruz,vinos-y-licores|pescados-y-mariscos
+u0082,Luciana Rojas Gómez,bebidas
+u0083,Ignacio García Rodríguez,frutas-y-verduras
+u0084,Andrea Ramírez López,despensa|cuidado-personal
+u0085,Sebastián López Vargas,vinos-y-licores|panaderia-y-pasteleria
+u0086,Marta Castro Rivera,vinos-y-licores
+u0087,Laura Rojas Vargas,cuidado-personal|lacteos-huevos-y-refrigerados
+u0088,Joaquín González Cruz,pescados-y-mariscos|vinos-y-licores|charcuteria
+u0089,Martín Sánchez Morales,cuidado-personal|bebidas
+u0090,Renata Ortiz Rodríguez,pescados-y-mariscos|carne-y-pollo|pasabocas
+u0091,Andrés Gutiérrez Rojas,pescados-y-mariscos|charcuteria|panaderia-y-pasteleria
+u0092,Valentina Chávez Ramírez,cuidado-personal|bebidas
+u0093,Miguel López González,despensa|lacteos-huevos-y-refrigerados
+u0094,Renata Ortiz Ortiz,vinos-y-licores|bebidas|panaderia-y-pasteleria
+u0095,Daniel Morales Aguilar,vinos-y-licores
+u0096,Sofía Sánchez Mendoza,carne-y-pollo|bebidas|charcuteria
+u0097,Joaquín Cruz Martínez,carne-y-pollo|charcuteria|panaderia-y-pasteleria
+u0098,Andrea López González,bebidas|charcuteria|panaderia-y-pasteleria
+u0099,Lucas Reyes Flores,lacteos-huevos-y-refrigerados|vinos-y-licores|cuidado-personal
+u0100,Marta Reyes Ramírez,vinos-y-licores|carne-y-pollo
+u0101,Luciana Pérez Torres,charcuteria
+u0102,Julia Martínez Torres,carne-y-pollo
+u0103,Carlos Castro Ramírez,panaderia-y-pasteleria
+u0104,Sofía Vargas Mendoza,carne-y-pollo|cuidado-personal|frutas-y-verduras
+u0105,Camila Castro López,dulces-y-postres|despensa|charcuteria
+u0106,Elena Mendoza Chávez,panaderia-y-pasteleria
+u0107,Isabella Chávez Rojas,panaderia-y-pasteleria
+u0108,Miguel González García,carne-y-pollo|vinos-y-licores|despensa
+u0109,Benjamín Castro Flores,despensa
+u0110,Joaquín Martínez Ortiz,cuidado-personal|dulces-y-postres|carne-y-pollo
+u0111,Felipe Reyes Rojas,vinos-y-licores
+u0112,Nicolás Flores Chávez,cuidado-personal|vinos-y-licores
+u0113,Mateo Aguilar Chávez,bebidas|lacteos-huevos-y-refrigerados
+u0114,Isabella Sánchez Chávez,lacteos-huevos-y-refrigerados
+u0115,Emiliano Morales Mendoza,lacteos-huevos-y-refrigerados|carne-y-pollo|vinos-y-licores
+u0116,Carla González Rodríguez,vinos-y-licores
+u0117,Carlos López Chávez,lacteos-huevos-y-refrigerados
+u0118,Andrés Aguilar Vargas,vinos-y-licores
+u0119,Javier Morales Flores,panaderia-y-pasteleria|dulces-y-postres|despensa
+u0120,Diego González Castro,carne-y-pollo|lacteos-huevos-y-refrigerados|bebidas
+u0121,Carlos Torres Chávez,pasabocas
+u0122,Camila Flores Torres,charcuteria|despensa
+u0123,Antonella Torres Castro,frutas-y-verduras|pescados-y-mariscos|vinos-y-licores
+u0124,Sebastián Flores Paredes,despensa
+u0125,Emiliano Vargas Flores,despensa
+u0126,Santiago Mendoza Flores,despensa|carne-y-pollo|lacteos-huevos-y-refrigerados
+u0127,Paula García Vargas,dulces-y-postres
+u0128,Sebastián López Torres,cuidado-personal|charcuteria
+u0129,Felipe Flores Aguilar,pasabocas|lacteos-huevos-y-refrigerados|vinos-y-licores
+u0130,Antonella Martínez Ortiz,lacteos-huevos-y-refrigerados|bebidas|dulces-y-postres
+u0131,Beatriz González González,pasabocas
+u0132,Ignacio Gómez Aguilar,cuidado-personal
+u0133,Laura Gómez Mendoza,vinos-y-licores|carne-y-pollo|pescados-y-mariscos
+u0134,Andrea Vargas López,cuidado-personal
+u0135,Valentina López García,dulces-y-postres|carne-y-pollo
+u0136,Paula Ramírez Gómez,panaderia-y-pasteleria|bebidas
+u0137,Elena Chávez Rodríguez,charcuteria
+u0138,Santiago Mendoza Sánchez,bebidas|lacteos-huevos-y-refrigerados|despensa
+u0139,Claudia Rodríguez Flores,cuidado-personal|pasabocas|vinos-y-licores
+u0140,Gabriela López Rivera,vinos-y-licores|panaderia-y-pasteleria|pescados-y-mariscos
+u0141,Alejandro Castro López,pescados-y-mariscos|carne-y-pollo
+u0142,Julia Castro Morales,charcuteria
+u0143,Renata González Ortiz,vinos-y-licores|frutas-y-verduras
+u0144,Isabella Reyes Vargas,bebidas
+u0145,Santiago Gutiérrez Morales,despensa
+u0146,Ignacio Flores Aguilar,carne-y-pollo|pasabocas|dulces-y-postres
+u0147,Carlos Flores González,bebidas
+u0148,Daniela Martínez Reyes,panaderia-y-pasteleria|pescados-y-mariscos
+u0149,Ignacio Sánchez Pérez,vinos-y-licores|pescados-y-mariscos|panaderia-y-pasteleria
+u0150,Javier Pérez Chávez,pasabocas
+u0151,Gabriela Reyes Mendoza,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
+u0152,Laura Ramírez Torres,vinos-y-licores|panaderia-y-pasteleria
+u0153,Julia Díaz Pérez,dulces-y-postres|cuidado-personal|frutas-y-verduras
+u0154,Carla Mendoza Martínez,despensa|panaderia-y-pasteleria|vinos-y-licores
+u0155,Carlos Paredes Vargas,cuidado-personal
+u0156,Santiago Castro Gutiérrez,carne-y-pollo
+u0157,Lucas Torres Ramírez,carne-y-pollo|dulces-y-postres
+u0158,Valentina Chávez Vargas,despensa|charcuteria
+u0159,Diego Rojas Cruz,panaderia-y-pasteleria|despensa
+u0160,Andrea Aguilar Cruz,despensa|charcuteria
+u0161,Diego Sánchez Martínez,cuidado-personal
+u0162,Manuel Cruz Rivera,lacteos-huevos-y-refrigerados|pasabocas|pescados-y-mariscos
+u0163,Andrea Cruz Rojas,cuidado-personal|dulces-y-postres|frutas-y-verduras
+u0164,Javier Ortiz Rojas,lacteos-huevos-y-refrigerados|charcuteria
+u0165,Beatriz Pérez Rivera,dulces-y-postres|pasabocas
+u0166,Daniel Rojas Gutiérrez,cuidado-personal
+u0167,Nicolás Rivera Pérez,panaderia-y-pasteleria
+u0168,Emiliano Vargas López,charcuteria
+u0169,Mateo Vargas García,lacteos-huevos-y-refrigerados|frutas-y-verduras
+u0170,Carlos Gómez Gómez,lacteos-huevos-y-refrigerados|carne-y-pollo|pescados-y-mariscos
+u0171,Benjamín Reyes Reyes,frutas-y-verduras|lacteos-huevos-y-refrigerados
+u0172,Ignacio Martínez Aguilar,panaderia-y-pasteleria|pescados-y-mariscos
+u0173,Martín García Aguilar,pasabocas|vinos-y-licores|carne-y-pollo
+u0174,Claudia Gómez Martínez,panaderia-y-pasteleria|vinos-y-licores
+u0175,Andrés Vargas Rodríguez,pasabocas|bebidas|cuidado-personal
+u0176,Nicolás Pérez García,carne-y-pollo
+u0177,Diego Díaz González,charcuteria|frutas-y-verduras
+u0178,Andrea Chávez Aguilar,frutas-y-verduras
+u0179,Felipe Rivera Rojas,frutas-y-verduras
+u0180,Andrea Morales García,dulces-y-postres|panaderia-y-pasteleria
+u0181,Javier Ortiz Ortiz,pasabocas|lacteos-huevos-y-refrigerados|pescados-y-mariscos
+u0182,Camila Reyes Ramírez,lacteos-huevos-y-refrigerados
+u0183,Manuel Aguilar Flores,vinos-y-licores
+u0184,Valentina Chávez Mendoza,panaderia-y-pasteleria|carne-y-pollo|vinos-y-licores
+u0185,Gabriela López Rojas,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
+u0186,Paula Castro Martínez,charcuteria|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
+u0187,Laura Chávez Gutiérrez,pasabocas|panaderia-y-pasteleria|pescados-y-mariscos
+u0188,Elena Flores Castro,dulces-y-postres|vinos-y-licores|cuidado-personal
+u0189,Miguel Díaz Reyes,vinos-y-licores|carne-y-pollo|bebidas
+u0190,Carlos Ortiz Sánchez,panaderia-y-pasteleria|carne-y-pollo|cuidado-personal
+u0191,Julia Martínez González,vinos-y-licores|pasabocas|cuidado-personal
+u0192,Emma Ramírez Sánchez,despensa
+u0193,Benjamín Díaz Torres,pescados-y-mariscos|bebidas
+u0194,Claudia Flores Sánchez,carne-y-pollo|despensa|pasabocas
+u0195,Martín Ramírez Mendoza,frutas-y-verduras|vinos-y-licores|carne-y-pollo
+u0196,Daniela Sánchez Ramírez,panaderia-y-pasteleria
+u0197,Carla Aguilar Gutiérrez,carne-y-pollo|bebidas
+u0198,Luciana Castro Pérez,despensa|panaderia-y-pasteleria|cuidado-personal
+u0199,Daniela Rodríguez González,dulces-y-postres
+u0200,Isabella Rojas Gómez,cuidado-personal
+u0201,Andrea Rojas Vargas,pescados-y-mariscos|panaderia-y-pasteleria
+u0202,Andrea Flores Ortiz,carne-y-pollo|despensa
+u0203,Gabriela Reyes Ramírez,pescados-y-mariscos
+u0204,Javier Vargas Díaz,panaderia-y-pasteleria|pescados-y-mariscos|charcuteria
+u0205,Mateo Cruz Rojas,pescados-y-mariscos|bebidas
+u0206,Luciana Rodríguez López,lacteos-huevos-y-refrigerados
+u0207,Marta Flores Ortiz,bebidas|panaderia-y-pasteleria
+u0208,Isabella Morales Mendoza,vinos-y-licores|bebidas|charcuteria
+u0209,Isabella González Reyes,charcuteria|panaderia-y-pasteleria|lacteos-huevos-y-refrigerados
+u0210,Diego Pérez Rodríguez,lacteos-huevos-y-refrigerados
+u0211,Beatriz Castro Ramírez,pescados-y-mariscos|vinos-y-licores|bebidas
+u0212,Paula Rodríguez Ortiz,pescados-y-mariscos|frutas-y-verduras|pasabocas
+u0213,Benjamín Flores Gutiérrez,pescados-y-mariscos
+u0214,Sofía López Rodríguez,bebidas
+u0215,Nicolás Flores Díaz,vinos-y-licores|pescados-y-mariscos|panaderia-y-pasteleria
+u0216,Santiago Ortiz Cruz,pescados-y-mariscos|frutas-y-verduras|pasabocas
+u0217,Andrés Flores Chávez,carne-y-pollo|charcuteria
+u0218,Luciana Sánchez Mendoza,dulces-y-postres|panaderia-y-pasteleria|pescados-y-mariscos
+u0219,Antonella Rodríguez López,pescados-y-mariscos
+u0220,Luciana Morales Díaz,carne-y-pollo|pasabocas
+u0221,Camila Torres González,charcuteria
+u0222,Carla Paredes Pérez,cuidado-personal
+u0223,María Rivera González,panaderia-y-pasteleria
+u0224,Andrea García López,pescados-y-mariscos|panaderia-y-pasteleria
+u0225,Renata García Sánchez,bebidas|vinos-y-licores
+u0226,Emiliano González Gómez,bebidas
+u0227,Emma Rojas Rivera,pescados-y-mariscos
+u0228,Lucas González Morales,despensa|lacteos-huevos-y-refrigerados
+u0229,Rafael Cruz Ortiz,pasabocas|carne-y-pollo
+u0230,María Ortiz Paredes,lacteos-huevos-y-refrigerados|pescados-y-mariscos
+u0231,Andrés Aguilar Pérez,panaderia-y-pasteleria|cuidado-personal
+u0232,Alejandro Mendoza López,carne-y-pollo|despensa|dulces-y-postres
+u0233,Camila Torres García,cuidado-personal|dulces-y-postres
+u0234,Lucas Mendoza Aguilar,lacteos-huevos-y-refrigerados|cuidado-personal
+u0235,Ignacio Vargas Ortiz,carne-y-pollo|pescados-y-mariscos
+u0236,Manuel Cruz González,panaderia-y-pasteleria|dulces-y-postres
+u0237,Ignacio Vargas Torres,carne-y-pollo|despensa|vinos-y-licores
+u0238,Santiago García Flores,cuidado-personal|charcuteria|carne-y-pollo
+u0239,Felipe Cruz Rivera,despensa|frutas-y-verduras|lacteos-huevos-y-refrigerados
+u0240,Ignacio Chávez Martínez,despensa
+u0241,Daniela Rivera López,lacteos-huevos-y-refrigerados|charcuteria|pescados-y-mariscos
+u0242,Isabella Ramírez Paredes,dulces-y-postres|bebidas|cuidado-personal
+u0243,Benjamín García Sánchez,charcuteria
+u0244,Felipe Gutiérrez Flores,frutas-y-verduras
+u0245,Carla Torres García,frutas-y-verduras|lacteos-huevos-y-refrigerados
+u0246,Rafael Sánchez Rodríguez,lacteos-huevos-y-refrigerados|vinos-y-licores
+u0247,Sebastián Rodríguez Gutiérrez,cuidado-personal|charcuteria
+u0248,Luciana Sánchez Chávez,charcuteria|frutas-y-verduras
+u0249,Claudia Gutiérrez Gutiérrez,vinos-y-licores|frutas-y-verduras
+u0250,Daniela Rojas Díaz,dulces-y-postres|vinos-y-licores|panaderia-y-pasteleria
+u0251,Sebastián Torres García,vinos-y-licores
+u0252,Diego Castro Díaz,frutas-y-verduras|panaderia-y-pasteleria|dulces-y-postres
+u0253,Rafael Ramírez Cruz,cuidado-personal
+u0254,Emma Gutiérrez Castro,despensa|pasabocas
+u0255,Elena Chávez Aguilar,carne-y-pollo
+u0256,Andrés González Flores,bebidas
+u0257,Diego Gutiérrez López,pasabocas|bebidas|panaderia-y-pasteleria
+u0258,Paula Torres Paredes,dulces-y-postres|cuidado-personal
+u0259,Daniel Pérez Mendoza,bebidas|cuidado-personal|panaderia-y-pasteleria
+u0260,Elena Castro Gómez,pasabocas|panaderia-y-pasteleria
+u0261,Benjamín Gómez Flores,panaderia-y-pasteleria|despensa
+u0262,Isabella Díaz Rodríguez,lacteos-huevos-y-refrigerados
+u0263,Emma Sánchez González,carne-y-pollo|despensa|dulces-y-postres
+u0264,Sofía Vargas Gómez,vinos-y-licores
+u0265,Paula Chávez Mendoza,dulces-y-postres|panaderia-y-pasteleria
+u0266,Claudia Rodríguez Cruz,carne-y-pollo|frutas-y-verduras|panaderia-y-pasteleria
+u0267,Emiliano Rodríguez Flores,cuidado-personal|frutas-y-verduras|bebidas
+u0268,Sebastián Rojas Gómez,pescados-y-mariscos|dulces-y-postres|carne-y-pollo
+u0269,Nicolás Rodríguez Castro,pasabocas|vinos-y-licores
+u0270,Martín Aguilar Castro,dulces-y-postres|charcuteria|pescados-y-mariscos
+u0271,Renata Reyes Pérez,frutas-y-verduras|carne-y-pollo
+u0272,Manuel Chávez Rodríguez,cuidado-personal|pescados-y-mariscos|bebidas
+u0273,Isabella Rojas Rivera,dulces-y-postres
+u0274,Renata Chávez Paredes,vinos-y-licores|dulces-y-postres
+u0275,Antonella Rodríguez Chávez,charcuteria
+u0276,Paula González Martínez,pescados-y-mariscos
+u0277,Daniel Aguilar Cruz,frutas-y-verduras|charcuteria|bebidas
+u0278,Martín Vargas Torres,dulces-y-postres
+u0279,Lucas Chávez Vargas,lacteos-huevos-y-refrigerados|vinos-y-licores|dulces-y-postres
+u0280,Martín Paredes Reyes,charcuteria
+u0281,Renata Cruz Vargas,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados|pasabocas
+u0282,Renata Reyes Morales,lacteos-huevos-y-refrigerados|pasabocas
+u0283,Martín López Rojas,panaderia-y-pasteleria|bebidas
+u0284,Emiliano Ramírez Rivera,dulces-y-postres|pasabocas|despensa
+u0285,Laura Flores Gutiérrez,dulces-y-postres
+u0286,Emiliano González Reyes,panaderia-y-pasteleria|vinos-y-licores
+u0287,Andrea Rojas Ortiz,dulces-y-postres|vinos-y-licores
+u0288,Emma Castro González,lacteos-huevos-y-refrigerados
+u0289,Claudia Reyes Torres,pescados-y-mariscos
+u0290,Renata Gómez Díaz,frutas-y-verduras|cuidado-personal
+u0291,Claudia Vargas González,pescados-y-mariscos|carne-y-pollo|dulces-y-postres
+u0292,Beatriz Reyes Cruz,lacteos-huevos-y-refrigerados|pasabocas|frutas-y-verduras
+u0293,Elena Gutiérrez López,despensa
+u0294,Julia Paredes Vargas,charcuteria
+u0295,Laura Gómez Rojas,bebidas
+u0296,Carla Vargas Sánchez,panaderia-y-pasteleria|pescados-y-mariscos
+u0297,Alejandro Reyes González,cuidado-personal|carne-y-pollo
+u0298,Emma Ortiz Sánchez,despensa|bebidas
+u0299,Gabriela Díaz López,panaderia-y-pasteleria
+u0300,Beatriz Rodríguez Castro,frutas-y-verduras|panaderia-y-pasteleria
+u0301,Luciana Morales Gómez,frutas-y-verduras|pasabocas|dulces-y-postres
+u0302,Antonella Cruz Chávez,pasabocas|frutas-y-verduras
+u0303,Isabella Sánchez Torres,vinos-y-licores
+u0304,Carlos Sánchez Pérez,panaderia-y-pasteleria|dulces-y-postres
+u0305,Benjamín Castro Rivera,carne-y-pollo
+u0306,Emiliano Mendoza Flores,pasabocas|panaderia-y-pasteleria
+u0307,Nicolás Díaz Sánchez,frutas-y-verduras|vinos-y-licores
+u0308,Beatriz Rivera Ramírez,pescados-y-mariscos|carne-y-pollo
+u0309,Andrés Gutiérrez López,cuidado-personal
+u0310,Javier Gómez Castro,panaderia-y-pasteleria|lacteos-huevos-y-refrigerados|pescados-y-mariscos
+u0311,Sebastián González Gutiérrez,carne-y-pollo
+u0312,Sofía Mendoza Paredes,bebidas
+u0313,Camila Rojas Torres,vinos-y-licores|panaderia-y-pasteleria
+u0314,Rafael García Flores,dulces-y-postres|pescados-y-mariscos|pasabocas
+u0315,Rafael Castro Rodríguez,despensa
+u0316,Rafael Gómez Rojas,pasabocas
+u0317,Martín Castro Ortiz,bebidas|charcuteria
+u0318,Andrés López Mendoza,panaderia-y-pasteleria|cuidado-personal
+u0319,Andrea Ortiz Vargas,charcuteria|pasabocas
+u0320,Mateo Paredes Díaz,despensa
+u0321,Isabella Ramírez Aguilar,bebidas|despensa|carne-y-pollo
+u0322,Lucas Flores Rivera,pasabocas|pescados-y-mariscos|lacteos-huevos-y-refrigerados
+u0323,Claudia Chávez Flores,pasabocas|lacteos-huevos-y-refrigerados|despensa
+u0324,Mateo Gómez Rivera,lacteos-huevos-y-refrigerados|carne-y-pollo|charcuteria
+u0325,Antonella López Rivera,bebidas|vinos-y-licores
+u0326,Sofía Rodríguez Rojas,panaderia-y-pasteleria
+u0327,Carlos Gómez Ortiz,pasabocas|bebidas
+u0328,Emiliano Pérez Díaz,frutas-y-verduras|vinos-y-licores|panaderia-y-pasteleria
+u0329,Luciana Rivera Ramírez,frutas-y-verduras|pasabocas
+u0330,Lucas Flores Díaz,panaderia-y-pasteleria|pasabocas|cuidado-personal
+u0331,Nicolás Vargas González,carne-y-pollo|despensa
+u0332,Beatriz Gutiérrez López,pescados-y-mariscos|pasabocas
+u0333,Laura Díaz Morales,bebidas|despensa|lacteos-huevos-y-refrigerados
+u0334,Elena Rivera Mendoza,panaderia-y-pasteleria|frutas-y-verduras
+u0335,Julia Ortiz Torres,pasabocas|cuidado-personal
+u0336,Carlos Cruz Vargas,carne-y-pollo|vinos-y-licores
+u0337,Diego González Martínez,vinos-y-licores
+u0338,Nicolás Pérez Chávez,panaderia-y-pasteleria|vinos-y-licores|lacteos-huevos-y-refrigerados
+u0339,Isabella González Paredes,charcuteria|pescados-y-mariscos
+u0340,Renata Morales Rodríguez,vinos-y-licores|carne-y-pollo
+u0341,Ignacio Vargas Rodríguez,bebidas
+u0342,Miguel Morales Sánchez,frutas-y-verduras|charcuteria
+u0343,Elena Cruz Torres,dulces-y-postres
+u0344,Paula García Gutiérrez,despensa|frutas-y-verduras|pasabocas
+u0345,Julia Chávez Pérez,pasabocas|vinos-y-licores|pescados-y-mariscos
+u0346,Gabriela Rodríguez Díaz,pescados-y-mariscos|charcuteria|cuidado-personal
+u0347,Alejandro Paredes Rivera,cuidado-personal|pescados-y-mariscos
+u0348,Julia Gutiérrez Mendoza,frutas-y-verduras
+u0349,María Flores Paredes,lacteos-huevos-y-refrigerados|vinos-y-licores|charcuteria
+u0350,Diego Morales Aguilar,cuidado-personal
+u0351,Valentina Rivera García,cuidado-personal|vinos-y-licores|charcuteria
+u0352,Beatriz García Martínez,bebidas|pasabocas
+u0353,Sebastián Pérez Martínez,frutas-y-verduras
+u0354,Elena Mendoza Rivera,pasabocas
+u0355,Daniela González Martínez,lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
+u0356,Emiliano Ortiz Martínez,despensa|vinos-y-licores|pescados-y-mariscos
+u0357,Emiliano García Martínez,pasabocas
+u0358,Luciana Cruz Chávez,vinos-y-licores|pasabocas|charcuteria
+u0359,Ignacio Mendoza Ortiz,frutas-y-verduras
+u0360,Daniel García López,carne-y-pollo
+u0361,Carla López López,lacteos-huevos-y-refrigerados|cuidado-personal
+u0362,Javier Rojas Aguilar,pescados-y-mariscos|vinos-y-licores|dulces-y-postres
+u0363,Laura Ortiz González,panaderia-y-pasteleria|carne-y-pollo|pasabocas
+u0364,Luciana Castro Ramírez,charcuteria
+u0365,Beatriz Aguilar Castro,vinos-y-licores|bebidas
+u0366,Claudia Ramírez Torres,frutas-y-verduras
+u0367,Gabriela Gutiérrez Gómez,bebidas|cuidado-personal|vinos-y-licores
+u0368,Luciana Gutiérrez Gutiérrez,pasabocas|despensa
+u0369,Emiliano Castro Mendoza,despensa|frutas-y-verduras|charcuteria
+u0370,Laura Ramírez Castro,charcuteria|despensa
+u0371,Rafael Martínez Martínez,bebidas
+u0372,Paula Paredes Gutiérrez,carne-y-pollo
+u0373,Julia Ortiz Díaz,carne-y-pollo|pasabocas
+u0374,Lucas Rivera Aguilar,frutas-y-verduras
+u0375,Ignacio Sánchez López,dulces-y-postres
+u0376,Daniela Rivera Gutiérrez,cuidado-personal
+u0377,Javier Paredes Chávez,despensa|frutas-y-verduras
+u0378,Sebastián Pérez Rivera,frutas-y-verduras|pasabocas
+u0379,Andrea Rivera Gutiérrez,cuidado-personal
+u0380,Daniela Gómez Díaz,pescados-y-mariscos|charcuteria
+u0381,Ignacio Sánchez Rodríguez,cuidado-personal|frutas-y-verduras|charcuteria
+u0382,Sofía Ortiz Torres,vinos-y-licores
+u0383,Valentina Chávez García,dulces-y-postres|bebidas
+u0384,Felipe Flores Mendoza,carne-y-pollo|lacteos-huevos-y-refrigerados|charcuteria
+u0385,Gabriela Castro Ortiz,carne-y-pollo
+u0386,Gabriela Mendoza Sánchez,vinos-y-licores
+u0387,Beatriz Chávez Gómez,bebidas
+u0388,Felipe Ramírez Cruz,panaderia-y-pasteleria|bebidas|carne-y-pollo
+u0389,Andrea Chávez Gutiérrez,charcuteria|dulces-y-postres|frutas-y-verduras
+u0390,Julia Morales Pérez,lacteos-huevos-y-refrigerados
+u0391,Claudia Sánchez Rojas,bebidas|dulces-y-postres|panaderia-y-pasteleria
+u0392,Joaquín Flores Aguilar,dulces-y-postres|frutas-y-verduras
+u0393,Paula Reyes Sánchez,pescados-y-mariscos|vinos-y-licores|lacteos-huevos-y-refrigerados
+u0394,Mateo Martínez Cruz,vinos-y-licores
+u0395,Lucas Rivera Paredes,despensa|vinos-y-licores
+u0396,Andrés Rojas Rojas,pasabocas|bebidas|despensa
+u0397,Diego Rivera Pérez,cuidado-personal
+u0398,Santiago Castro Rodríguez,panaderia-y-pasteleria|carne-y-pollo
+u0399,Andrés Morales Pérez,charcuteria
+u0400,Ignacio Ramírez Reyes,lacteos-huevos-y-refrigerados|despensa
+u0401,Camila Martínez Rojas,pasabocas|bebidas|vinos-y-licores
+u0402,Felipe López Aguilar,panaderia-y-pasteleria|bebidas
+u0403,María Chávez López,lacteos-huevos-y-refrigerados|pescados-y-mariscos
+u0404,Carla Cruz Sánchez,panaderia-y-pasteleria
+u0405,Antonella Gutiérrez Pérez,pescados-y-mariscos|carne-y-pollo|cuidado-personal
+u0406,Manuel Ramírez Vargas,carne-y-pollo
+u0407,Paula Gutiérrez Mendoza,lacteos-huevos-y-refrigerados|panaderia-y-pasteleria|carne-y-pollo
+u0408,Antonella Gutiérrez Rivera,carne-y-pollo|vinos-y-licores|dulces-y-postres
+u0409,Nicolás Gómez Flores,bebidas|vinos-y-licores|frutas-y-verduras
+u0410,Nicolás Castro Morales,carne-y-pollo|frutas-y-verduras
+u0411,Marta Castro López,pescados-y-mariscos
+u0412,Santiago García Gutiérrez,dulces-y-postres|carne-y-pollo
+u0413,Nicolás Cruz García,cuidado-personal
+u0414,Daniela Pérez Mendoza,despensa|lacteos-huevos-y-refrigerados|bebidas
+u0415,Valentina Reyes Cruz,lacteos-huevos-y-refrigerados|vinos-y-licores
+u0416,Julia Martínez Rojas,bebidas
+u0417,Javier Rivera Cruz,lacteos-huevos-y-refrigerados
+u0418,Sofía Reyes Rodríguez,charcuteria
+u0419,Emma Mendoza Castro,panaderia-y-pasteleria|cuidado-personal|pasabocas
+u0420,Andrea Díaz Chávez,frutas-y-verduras
+u0421,Sebastián Pérez Vargas,despensa|pasabocas
+u0422,Javier Sánchez Rojas,lacteos-huevos-y-refrigerados|pasabocas
+u0423,Ignacio Vargas Rivera,pasabocas
+u0424,Carla Vargas Reyes,pasabocas|carne-y-pollo|dulces-y-postres
+u0425,Diego Cruz Gutiérrez,bebidas|pasabocas|pescados-y-mariscos
+u0426,Manuel Castro Ortiz,vinos-y-licores|despensa
+u0427,Renata Aguilar Ramírez,despensa|lacteos-huevos-y-refrigerados|panaderia-y-pasteleria
+u0428,Javier Ramírez Vargas,carne-y-pollo|despensa
+u0429,Marta Morales Aguilar,charcuteria
+u0430,Sebastián García Martínez,carne-y-pollo|pescados-y-mariscos|vinos-y-licores
+u0431,Ignacio Rivera Rodríguez,charcuteria
+u0432,Daniela Rodríguez Martínez,dulces-y-postres|pescados-y-mariscos
+u0433,Gabriela Reyes Flores,lacteos-huevos-y-refrigerados|pasabocas
+u0434,Carla Morales González,dulces-y-postres|carne-y-pollo
+u0435,Javier Aguilar Torres,panaderia-y-pasteleria|frutas-y-verduras
+u0436,Benjamín García Rojas,dulces-y-postres|despensa|carne-y-pollo
+u0437,Manuel Rivera Martínez,vinos-y-licores|panaderia-y-pasteleria|pasabocas
+u0438,Felipe Ortiz Ramírez,charcuteria
+u0439,Santiago Rojas Ramírez,dulces-y-postres|panaderia-y-pasteleria
+u0440,Ignacio Martínez Sánchez,vinos-y-licores
+u0441,Sebastián Cruz Gómez,cuidado-personal|panaderia-y-pasteleria|vinos-y-licores
+u0442,Laura Díaz García,lacteos-huevos-y-refrigerados|despensa
+u0443,Santiago Chávez Chávez,frutas-y-verduras|vinos-y-licores
+u0444,Martín Rodríguez Aguilar,despensa|bebidas
+u0445,Martín García Gómez,frutas-y-verduras|pescados-y-mariscos
+u0446,Carlos Martínez Ramírez,charcuteria
+u0447,Miguel Reyes Mendoza,vinos-y-licores|despensa
+u0448,Mateo Castro Gómez,vinos-y-licores|cuidado-personal|carne-y-pollo
+u0449,Mateo Mendoza González,despensa
+u0450,Carla Torres Ortiz,vinos-y-licores
+u0451,Martín Pérez Aguilar,charcuteria|carne-y-pollo|pescados-y-mariscos
+u0452,Renata González Gómez,despensa|pasabocas
+u0453,Manuel Ramírez Reyes,vinos-y-licores|charcuteria
+u0454,Rafael Vargas Rodríguez,bebidas|dulces-y-postres
+u0455,Marta Chávez Martínez,carne-y-pollo|charcuteria
+u0456,Antonella Mendoza Rojas,dulces-y-postres
+u0457,Julia González Gómez,vinos-y-licores
+u0458,Gabriela Cruz Flores,lacteos-huevos-y-refrigerados
+u0459,Martín Díaz Torres,pasabocas|carne-y-pollo|despensa
+u0460,Miguel Chávez Gómez,cuidado-personal
+u0461,Sebastián Díaz García,pasabocas
+u0462,Beatriz Rodríguez López,pescados-y-mariscos
+u0463,Ignacio Ramírez Torres,pasabocas|vinos-y-licores|carne-y-pollo
+u0464,Javier Cruz Díaz,lacteos-huevos-y-refrigerados|pescados-y-mariscos
+u0465,Isabella Vargas Ramírez,vinos-y-licores|carne-y-pollo
+u0466,Mateo Vargas Castro,frutas-y-verduras
+u0467,Sofía López Sánchez,carne-y-pollo|pasabocas
+u0468,Carla Gómez López,vinos-y-licores|frutas-y-verduras|despensa
+u0469,Laura Sánchez Castro,cuidado-personal
+u0470,Benjamín Morales Mendoza,carne-y-pollo|vinos-y-licores
+u0471,Daniel González Ortiz,frutas-y-verduras|vinos-y-licores
+u0472,Renata Vargas Paredes,pasabocas|charcuteria|despensa
+u0473,Beatriz Díaz Flores,pasabocas
+u0474,Claudia Rojas Sánchez,pasabocas
+u0475,Emiliano Torres López,charcuteria
+u0476,Claudia Rodríguez Pérez,despensa|pescados-y-mariscos
+u0477,Camila Gutiérrez García,pescados-y-mariscos
+u0478,Santiago Díaz Mendoza,cuidado-personal|despensa|carne-y-pollo
+u0479,Daniel Sánchez Ortiz,lacteos-huevos-y-refrigerados|carne-y-pollo
+u0480,María Mendoza Paredes,dulces-y-postres
+u0481,Felipe Morales Paredes,charcuteria
+u0482,Andrés Castro Aguilar,lacteos-huevos-y-refrigerados|pescados-y-mariscos|carne-y-pollo
+u0483,Andrea Paredes Martínez,dulces-y-postres|cuidado-personal|frutas-y-verduras
+u0484,Andrés López Gutiérrez,charcuteria
+u0485,Manuel Pérez Reyes,carne-y-pollo
+u0486,Javier Aguilar Vargas,vinos-y-licores
+u0487,Santiago Vargas Mendoza,pescados-y-mariscos
+u0488,Andrea Torres Chávez,pasabocas
+u0489,Sebastián Ramírez González,frutas-y-verduras
+u0490,Laura Mendoza García,dulces-y-postres
+u0491,Martín Gutiérrez Chávez,dulces-y-postres|despensa
+u0492,Claudia Martínez Díaz,carne-y-pollo|despensa|cuidado-personal
+u0493,Renata González Díaz,vinos-y-licores
+u0494,Miguel Ortiz Rojas,dulces-y-postres
+u0495,Emma Reyes Pérez,pasabocas|vinos-y-licores|carne-y-pollo
+u0496,Javier López Paredes,carne-y-pollo|charcuteria|cuidado-personal
+u0497,Gabriela Mendoza Aguilar,carne-y-pollo|vinos-y-licores
+u0498,Gabriela Rivera Flores,cuidado-personal
+u0499,Emiliano Sánchez Aguilar,bebidas|frutas-y-verduras|dulces-y-postres

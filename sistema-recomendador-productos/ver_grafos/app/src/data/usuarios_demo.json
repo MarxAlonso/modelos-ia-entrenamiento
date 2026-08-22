@@ -1,0 +1,397 @@
+{
+  "u0007": {
+    "historial": [
+      {
+        "id": "p4223",
+        "nombre": "Chocolatina Jumbo Maní x10und x170g ",
+        "categoria": "dulces-y-postres",
+        "rating": 4.0
+      },
+      {
+        "id": "p2959",
+        "nombre": "Yacón x 1 kg ",
+        "categoria": "frutas-y-verduras",
+        "rating": 4.0
+      },
+      {
+        "id": "p4769",
+        "nombre": "Snack Tostitos Original 190gr ",
+        "categoria": "pasabocas",
+        "rating": 4.0
+      },
+      {
+        "id": "p4811",
+        "nombre": "Pasabocas Alpina Queso Sopo x23g ",
+        "categoria": "pasabocas",
+        "rating": 4.8
+      },
+      {
+        "id": "p4926",
+        "nombre": "Papas Margarita Receta Clásica Sal x38grs ",
+        "categoria": "pasabocas",
+        "rating": 4.5
+      },
+      {
+        "id": "p1251",
+        "nombre": "Avena Alcaguete en hojuelas grano entero x1000g ",
+        "categoria": "despensa",
+        "rating": 4.2
+      },
+      {
+        "id": "p1142",
+        "nombre": "Endulzante Senza Riopaila x50und x50g ",
+        "categoria": "despensa",
+        "rating": 5.0
+      },
+      {
+        "id": "p2197",
+        "nombre": "Yogurt Alpina melocotón x1750g ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 2.4
+      },
+      {
+        "id": "p2960",
+        "nombre": "Aguacate injerto x unidad ",
+        "categoria": "frutas-y-verduras",
+        "rating": 4.4
+      },
+      {
+        "id": "p1180",
+        "nombre": "Chocolate de mesa Máxima con azúcar tradicional x5",
+        "categoria": "despensa",
+        "rating": 5.0
+      }
+    ],
+    "categorias_preferidas": [
+      {
+        "cat": "pasabocas",
+        "count": 45
+      },
+      {
+        "cat": "dulces-y-postres",
+        "count": 22
+      },
+      {
+        "cat": "despensa",
+        "count": 18
+      }
+    ],
+    "total_compras": 119
+  },
+  "u0100": {
+    "historial": [
+      {
+        "id": "p3456",
+        "nombre": "Carne Pulpa de Cerdo Congelado ",
+        "categoria": "carne-y-pollo",
+        "rating": 4.2
+      },
+      {
+        "id": "p6310",
+        "nombre": "Vino Espumoso Valdivieso Rose x750ml ",
+        "categoria": "vinos-y-licores",
+        "rating": 4.5
+      },
+      {
+        "id": "p7354",
+        "nombre": "Acondicionador Dove Regeneración Extrema x370ml ",
+        "categoria": "cuidado-personal",
+        "rating": 3.6
+      },
+      {
+        "id": "p5997",
+        "nombre": "Vino tinto Morandé reserva cabernet sauvignon x750",
+        "categoria": "vinos-y-licores",
+        "rating": 5.0
+      },
+      {
+        "id": "p3422",
+        "nombre": "Cadera De Búfalo Cuisine&Co x700g ",
+        "categoria": "carne-y-pollo",
+        "rating": 5.0
+      },
+      {
+        "id": "p3363",
+        "nombre": "Carne para Desmechar Premium al Vacio Cuisine & Co",
+        "categoria": "carne-y-pollo",
+        "rating": 4.5
+      },
+      {
+        "id": "p3356",
+        "nombre": "Costilla en bandeja x500gr ",
+        "categoria": "carne-y-pollo",
+        "rating": 4.2
+      },
+      {
+        "id": "p6565",
+        "nombre": "Cerveza corona botella x330ml ",
+        "categoria": "vinos-y-licores",
+        "rating": 4.2
+      },
+      {
+        "id": "p7054",
+        "nombre": "Gaseosa Sprite limón zero 1.5L ",
+        "categoria": "bebidas",
+        "rating": 3.1
+      },
+      {
+        "id": "p3418",
+        "nombre": "Carne para desmechar en bandeja x500gr ",
+        "categoria": "carne-y-pollo",
+        "rating": 4.1
+      }
+    ],
+    "categorias_preferidas": [
+      {
+        "cat": "carne-y-pollo",
+        "count": 55
+      },
+      {
+        "cat": "vinos-y-licores",
+        "count": 31
+      },
+      {
+        "cat": "charcuteria",
+        "count": 14
+      }
+    ],
+    "total_compras": 117
+  },
+  "u0250": {
+    "historial": [
+      {
+        "id": "p4159",
+        "nombre": "Helado en polvo Batilado vainilla en sobre x82g ",
+        "categoria": "dulces-y-postres",
+        "rating": 4.9
+      },
+      {
+        "id": "p3712",
+        "nombre": "Pan Artesano Blanco Bimbo 500g ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.5
+      },
+      {
+        "id": "p4098",
+        "nombre": "Torta moka x 12 Porciones ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.0
+      },
+      {
+        "id": "p5832",
+        "nombre": "Queso La Ratonera El Suizito Semi Duro x200g ",
+        "categoria": "charcuteria",
+        "rating": 3.0
+      },
+      {
+        "id": "p3381",
+        "nombre": "Murillo sin huesos en bandeja x500gr ",
+        "categoria": "carne-y-pollo",
+        "rating": 2.9
+      },
+      {
+        "id": "p6436",
+        "nombre": "Cerveza Stella Artois Botella Sixpack x300ml c-u ",
+        "categoria": "vinos-y-licores",
+        "rating": 3.8
+      },
+      {
+        "id": "p3776",
+        "nombre": "Mogollas Mauka intgrales quinoa amaranto chia x280",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 3.2
+      },
+      {
+        "id": "p4416",
+        "nombre": "Huevo chocolate surtido x 20g ",
+        "categoria": "dulces-y-postres",
+        "rating": 4.7
+      },
+      {
+        "id": "p4264",
+        "nombre": "Chocolate Moments avellana maní x84g ",
+        "categoria": "dulces-y-postres",
+        "rating": 3.9
+      },
+      {
+        "id": "p4612",
+        "nombre": "Mini brownies vitad chocolate sin gluten x 120gr ",
+        "categoria": "dulces-y-postres",
+        "rating": 4.0
+      }
+    ],
+    "categorias_preferidas": [
+      {
+        "cat": "vinos-y-licores",
+        "count": 36
+      },
+      {
+        "cat": "dulces-y-postres",
+        "count": 32
+      },
+      {
+        "cat": "pasabocas",
+        "count": 24
+      }
+    ],
+    "total_compras": 111
+  },
+  "u0300": {
+    "historial": [
+      {
+        "id": "p3190",
+        "nombre": "Palmito De Cangrejo Vitamar x 454g ",
+        "categoria": "pescados-y-mariscos",
+        "rating": 3.1
+      },
+      {
+        "id": "p2886",
+        "nombre": "Guayaba pera x 500gr ",
+        "categoria": "frutas-y-verduras",
+        "rating": 4.4
+      },
+      {
+        "id": "p2876",
+        "nombre": "Banano criollo x 500gr ",
+        "categoria": "frutas-y-verduras",
+        "rating": 4.7
+      },
+      {
+        "id": "p3047",
+        "nombre": "Zumo de Limón Zulimon 600ml ",
+        "categoria": "frutas-y-verduras",
+        "rating": 4.0
+      },
+      {
+        "id": "p4067",
+        "nombre": "Cheese cake fresa x 840g x 8 porciones ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.1
+      },
+      {
+        "id": "p3729",
+        "nombre": "Pan blanco extra largo Santa Clara x 550 g ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.6
+      },
+      {
+        "id": "p3763",
+        "nombre": "Caladitos Mantequilla Sta. Clara x 300 Gr ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.5
+      },
+      {
+        "id": "p2117",
+        "nombre": "Arepas La Sabrosita x5 und x500g ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 3.4
+      },
+      {
+        "id": "p4029",
+        "nombre": "Ponqué Comapan minimagdalena arándanos x80g ",
+        "categoria": "panaderia-y-pasteleria",
+        "rating": 4.6
+      },
+      {
+        "id": "p3032",
+        "nombre": "Zumo de limón Fresstania x250ml ",
+        "categoria": "frutas-y-verduras",
+        "rating": 3.8
+      }
+    ],
+    "categorias_preferidas": [
+      {
+        "cat": "frutas-y-verduras",
+        "count": 47
+      },
+      {
+        "cat": "lacteos-huevos-y-refrigerados",
+        "count": 19
+      },
+      {
+        "cat": "pescados-y-mariscos",
+        "count": 15
+      }
+    ],
+    "total_compras": 101
+  },
+  "u0400": {
+    "historial": [
+      {
+        "id": "p4971",
+        "nombre": "Maní La Especial kraks limón x32g ",
+        "categoria": "pasabocas",
+        "rating": 2.0
+      },
+      {
+        "id": "p2095",
+        "nombre": "Arepas de chócolo La finca x320g ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 4.4
+      },
+      {
+        "id": "p2023",
+        "nombre": "Arepas paisas Don Maíz x5und x350g ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 4.1
+      },
+      {
+        "id": "p0007",
+        "nombre": "Frijol Diana bola roja x500g ",
+        "categoria": "despensa",
+        "rating": 4.7
+      },
+      {
+        "id": "p2427",
+        "nombre": "Yogurt Algarra Surtido x5 Und x150grs ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 4.1
+      },
+      {
+        "id": "p2400",
+        "nombre": "Yogurt Colanta melocotón bolsa x900g ",
+        "categoria": "lacteos-huevos-y-refrigerados",
+        "rating": 5.0
+      },
+      {
+        "id": "p1144",
+        "nombre": "Endulzante Splenda repostería x110g ",
+        "categoria": "despensa",
+        "rating": 4.3
+      },
+      {
+        "id": "p1285",
+        "nombre": "Bolsa Sal Refisal x500grs ",
+        "categoria": "despensa",
+        "rating": 4.3
+      },
+      {
+        "id": "p1043",
+        "nombre": "Azúcar Riopaila blanca x2500g ",
+        "categoria": "despensa",
+        "rating": 4.9
+      },
+      {
+        "id": "p1389",
+        "nombre": "Ajo Mccormick polvo x595g ",
+        "categoria": "despensa",
+        "rating": 3.9
+      }
+    ],
+    "categorias_preferidas": [
+      {
+        "cat": "panaderia-y-pasteleria",
+        "count": 33
+      },
+      {
+        "cat": "dulces-y-postres",
+        "count": 24
+      },
+      {
+        "cat": "lacteos-huevos-y-refrigerados",
+        "count": 21
+      }
+    ],
+    "total_compras": 97
+  }
+}

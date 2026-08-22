@@ -1,0 +1,194 @@
+{
+  "nodes": [
+    {
+      "name": "usuario",
+      "type": "InputLayer"
+    },
+    {
+      "name": "producto",
+      "type": "InputLayer"
+    },
+    {
+      "name": "embedding_usuario",
+      "type": "Embedding"
+    },
+    {
+      "name": "embedding_producto",
+      "type": "Embedding"
+    },
+    {
+      "name": "flatten",
+      "type": "Flatten"
+    },
+    {
+      "name": "flatten_1",
+      "type": "Flatten"
+    },
+    {
+      "name": "concatenar",
+      "type": "Concatenate"
+    },
+    {
+      "name": "oculta_1",
+      "type": "Dense"
+    },
+    {
+      "name": "dropout",
+      "type": "Dropout"
+    },
+    {
+      "name": "contenido_espanol",
+      "type": "InputLayer"
+    },
+    {
+      "name": "interaccion_gmf",
+      "type": "Multiply"
+    },
+    {
+      "name": "oculta_2",
+      "type": "Dense"
+    },
+    {
+      "name": "texto_espanol",
+      "type": "Dense"
+    },
+    {
+      "name": "fusion",
+      "type": "Concatenate"
+    },
+    {
+      "name": "fusion_oculta",
+      "type": "Dense"
+    },
+    {
+      "name": "sesgo_usuario",
+      "type": "Embedding"
+    },
+    {
+      "name": "sesgo_producto",
+      "type": "Embedding"
+    },
+    {
+      "name": "logit",
+      "type": "Dense"
+    },
+    {
+      "name": "flatten_2",
+      "type": "Flatten"
+    },
+    {
+      "name": "flatten_3",
+      "type": "Flatten"
+    },
+    {
+      "name": "sumar_logit",
+      "type": "Add"
+    },
+    {
+      "name": "probabilidad_compra",
+      "type": "Activation"
+    }
+  ],
+  "links": [
+    {
+      "source": "usuario",
+      "target": "embedding_usuario"
+    },
+    {
+      "source": "producto",
+      "target": "embedding_producto"
+    },
+    {
+      "source": "embedding_usuario",
+      "target": "flatten"
+    },
+    {
+      "source": "embedding_producto",
+      "target": "flatten_1"
+    },
+    {
+      "source": "flatten",
+      "target": "concatenar"
+    },
+    {
+      "source": "flatten_1",
+      "target": "concatenar"
+    },
+    {
+      "source": "concatenar",
+      "target": "oculta_1"
+    },
+    {
+      "source": "oculta_1",
+      "target": "dropout"
+    },
+    {
+      "source": "flatten",
+      "target": "interaccion_gmf"
+    },
+    {
+      "source": "flatten_1",
+      "target": "interaccion_gmf"
+    },
+    {
+      "source": "dropout",
+      "target": "oculta_2"
+    },
+    {
+      "source": "contenido_espanol",
+      "target": "texto_espanol"
+    },
+    {
+      "source": "interaccion_gmf",
+      "target": "fusion"
+    },
+    {
+      "source": "oculta_2",
+      "target": "fusion"
+    },
+    {
+      "source": "texto_espanol",
+      "target": "fusion"
+    },
+    {
+      "source": "fusion",
+      "target": "fusion_oculta"
+    },
+    {
+      "source": "usuario",
+      "target": "sesgo_usuario"
+    },
+    {
+      "source": "producto",
+      "target": "sesgo_producto"
+    },
+    {
+      "source": "fusion_oculta",
+      "target": "logit"
+    },
+    {
+      "source": "sesgo_usuario",
+      "target": "flatten_2"
+    },
+    {
+      "source": "sesgo_producto",
+      "target": "flatten_3"
+    },
+    {
+      "source": "logit",
+      "target": "sumar_logit"
+    },
+    {
+      "source": "flatten_2",
+      "target": "sumar_logit"
+    },
+    {
+      "source": "flatten_3",
+      "target": "sumar_logit"
+    },
+    {
+      "source": "sumar_logit",
+      "target": "probabilidad_compra"
+    }
+  ]
+}

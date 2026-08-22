@@ -1,0 +1,28 @@
+{
+  "huella": "07482ebcc497e12f",
+  "ultima_entrenada": "2026-08-22 15:29:06",
+  "p10_vigente": 0.0878,
+  "ciclos": [
+    {
+      "marca": "20260822-152733",
+      "estado": "ok",
+      "p10_antes": 0.091,
+      "p10_nuevo": 0.094,
+      "duracion_s": 92.5
+    },
+    {
+      "marca": "v5_20260822-155928",
+      "estado": "promocionado-manual",
+      "detalle": "fase8 catalogo CLIP ampliado",
+      "p10_nuevo": 0.082
+    },
+    {
+      "marca": "v5_20260822-161800",
+      "estado": "promocionado-manual",
+      "detalle": "fase8 catalogo CLIP ampliado",
+      "p10_nuevo": 0.0878
+    }
+  ],
+  "promociones": 1,
+  "rechazos": 0
+}

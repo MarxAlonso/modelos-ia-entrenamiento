@@ -1,0 +1,26 @@
+{
+  "name": "recomendador-3d",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "generar": "cd .. && ..\\..\\venv\\Scripts\\python.exe generar_grafos_3d.py --json"
+  },
+  "dependencies": {
+    "plotly.js": "^3.7.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-force-graph-3d": "^1.29.1",
+    "react-plotly.js": "^4.1.0",
+    "three": "^0.170.0",
+    "three-spritetext": "^1.8.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@vitejs/plugin-react": "^4.5.2",
+    "vite": "^6.3.5"
+  }
+}

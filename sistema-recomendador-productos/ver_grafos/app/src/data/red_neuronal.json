@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "name": "usuario",
+      "type": "InputLayer",
+      "torre": "user"
+    },
+    {
+      "name": "producto",
+      "type": "InputLayer",
+      "torre": "item"
+    },
+    {
+      "name": "emb_usuario",
+      "type": "Embedding",
+      "torre": "fusion"
+    },
+    {
+      "name": "emb_producto",
+      "type": "Embedding",
+      "torre": "fusion"
+    },
+    {
+      "name": "flatten",
+      "type": "Flatten",
+      "torre": "fusion"
+    },
+    {
+      "name": "perfil_cats",
+      "type": "InputLayer",
+      "torre": "user"
+    },
+    {
+      "name": "stats_historial",
+      "type": "InputLayer",
+      "torre": "user"
+    },
+    {
+      "name": "flatten_1",
+      "type": "Flatten",
+      "torre": "fusion"
+    },
+    {
+      "name": "cat_onehot",
+      "type": "InputLayer",
+      "torre": "item"
+    },
+    {
+      "name": "word2vec",
+      "type": "InputLayer",
+      "torre": "item"
+    },
+    {
+      "name": "concatenate",
+      "type": "Concatenate",
+      "torre": "fusion"
+    },
+    {
+      "name": "concatenate_1",
+      "type": "Concatenate",
+      "torre": "fusion"
+    },
+    {
+      "name": "torre_user_d1",
+      "type": "Dense",
+      "torre": "user"
+    },
+    {
+      "name": "torre_item_d1",
+      "type": "Dense",
+      "torre": "item"
+    },
+    {
+      "name": "torre_user_d2",
+      "type": "Dense",
+      "torre": "user"
+    },
+    {
+      "name": "torre_item_d2",
+      "type": "Dense",
+      "torre": "item"
+    },
+    {
+      "name": "lambda",
+      "type": "Lambda",
+      "torre": "fusion"
+    },
+    {
+      "name": "lambda_1",
+      "type": "Lambda",
+      "torre": "fusion"
+    },
+    {
+      "name": "dot",
+      "type": "Dot",
+      "torre": "fusion"
+    }
+  ],
+  "links": [
+    {
+      "source": "usuario",
+      "target": "emb_usuario"
+    },
+    {
+      "source": "producto",
+      "target": "emb_producto"
+    },
+    {
+      "source": "emb_usuario",
+      "target": "flatten"
+    },
+    {
+      "source": "emb_producto",
+      "target": "flatten_1"
+    },
+    {
+      "source": "flatten",
+      "target": "concatenate"
+    },
+    {
+      "source": "perfil_cats",
+      "target": "concatenate"
+    },
+    {
+      "source": "stats_historial",
+      "target": "concatenate"
+    },
+    {
+      "source": "flatten_1",
+      "target": "concatenate_1"
+    },
+    {
+      "source": "cat_onehot",
+      "target": "concatenate_1"
+    },
+    {
+      "source": "word2vec",
+      "target": "concatenate_1"
+    },
+    {
+      "source": "concatenate",
+      "target": "torre_user_d1"
+    },
+    {
+      "source": "concatenate_1",
+      "target": "torre_item_d1"
+    },
+    {
+      "source": "torre_user_d1",
+      "target": "torre_user_d2"
+    },
+    {
+      "source": "torre_item_d1",
+      "target": "torre_item_d2"
+    },
+    {
+      "source": "torre_user_d2",
+      "target": "lambda"
+    },
+    {
+      "source": "torre_item_d2",
+      "target": "lambda_1"
+    },
+    {
+      "source": "lambda",
+      "target": "dot"
+    },
+    {
+      "source": "lambda_1",
+      "target": "dot"
+    }
+  ]
+}

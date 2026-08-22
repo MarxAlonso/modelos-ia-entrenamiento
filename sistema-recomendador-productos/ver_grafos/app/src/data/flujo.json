@@ -1,0 +1,45 @@
+{
+  "pasos": [
+    {
+      "pos": 1.1,
+      "titulo": "DATOS\nusuarios - productos - reseñas",
+      "color_fondo": "#e2e8f0",
+      "color_texto": "#334155"
+    },
+    {
+      "pos": 3.2,
+      "titulo": "EMBEDDINGS NLP\nSentence-BERT 384D + Word2Vec\nText Embedding reseñas ≥4★",
+      "color_fondo": "#ddd6fe",
+      "color_texto": "#4c1d95"
+    },
+    {
+      "pos": 5.3,
+      "titulo": "MODELOS DL/GNN\nTwo-Tower · LightGCN · NCF",
+      "color_fondo": "#dbeafe",
+      "color_texto": "#1e3a8a"
+    },
+    {
+      "pos": 7.4,
+      "titulo": "HÍBRIDO V4\nTT 0.3 · GNN 0.1 · NCF 0.25\nKNN 0.15 · NLP 0.2",
+      "color_fondo": "#fef3c7",
+      "color_texto": "#78350f"
+    },
+    {
+      "pos": 9.5,
+      "titulo": "RANKING FINAL\n(excluye comprados)",
+      "color_fondo": "#d1fae5",
+      "color_texto": "#064e3b"
+    },
+    {
+      "pos": 11.4,
+      "titulo": "TOP-10\nP@10=0.0940\nCatPrec=96.2%",
+      "color_fondo": "#fee2e2",
+      "color_texto": "#7f1d1d"
+    }
+  ],
+  "resultado": {
+    "precision_categoria": 0.9618,
+    "hitrate": 1.0,
+    "precision_producto": 0.094
+  }
+}
