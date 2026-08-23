@@ -106,3 +106,5 @@ El desglose por componente muestra el funcionamiento interno, p. ej. para u0100:
 - [x] Híbrido superior a todos los modelos individuales en datos no vistos
 - [x] Función `recomendar()` operativa con desglose explicable por componente
 - [x] Proyecto completo documentado de extremo a extremo
+
+> **Extensión posterior:** el híbrido fue ampliado a 4 motores con Word2Vec semántico (`S_w2v`) y reevaluado con datos regenerados. Ver [08-fase-word2vec-spacy.md](08-fase-word2vec-spacy.md). Las cifras de esta página corresponden al snapshot original de datos (25 854 compras · 6557 productos) y no son comparables con la extensión.

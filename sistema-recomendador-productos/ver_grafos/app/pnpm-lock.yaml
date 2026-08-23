@@ -20,6 +20,9 @@ importers:
       react-force-graph-3d:
         specifier: ^1.29.1
         version: 1.29.1(react@19.2.8)
+      react-icons:
+        specifier: ^5.7.0
+        version: 5.7.0(react@19.2.8)
       react-plotly.js:
         specifier: ^4.1.0
         version: 4.1.0(plotly.js@3.7.0(mapbox-gl@1.13.3))(react@19.2.8)
@@ -1377,6 +1380,11 @@ packages:
   react-force-graph-3d@1.29.1:
     resolution: {integrity: sha512-5Vp+PGpYnO+zLwgK2NvNqdXHvsWLrFzpDfJW1vUA1twjo9SPvXqfUYQrnRmAbD+K2tOxkZw1BkbH31l5b4TWHg==}
     engines: {node: '>=12'}
+    peerDependencies:
+      react: '*'
+
+  react-icons@5.7.0:
+    resolution: {integrity: sha512-LBLy340Rzqy6+/yVhZKT3B/QpP1BZaesGqasf09HPOBzRarcDIFH0WwXlXQfE7q7ipxK4MSiC5DIBWURCny6fw==}
     peerDependencies:
       react: '*'
 
@@ -3060,6 +3068,10 @@ snapshots:
       react-kapsule: 2.6.0(react@19.2.8)
     transitivePeerDependencies:
       - preact-render-to-string
+
+  react-icons@5.7.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   react-is@16.13.1: {}
 

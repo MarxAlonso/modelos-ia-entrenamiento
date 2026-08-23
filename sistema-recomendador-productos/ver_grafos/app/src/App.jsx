@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  FaBrain, FaCube, FaCircleNodes, FaBullseye,
+  FaChartColumn, FaUser, FaMapLocationDot, FaBolt,
+} from "react-icons/fa6";
 import RedNeuronal3D from "./components/RedNeuronal3D.jsx";
 import EspacioLatente from "./components/EspacioLatente.jsx";
 import UsuariosCategorias3D from "./components/UsuariosCategorias3D.jsx";
@@ -9,14 +13,14 @@ import UsuariosDemo from "./components/UsuariosDemo.jsx";
 import ConsultarRecomendaciones from "./components/ConsultarRecomendaciones.jsx";
 
 const GRAFOS = [
-  { id: "red3d", label: "Red Neuronal 3D (Torre Doble)", icon: "🧠", grupo: "3d" },
-  { id: "espacio", label: "Espacio Latente 3D", icon: "🌌", grupo: "3d" },
-  { id: "uc3d", label: "Grafo Usuario-Producto", icon: "🔗", grupo: "3d" },
-  { id: "consultar", label: "Consultar Recomendaciones", icon: "🎯", grupo: "analisis" },
-  { id: "metricas", label: "Métricas de Modelos", icon: "📊", grupo: "analisis" },
-  { id: "usuarios", label: "Perfiles de Usuarios", icon: "👤", grupo: "analisis" },
-  { id: "afinidad", label: "Afinidad Categorías", icon: "🗺️", grupo: "analisis" },
-  { id: "flujo", label: "Flujo del Híbrido", icon: "⚡", grupo: "analisis" },
+  { id: "red3d", label: "Red Neuronal 3D (Torre Doble)", icon: FaBrain, grupo: "3d" },
+  { id: "espacio", label: "Espacio Latente 3D", icon: FaCube, grupo: "3d" },
+  { id: "uc3d", label: "Grafo Usuario-Producto", icon: FaCircleNodes, grupo: "3d" },
+  { id: "consultar", label: "Consultar Recomendaciones", icon: FaBullseye, grupo: "analisis" },
+  { id: "metricas", label: "Métricas de Modelos", icon: FaChartColumn, grupo: "analisis" },
+  { id: "usuarios", label: "Perfiles de Usuarios", icon: FaUser, grupo: "analisis" },
+  { id: "afinidad", label: "Afinidad Categorías", icon: FaMapLocationDot, grupo: "analisis" },
+  { id: "flujo", label: "Flujo del Híbrido", icon: FaBolt, grupo: "analisis" },
 ];
 
 export default function App() {
@@ -61,7 +65,7 @@ export default function App() {
                 textAlign: "left",
                 borderLeft: activo === g.id ? "3px solid #38bdf8" : "3px solid transparent",
               }}>
-                <span>{g.icon}</span> {g.label}
+                <g.icon size={14} style={{ flexShrink: 0 }} /> {g.label}
               </button>
             ))}
           </div>

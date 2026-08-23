@@ -1,0 +1,10 @@
+{
+  "parametros": 632852,
+  "pasos": 5000,
+  "perdida_final": 1.544,
+  "perplejidad": 4.68,
+  "contexto": 96,
+  "vocabulario": 147,
+  "caracteres_corpus": 7028665,
+  "duracion_s": 399.3
+}

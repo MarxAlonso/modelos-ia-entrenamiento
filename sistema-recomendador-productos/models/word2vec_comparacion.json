@@ -1,0 +1,16 @@
+{
+  "ventana": 5,
+  "dimension": 100,
+  "epocas": 40,
+  "ganador": "skipgram",
+  "cbow": {
+    "pares": 0.442,
+    "coherencia": 0.7996,
+    "puntaje": 0.6208
+  },
+  "skipgram": {
+    "pares": 0.436,
+    "coherencia": 0.8433,
+    "puntaje": 0.6396
+  }
+}

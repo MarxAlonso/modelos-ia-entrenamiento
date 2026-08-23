@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { FaStar } from "react-icons/fa6";
+import ChatRecomendaciones from "./ChatRecomendaciones.jsx";
 
 const COMPONENTES = [
   { id: "two_tower", label: "Two-Tower", color: "#38bdf8" },
@@ -93,9 +95,11 @@ export default function ConsultarRecomendaciones() {
                   </span>
                   <span style={{
                     color: h.rating >= 4 ? "#22c55e" : h.rating >= 3 ? "#f59e0b" : "#ef4444",
-                    flexShrink: 0,
+                    display: "inline-flex", gap: 1, flexShrink: 0, alignItems: "center",
                   }}>
-                    {"★".repeat(Math.round(h.rating))}
+                    {Array.from({ length: Math.round(h.rating) }).map((_, i) => (
+                      <FaStar key={i} size={10} />
+                    ))}
                   </span>
                 </div>
               </div>
@@ -162,6 +166,11 @@ export default function ConsultarRecomendaciones() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Chat con el asistente (mini-GPT afinado + motor hibrido) */}
+      <div style={{ marginTop: 16 }}>
+        <ChatRecomendaciones uid={uid} nombre={u.nombre} />
       </div>
     </div>
   );

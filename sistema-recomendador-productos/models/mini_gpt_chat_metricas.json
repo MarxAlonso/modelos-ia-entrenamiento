@@ -1,0 +1,21 @@
+{
+  "parametros": 4157588,
+  "bloques": 6,
+  "d_modelo": 256,
+  "cabezas": 8,
+  "ffn": 768,
+  "contexto": 512,
+  "vocabulario": 147,
+  "pasos_base": 900,
+  "pasos_sft": 4000,
+  "parejas_qa": 12399,
+  "perdida_base": null,
+  "perdida_sft": 0.1824,
+  "perplejidad_sft": 1.2,
+  "duracion_total_s": 928.5,
+  "formato": {
+    "pregunta": "### Pregunta: ",
+    "contexto": "\n### Contexto: ",
+    "respuesta": "\n### Respuesta: "
+  }
+}

@@ -8,3 +8,22 @@ __pycache__/
 sistema-recomendador-productos/data/raw_amazon/
 sistema-recomendador-productos/data/amazon/resenas.csv
 sistema-recomendador-productos/data/amazon/productos.csv
+
+# Builds regenerables
+dist/
+
+# Logs
+*.log
+
+# Notebooks temporales / basura
+Untitled.ipynb
+
+# Entornos virtuales alternativos y caches de herramientas
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

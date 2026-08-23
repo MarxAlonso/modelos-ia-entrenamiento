@@ -65,18 +65,18 @@
     "categorias_preferidas": [
       {
         "cat": "pasabocas",
-        "count": 45
+        "count": 53
       },
       {
-        "cat": "dulces-y-postres",
-        "count": 22
+        "cat": "frutas-y-verduras",
+        "count": 28
       },
       {
         "cat": "despensa",
-        "count": 18
+        "count": 27
       }
     ],
-    "total_compras": 119
+    "total_compras": 159
   },
   "u0100": {
     "historial": [
@@ -144,18 +144,18 @@
     "categorias_preferidas": [
       {
         "cat": "carne-y-pollo",
-        "count": 55
+        "count": 65
       },
       {
         "cat": "vinos-y-licores",
-        "count": 31
+        "count": 49
       },
       {
         "cat": "charcuteria",
         "count": 14
       }
     ],
-    "total_compras": 117
+    "total_compras": 149
   },
   "u0250": {
     "historial": [
@@ -223,18 +223,18 @@
     "categorias_preferidas": [
       {
         "cat": "vinos-y-licores",
-        "count": 36
+        "count": 48
       },
       {
         "cat": "dulces-y-postres",
-        "count": 32
+        "count": 42
       },
       {
         "cat": "pasabocas",
         "count": 24
       }
     ],
-    "total_compras": 111
+    "total_compras": 142
   },
   "u0300": {
     "historial": [
@@ -302,18 +302,18 @@
     "categorias_preferidas": [
       {
         "cat": "frutas-y-verduras",
-        "count": 47
+        "count": 58
+      },
+      {
+        "cat": "panaderia-y-pasteleria",
+        "count": 26
       },
       {
         "cat": "lacteos-huevos-y-refrigerados",
-        "count": 19
-      },
-      {
-        "cat": "pescados-y-mariscos",
-        "count": 15
+        "count": 20
       }
     ],
-    "total_compras": 101
+    "total_compras": 131
   },
   "u0400": {
     "historial": [
@@ -380,18 +380,18 @@
     ],
     "categorias_preferidas": [
       {
-        "cat": "panaderia-y-pasteleria",
-        "count": 33
-      },
-      {
-        "cat": "dulces-y-postres",
-        "count": 24
-      },
-      {
         "cat": "lacteos-huevos-y-refrigerados",
-        "count": 21
+        "count": 40
+      },
+      {
+        "cat": "despensa",
+        "count": 35
+      },
+      {
+        "cat": "panaderia-y-pasteleria",
+        "count": 34
       }
     ],
-    "total_compras": 97
+    "total_compras": 142
   }
 }

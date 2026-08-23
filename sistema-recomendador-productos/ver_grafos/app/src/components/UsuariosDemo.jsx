@@ -104,7 +104,7 @@ export default function UsuariosDemo() {
             <Plot
               data={[{
                 type: "pie",
-                labels: ["5★", "4★", "3★", "2★", "1★"],
+                labels: ["5", "4", "3", "2", "1"],
                 values: [
                   usuario.historial.filter(p => p.rating >= 4.5).length,
                   usuario.historial.filter(p => p.rating >= 3.5 && p.rating < 4.5).length,
