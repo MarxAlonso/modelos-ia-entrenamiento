@@ -1,0 +1,96 @@
+{
+  "version": "v001",
+  "fecha": "2026-08-23T19:10:38",
+  "arquitectura": "cnn_propia",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v001",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": null,
+    "arquitectura": "cnn_propia",
+    "capas_descongeladas": null,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 25,
+    "epochs_reales": 6,
+    "learning_rate": 0.001,
+    "dropout": 0.5,
+    "loss": "binary_crossentropy",
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 1.937,
+      "1": 0.674
+    },
+    "early_stopping": {
+      "monitor": "val_recall",
+      "mode": "max",
+      "patience": 5
+    },
+    "semilla": 42,
+    "notas": "Primera version: CNN basica del mapa original, baseline de referencia."
+  },
+  "tiempo_entrenamiento_min": 13.7,
+  "mejor_epoca": 5,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.5705,
+    "precision_pneumonia": 0.6393,
+    "recall_pneumonia": 0.7179,
+    "f1_pneumonia": 0.6763,
+    "precision_normal": 0.4086,
+    "recall_normal": 0.3248,
+    "f1_normal": 0.3619,
+    "f1_macro": 0.5191,
+    "roc_auc": 0.5785,
+    "matriz": {
+      "TN": 76,
+      "FP": 158,
+      "FN": 110,
+      "TP": 280
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 1.36
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 0.12,
+      "reduccion_vs_fp32": 11.1,
+      "accuracy": 0.5705,
+      "f1_macro": 0.5191,
+      "recall_pneumonia": 0.7179,
+      "roc_auc": 0.5786,
+      "matriz": {
+        "TN": 76,
+        "FP": 158,
+        "FN": 110,
+        "TP": 280
+      },
+      "latencia_ms": 7.98
+    },
+    "int8": {
+      "tamano_mb": 0.12,
+      "reduccion_vs_fp32": 10.9,
+      "imagenes_representativas": 200,
+      "accuracy": 0.5673,
+      "f1_macro": 0.512,
+      "recall_pneumonia": 0.7231,
+      "roc_auc": 0.5821,
+      "matriz": {
+        "TN": 72,
+        "FP": 162,
+        "FN": 108,
+        "TP": 282
+      },
+      "latencia_ms": 7.01
+    }
+  }
+}

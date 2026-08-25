@@ -1,0 +1,86 @@
+{
+  "dataset": "v2_nih_chest_xray14",
+  "origen": "arudaev/chest-xray-14-320",
+  "fuente_original": "NIH Clinical Center ChestX-ray14 (Wang et al., CVPR 2017)",
+  "total_imagenes": 112120,
+  "conteo_por_split": {
+    "train": 77967,
+    "validation": 8557,
+    "test": 25596
+  },
+  "frecuencia_hallazgos": {
+    "No Finding": 60361,
+    "Infiltration": 19894,
+    "Effusion": 13317,
+    "Atelectasis": 11559,
+    "Nodule": 6331,
+    "Mass": 5782,
+    "Pneumothorax": 5302,
+    "Consolidation": 4667,
+    "Pleural_Thickening": 3385,
+    "Cardiomegaly": 2776,
+    "Emphysema": 2516,
+    "Edema": 2303,
+    "Fibrosis": 1686,
+    "Pneumonia": 1431,
+    "Hernia": 227
+  },
+  "top10_combinaciones": {
+    "No Finding": 60361,
+    "Infiltration": 9547,
+    "Atelectasis": 4215,
+    "Effusion": 3955,
+    "Nodule": 2705,
+    "Pneumothorax": 2194,
+    "Mass": 2139,
+    "Effusion|Infiltration": 1603,
+    "Atelectasis|Infiltration": 1350,
+    "Consolidation": 1310
+  },
+  "mapeo_binario": {
+    "test": {
+      "EXCLUIDA": 15180,
+      "NORMAL": 9861,
+      "PNEUMONIA": 555
+    },
+    "train": {
+      "EXCLUIDA": 31645,
+      "NORMAL": 45544,
+      "PNEUMONIA": 778
+    },
+    "validation": {
+      "EXCLUIDA": 3503,
+      "NORMAL": 4956,
+      "PNEUMONIA": 98
+    }
+  },
+  "pacientes": {
+    "unicos": 30805,
+    "imagenes_por_paciente_media": 3.64,
+    "max": 184,
+    "pacientes_compartidos_entre_splits": {
+      "train": 4571,
+      "validation": 4571,
+      "test": 0
+    }
+  },
+  "integridad_muestra": {
+    "muestreadas": 3000,
+    "danadas": 0,
+    "resolucion": {
+      "min_ancho": 320,
+      "max_ancho": 320,
+      "min_alto": 320,
+      "max_alto": 320
+    },
+    "modos_color": {
+      "RGB": 3000
+    }
+  },
+  "implicaciones_entrenamiento": [
+    "Tarea binaria estricta: solo No Finding->NORMAL y *Pneumonia*->PNEUMONIA",
+    "Se excluyen 50328 imágenes con otros hallazgos (documentado)",
+    "Split oficial ya es patient-wise: verificar cruce==0 arriba antes de confiar",
+    "Dominio ADULTO: no mezclar ingenuamente con v1 pediatrico sin evaluar shift"
+  ]
+}

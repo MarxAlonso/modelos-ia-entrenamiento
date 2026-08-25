@@ -1,0 +1,97 @@
+{
+  "version": "v002",
+  "fecha": "2026-08-23T20:43:11",
+  "arquitectura": "cnn_propia",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v002",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": null,
+    "arquitectura": "cnn_propia",
+    "capas_descongeladas": null,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 35,
+    "epochs_reales": 35,
+    "learning_rate": 0.001,
+    "dropout": 0.5,
+    "loss": "binary_crossentropy",
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 1.937,
+      "1": 0.674
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 8
+    },
+    "reduce_lr": true,
+    "semilla": 42,
+    "notas": "Misma CNN que v001; early stopping corregido (val_auc, patience 8), ReduceLROnPlateau y epochs 35. Aisla el efecto de la calibracion de parada."
+  },
+  "tiempo_entrenamiento_min": 83.7,
+  "mejor_epoca": 17,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.8077,
+    "precision_pneumonia": 0.8902,
+    "recall_pneumonia": 0.7897,
+    "f1_pneumonia": 0.837,
+    "precision_normal": 0.705,
+    "recall_normal": 0.8376,
+    "f1_normal": 0.7656,
+    "f1_macro": 0.8013,
+    "roc_auc": 0.8906,
+    "matriz": {
+      "TN": 196,
+      "FP": 38,
+      "FN": 82,
+      "TP": 308
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 1.36
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 0.12,
+      "reduccion_vs_fp32": 11.1,
+      "accuracy": 0.8189,
+      "f1_macro": 0.8121,
+      "recall_pneumonia": 0.8077,
+      "roc_auc": 0.8898,
+      "matriz": {
+        "TN": 196,
+        "FP": 38,
+        "FN": 75,
+        "TP": 315
+      },
+      "latencia_ms": 11.51
+    },
+    "int8": {
+      "tamano_mb": 0.12,
+      "reduccion_vs_fp32": 10.9,
+      "imagenes_representativas": 200,
+      "accuracy": 0.8109,
+      "f1_macro": 0.8039,
+      "recall_pneumonia": 0.8,
+      "roc_auc": 0.8941,
+      "matriz": {
+        "TN": 194,
+        "FP": 40,
+        "FN": 78,
+        "TP": 312
+      },
+      "latencia_ms": 11.39
+    }
+  }
+}

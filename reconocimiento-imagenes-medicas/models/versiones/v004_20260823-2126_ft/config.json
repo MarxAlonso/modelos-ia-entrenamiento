@@ -1,0 +1,37 @@
+{
+  "version": "v004",
+  "dataset": "v1_kaggle_chest_xray",
+  "manifiesto": "data/manifiestos/v1_splits.csv",
+  "base_anterior": "v003_20260823-2049_mobilenetv2_fe",
+  "arquitectura": "mobilenetv2_1.00_224_finetuning",
+  "base_imagenet": "mobilenetv2",
+  "capas_descongeladas": 30,
+  "batchnorm_congeladas": true,
+  "img_size": [
+    224,
+    224
+  ],
+  "batch_size": 32,
+  "epochs": 10,
+  "epochs_reales": 10,
+  "learning_rate_fine_tuning": 1e-05,
+  "loss": "binary_crossentropy",
+  "normalizacion": "mobilenetv2",
+  "augmentacion": [
+    "rotation_5deg",
+    "zoom_10",
+    "translation_10",
+    "contrast_8"
+  ],
+  "class_weights": {
+    "0": 1.937,
+    "1": 0.674
+  },
+  "early_stopping": {
+    "monitor": "val_auc",
+    "mode": "max",
+    "patience": 4
+  },
+  "semilla": 42,
+  "notas": "Fine tuning de v003: ultimas 30 capas de MobileNetV2 descongeladas (BN congeladas), lr 1e-5. Objetivo: subir recall_normal manteniendo recall_pneumonia."
+}

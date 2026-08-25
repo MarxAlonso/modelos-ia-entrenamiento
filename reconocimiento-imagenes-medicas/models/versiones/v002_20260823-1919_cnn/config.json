@@ -1,0 +1,36 @@
+{
+  "version": "v002",
+  "dataset": "v1_kaggle_chest_xray",
+  "manifiesto": "data/manifiestos/v1_splits.csv",
+  "base_anterior": null,
+  "arquitectura": "cnn_propia",
+  "capas_descongeladas": null,
+  "img_size": [
+    224,
+    224
+  ],
+  "batch_size": 32,
+  "epochs": 35,
+  "epochs_reales": 35,
+  "learning_rate": 0.001,
+  "dropout": 0.5,
+  "loss": "binary_crossentropy",
+  "augmentacion": [
+    "rotation_5deg",
+    "zoom_10",
+    "translation_10",
+    "contrast_8"
+  ],
+  "class_weights": {
+    "0": 1.937,
+    "1": 0.674
+  },
+  "early_stopping": {
+    "monitor": "val_auc",
+    "mode": "max",
+    "patience": 8
+  },
+  "reduce_lr": true,
+  "semilla": 42,
+  "notas": "Misma CNN que v001; early stopping corregido (val_auc, patience 8), ReduceLROnPlateau y epochs 35. Aisla el efecto de la calibracion de parada."
+}

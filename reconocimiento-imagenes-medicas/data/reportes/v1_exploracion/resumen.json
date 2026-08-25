@@ -1,0 +1,51 @@
+{
+  "dataset": "v1_kaggle_chest_xray",
+  "origen": "hf-vision/chest-xray-pneumonia (Kermany et al., 2018 — Mendeley rscbjbr9sj v2)",
+  "total_imagenes": 5856,
+  "conteo_por_split": {
+    "train": {
+      "NORMAL": 1341,
+      "PNEUMONIA": 3875
+    },
+    "validation": {
+      "NORMAL": 8,
+      "PNEUMONIA": 8
+    },
+    "test": {
+      "NORMAL": 234,
+      "PNEUMONIA": 390
+    }
+  },
+  "proporcion_train_NORMAL_vs_PNEUMONIA": 2.89,
+  "modos_color": {
+    "L": 5573,
+    "RGB": 283
+  },
+  "resolucion_min": {
+    "ancho": 384,
+    "alto": 127
+  },
+  "resolucion_max": {
+    "ancho": 2916,
+    "alto": 2713
+  },
+  "resolucion_media": {
+    "ancho": 1328,
+    "alto": 971
+  },
+  "imagenes_danadas": [],
+  "duplicados_totales_md5": 32,
+  "ubicaciones_de_duplicados": [
+    "test/NORMAL",
+    "test/PNEUMONIA",
+    "train/NORMAL",
+    "train/PNEUMONIA"
+  ],
+  "md5_distintos_compartidos_entre_train_y_test": 0,
+  "imagenes_en_train_o_val_que_existen_tambien_en_test": 0,
+  "implicaciones_entrenamiento": [
+    "Desbalance ~2.9:1 en train -> usar class_weights en todas las versiones",
+    "validation oficial solo tiene 16 imagenes -> regenerar splits propios con manifiesto fijo",
+    "Fuga real train/test: 0 imagenes repetidas -> deduplicar antes de fijar el manifiesto"
+  ]
+}

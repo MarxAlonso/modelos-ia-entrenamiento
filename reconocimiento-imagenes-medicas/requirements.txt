@@ -1,0 +1,14 @@
+# Entorno probado en esta laptop (Python 3.12, Windows nativo, CPU + oneDNN)
+# Versiones clavadas para reproducibilidad
+tensorflow==2.21.0
+numpy==2.5.2
+pandas==3.0.5
+scikit-learn==1.9.0
+matplotlib==3.11.1
+seaborn==0.13.2
+Pillow>=11.0
+opencv-python>=4.10
+tensorboard>=2.21
+huggingface_hub>=0.30
+pyarrow>=18.0
+kagglehub>=0.3

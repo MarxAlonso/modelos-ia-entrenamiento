@@ -1,0 +1,101 @@
+{
+  "version": "v006",
+  "fecha": "2026-08-25T14:26:24",
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v006",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": null,
+    "arquitectura": "mobilenetv2_feature_extraction",
+    "base_imagenet": "mobilenetv2",
+    "base_congelada": true,
+    "capas_descongeladas": 0,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 20,
+    "epochs_reales": 14,
+    "learning_rate": 0.001,
+    "dropout_cabeza": 0.3,
+    "loss": "binary_crossentropy",
+    "normalizacion": "mobilenetv2",
+    "recorte_borde_px": 24,
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 1.937,
+      "1": 0.674
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 6
+    },
+    "reduce_lr": true,
+    "semilla": 42,
+    "notas": "Experimento de control tras Grad-CAM: recorte de 24px por borde para eliminar marcadores/texto. Receta identica a v003 en lo demas. Pregunta: dependia el modelo de artefactos de placa?"
+  },
+  "tiempo_entrenamiento_min": 22.2,
+  "mejor_epoca": 3,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.859,
+    "precision_pneumonia": 0.8199,
+    "recall_pneumonia": 0.9923,
+    "f1_pneumonia": 0.8979,
+    "precision_normal": 0.9803,
+    "recall_normal": 0.6368,
+    "f1_normal": 0.772,
+    "f1_macro": 0.835,
+    "roc_auc": 0.963,
+    "matriz": {
+      "TN": 149,
+      "FP": 85,
+      "FN": 3,
+      "TP": 387
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 11.6
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 4.3,
+      "accuracy": 0.883,
+      "f1_macro": 0.8689,
+      "recall_pneumonia": 0.9692,
+      "roc_auc": 0.9592,
+      "matriz": {
+        "TN": 173,
+        "FP": 61,
+        "FN": 12,
+        "TP": 378
+      },
+      "latencia_ms": 56.85
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 4.0,
+      "imagenes_representativas": 200,
+      "accuracy": 0.867,
+      "f1_macro": 0.8467,
+      "recall_pneumonia": 0.9846,
+      "roc_auc": 0.9528,
+      "matriz": {
+        "TN": 157,
+        "FP": 77,
+        "FN": 6,
+        "TP": 384
+      },
+      "latencia_ms": 7.49
+    }
+  }
+}

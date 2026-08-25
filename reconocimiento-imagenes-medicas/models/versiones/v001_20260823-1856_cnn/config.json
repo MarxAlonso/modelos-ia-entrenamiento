@@ -1,0 +1,35 @@
+{
+  "version": "v001",
+  "dataset": "v1_kaggle_chest_xray",
+  "manifiesto": "data/manifiestos/v1_splits.csv",
+  "base_anterior": null,
+  "arquitectura": "cnn_propia",
+  "capas_descongeladas": null,
+  "img_size": [
+    224,
+    224
+  ],
+  "batch_size": 32,
+  "epochs": 25,
+  "epochs_reales": 6,
+  "learning_rate": 0.001,
+  "dropout": 0.5,
+  "loss": "binary_crossentropy",
+  "augmentacion": [
+    "rotation_5deg",
+    "zoom_10",
+    "translation_10",
+    "contrast_8"
+  ],
+  "class_weights": {
+    "0": 1.937,
+    "1": 0.674
+  },
+  "early_stopping": {
+    "monitor": "val_recall",
+    "mode": "max",
+    "patience": 5
+  },
+  "semilla": 42,
+  "notas": "Primera version: CNN basica del mapa original, baseline de referencia."
+}

@@ -1,0 +1,146 @@
+---
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
+interface Props { titulo: string; }
+const { titulo } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo} · Rayos-X Lab</title>
+    <style is:global>
+      :root {
+        --fondo: #0b0e13;
+        --panel: #12161d;
+        --panel-2: #171c25;
+        --regla: #232a35;
+        --tinta: #d7dee8;
+        --tinta-2: #7c8794;
+        --v1: #4fd1c5;
+        --v2: #e8b44a;
+        --vigente: #58c97b;
+        --apagado: #55606c;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+        --display: "Space Grotesk", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { background: var(--fondo); color-scheme: dark; }
+      body {
+        margin: 0; font-family: var(--display); color: var(--tinta);
+        font-size: 15px; line-height: 1.55;
+        background:
+          radial-gradient(1200px 500px at 50% -10%, #131924 0%, transparent 60%),
+          var(--fondo);
+        min-height: 100vh;
+      }
+      a { color: inherit; text-decoration: none; }
+      :focus-visible { outline: 2px solid var(--v1); outline-offset: 2px; border-radius: 2px; }
+
+      .marco { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+      header.barra {
+        border-bottom: 1px solid var(--regla);
+        position: sticky; top: 0; z-index: 10;
+        backdrop-filter: blur(6px); background: color-mix(in srgb, var(--fondo) 82%, transparent);
+      }
+      header.barra .marco { display: flex; align-items: center; gap: 22px; height: 54px; }
+      .logotipo { font-family: var(--mono); font-size: 12.5px; letter-spacing: .14em; color: var(--tinta); white-space: nowrap; }
+      .logotipo b { color: var(--v1); font-weight: 500; }
+      nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+      nav a {
+        font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em;
+        color: var(--tinta-2); padding: 6px 10px; border-radius: 3px;
+      }
+      nav a[aria-current="page"] { color: var(--tinta); background: var(--panel-2); }
+      nav a:hover { color: var(--tinta); }
+
+      main.marco { padding: 34px 20px 60px; }
+
+      .ceja {
+        font-family: var(--mono); font-size: 10.5px; letter-spacing: .22em;
+        text-transform: uppercase; color: var(--tinta-2); margin: 0 0 6px;
+      }
+      h1 { font-weight: 700; font-size: clamp(26px, 4vw, 38px); letter-spacing: -.01em; margin: 0 0 8px; }
+      h2 { font-size: 17px; font-weight: 700; letter-spacing: .01em; margin: 0 0 14px; }
+      .bajada { color: var(--tinta-2); max-width: 62ch; margin: 0; }
+
+      .panel {
+        background: linear-gradient(180deg, var(--panel) 0%, #10141b 100%);
+        border: 1px solid var(--regla); border-radius: 8px;
+        position: relative;
+      }
+      /* esquinas de lightbox: la firma visual del dashboard */
+      .panel::before, .panel::after {
+        content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
+        border-color: color-mix(in srgb, var(--tinta-2) 55%, transparent);
+        border-style: solid;
+      }
+      .panel::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; border-top-left-radius: 8px; }
+      .panel::after { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; border-bottom-right-radius: 8px; }
+
+      table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+      th {
+        text-align: left; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+        font-size: 10px; color: var(--tinta-2); padding: 10px 12px; border-bottom: 1px solid var(--regla);
+      }
+      td { padding: 10px 12px; border-bottom: 1px solid color-mix(in srgb, var(--regla) 60%, transparent); }
+      td.num { text-align: right; font-variant-numeric: tabular-nums; }
+      tr:hover td { background: color-mix(in srgb, var(--panel-2) 70%, transparent); }
+
+      .pill {
+        font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+        padding: 3px 8px; border-radius: 999px; border: 1px solid var(--regla); color: var(--tinta-2);
+      }
+      .pill.vigente { color: var(--vigente); border-color: color-mix(in srgb, var(--vigente) 45%, transparent); }
+      .pill.vigente::before { content: "● "; animation: latido 2.4s infinite; }
+      @media (prefers-reduced-motion: reduce) { .pill.vigente::before { animation: none; } }
+      @keyframes latido { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
+      .dominio-v1 { color: var(--v1); }
+      .dominio-v2 { color: var(--v2); }
+
+      .rejilla { display: grid; gap: 16px; }
+      @media (min-width: 760px) { .rejilla.dos { grid-template-columns: 1fr 1fr; } }
+
+      .kv { font-family: var(--mono); font-size: 12px; }
+      .kv div { display: flex; justify-content: space-between; gap: 14px; padding: 5px 0; border-bottom: 1px dashed color-mix(in srgb, var(--regla) 70%, transparent); }
+      .kv dt { color: var(--tinta-2); }
+      .kv dd { margin: 0; text-align: right; word-break: break-all; }
+
+      img.artefacto {
+        width: 100%; display: block; border-radius: 6px;
+        background: #000; border: 1px solid var(--regla);
+      }
+      figcaption { font-family: var(--mono); font-size: 10.5px; color: var(--tinta-2); letter-spacing: .08em; margin-top: 6px; }
+
+      footer.pie { border-top: 1px solid var(--regla); }
+      footer.pie .marco { padding: 18px 20px; font-family: var(--mono); font-size: 10.5px; color: var(--tinta-2); letter-spacing: .08em; }
+    </style>
+  </head>
+  <body>
+    <header class="barra">
+      <div class="marco">
+        <span class="logotipo">RAYOS-X<b>·LAB</b></span>
+        <nav>
+          <a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}>RESUMEN</a>
+          <a href="/versiones/" aria-current={Astro.url.pathname.startsWith("/versiones") ? "page" : undefined}>VERSIONES</a>
+          <a href="/datasets/" aria-current={Astro.url.pathname.startsWith("/datasets") ? "page" : undefined}>DATASETS</a>
+          <a href="/gradcam/" aria-current={Astro.url.pathname.startsWith("/gradcam") ? "page" : undefined}>GRAD-CAM</a>
+        </nav>
+      </div>
+    </header>
+    <main class="marco">
+      <slot />
+    </main>
+    <footer class="pie">
+      <div class="marco">
+        proyecto académico · no para diagnóstico clínico · métricas sobre tests congelados
+      </div>
+    </footer>
+  </body>
+</html>

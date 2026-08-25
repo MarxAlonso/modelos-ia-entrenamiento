@@ -1,0 +1,40 @@
+{
+  "version": "v006",
+  "dataset": "v1_kaggle_chest_xray",
+  "manifiesto": "data/manifiestos/v1_splits.csv",
+  "base_anterior": null,
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "base_imagenet": "mobilenetv2",
+  "base_congelada": true,
+  "capas_descongeladas": 0,
+  "img_size": [
+    224,
+    224
+  ],
+  "batch_size": 32,
+  "epochs": 20,
+  "epochs_reales": 14,
+  "learning_rate": 0.001,
+  "dropout_cabeza": 0.3,
+  "loss": "binary_crossentropy",
+  "normalizacion": "mobilenetv2",
+  "recorte_borde_px": 24,
+  "augmentacion": [
+    "rotation_5deg",
+    "zoom_10",
+    "translation_10",
+    "contrast_8"
+  ],
+  "class_weights": {
+    "0": 1.937,
+    "1": 0.674
+  },
+  "early_stopping": {
+    "monitor": "val_auc",
+    "mode": "max",
+    "patience": 6
+  },
+  "reduce_lr": true,
+  "semilla": 42,
+  "notas": "Experimento de control tras Grad-CAM: recorte de 24px por borde para eliminar marcadores/texto. Receta identica a v003 en lo demas. Pregunta: dependia el modelo de artefactos de placa?"
+}

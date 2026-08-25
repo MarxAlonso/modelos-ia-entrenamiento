@@ -1,0 +1,21 @@
+{
+  "name": "viz-reconocimiento-imagenes-medicas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sincronizar-datos.mjs",
+    "dev": "node scripts/sincronizar-datos.mjs && astro dev",
+    "build": "node scripts/sincronizar-datos.mjs && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.1.0",
+    "@fontsource/space-grotesk": "^5.1.0",
+    "astro": "^5.1.0",
+    "chart.js": "^4.4.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
+  }
+}

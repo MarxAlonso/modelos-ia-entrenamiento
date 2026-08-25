@@ -1,0 +1,45 @@
+---
+import Base from "../../layouts/Base.astro";
+import datos from "../../data/versiones.json";
+
+const dominioEtiqueta: Record<string, string> = {
+  v1_kaggle_chest_xray: "v1 pediátrico",
+  v2_nih_chest_xray14: "v2 NIH adulto",
+};
+const lista = [...datos.versiones].sort((a, b) =>
+  a.dataset.localeCompare(b.dataset) || a.id.localeCompare(b.id)
+);
+---
+<Base titulo="Versiones">
+  <p class="ceja">registro central · models/registro_versiones.json</p>
+  <h1>Todas las versiones</h1>
+  <p class="bajada">Comparaciones solo dentro del mismo dataset. El campeón de cada dominio queda <span class="pill vigente" style="margin-left:6px">vigente</span>.</p>
+
+  <div class="panel" style="margin-top:22px; overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>versión</th><th>dominio</th><th>arquitectura</th>
+          <th style="text-align:right">accuracy</th><th style="text-align:right">recall pneu</th>
+          <th style="text-align:right">f1 macro</th><th style="text-align:right">auc</th>
+          <th style="text-align:right">int8</th><th>estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {lista.map((v) => (
+          <tr>
+            <td><a href={`/versiones/${v.id}/`}>{v.id}</a></td>
+            <td class={v.dataset.startsWith("v1") ? "dominio-v1" : "dominio-v2"}>{dominioEtiqueta[v.dataset]}</td>
+            <td>{v.arquitectura}</td>
+            <td class="num">{v.accuracy.toFixed(3)}</td>
+            <td class="num">{v.recall_pneumonia.toFixed(3)}</td>
+            <td class="num"><b>{v.f1_macro.toFixed(3)}</b></td>
+            <td class="num">{v.roc_auc.toFixed(3)}</td>
+            <td class="num">{v.cuantizado.tamano_mb} MB</td>
+            <td><span class={`pill ${v.estado}`}>{v.estado}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Base>

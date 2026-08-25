@@ -1,0 +1,33 @@
+{
+  "version": "v003_20260823-2049_mobilenetv2_fe",
+  "mapas_generados": 23,
+  "energia_media_en_centro": 0.6396,
+  "energia_media_en_borde": 0.2734,
+  "interpretacion": "Revisar: parte relevante del heatmap cae fuera de la zona pulmonar",
+  "archivos": [
+    "gradcam_FN_0.png",
+    "gradcam_FN_1.png",
+    "gradcam_FN_2.png",
+    "gradcam_FN_3.png",
+    "gradcam_FN_4.png",
+    "gradcam_FP_0.png",
+    "gradcam_FP_1.png",
+    "gradcam_FP_2.png",
+    "gradcam_FP_3.png",
+    "gradcam_FP_4.png",
+    "gradcam_FP_5.png",
+    "gradcam_TN_0.png",
+    "gradcam_TN_1.png",
+    "gradcam_TN_2.png",
+    "gradcam_TN_3.png",
+    "gradcam_TN_4.png",
+    "gradcam_TN_5.png",
+    "gradcam_TP_0.png",
+    "gradcam_TP_1.png",
+    "gradcam_TP_2.png",
+    "gradcam_TP_3.png",
+    "gradcam_TP_4.png",
+    "gradcam_TP_5.png",
+    "gradcam_galeria.png"
+  ]
+}

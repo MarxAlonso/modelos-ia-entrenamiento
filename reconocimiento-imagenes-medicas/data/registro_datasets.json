@@ -1,0 +1,81 @@
+{
+  "datasets": [
+    {
+      "id": "v1_kaggle_chest_xray",
+      "nombre": "Chest X-Ray Images (Pneumonia)",
+      "origen_hf": "hf-vision/chest-xray-pneumonia",
+      "fuente_original": "Kermany, Zhang, Goldbaum (2018) — Mendeley Data rscbjbr9sj v2, doi:10.17632/rscbjbr9sj.2",
+      "publicacion_cientifica": "Application of the AI System for Pneumonia Detection Using Chest X-Ray Images (Cell, 2018)",
+      "contexto_clinico": "Radiografías de tórax antero-posteriores de pacientes pediátricos (1-5 años), Guangzhou Women and Children's Medical Center",
+      "clases": ["NORMAL", "PNEUMONIA"],
+      "total_imagenes": 5856,
+      "conteo_split_oficial": {
+        "train": { "NORMAL": 1341, "PNEUMONIA": 3875 },
+        "validation": { "NORMAL": 8, "PNEUMONIA": 8 },
+        "test": { "NORMAL": 234, "PNEUMONIA": 390 }
+      },
+      "splits_entrenamiento": {
+        "manifiesto": "data/manifiestos/v1_splits.csv",
+        "semilla": 42,
+        "train": { "NORMAL": 1206, "PNEUMONIA": 3465 },
+        "validation": { "NORMAL": 134, "PNEUMONIA": 385 },
+        "test": { "NORMAL": 234, "PNEUMONIA": 390, "nota": "test oficial intacto, sin duplicados contra train" }
+      },
+      "hallazgos_exploracion": {
+        "imagenes_danadas": 0,
+        "duplicados_md5_internos_eliminados_de_train": 26,
+        "fuga_train_test": 0,
+        "desbalance_train": "2.89 : 1 (PNEUMONIA domina)",
+        "class_weights": { "NORMAL": 1.937, "PNEUMONIA": 0.674 },
+        "modos_color": { "L": 5573, "RGB": 283 },
+        "resolucion": { "min": "384x127", "max": "2916x2713", "media": "1328x971" }
+      },
+      "reporte": "data/reportes/v1_exploracion/",
+      "estado": "listo_para_entrenar"
+    },
+    {
+      "id": "v2_nih_chest_xray14",
+      "nombre": "NIH ChestX-ray14 (320x320, procesado)",
+      "origen_hf": "arudaev/chest-xray-14-320",
+      "fuente_original": "NIH Clinical Center (Wang et al., CVPR 2017), 112 120 radiografías PA de 30 805 pacientes adultos",
+      "clases_nih": "multi-etiqueta: No Finding, Pneumonia, Infiltration, Atelectasis, Effusion + otras",
+      "total_imagenes": 112120,
+      "conteo_split_oficial": {
+        "train": 77967,
+        "validation": 8557,
+        "test": 25596
+      },
+      "splits_entrenamiento": {
+        "manifiesto": "data/manifiestos/v2_splits.csv",
+        "semilla": 42,
+        "mapeo_binario": {
+          "NORMAL": "labels == 'No Finding' (estricto)",
+          "PNEUMONIA": "'Pneumonia' presente en labels",
+          "EXCLUIDA": "otros hallazgos sin neumonía (50328 imágenes fuera de la tarea binaria)"
+        },
+        "train": { "NORMAL": 2262, "PNEUMONIA": 754, "nota": "NORMAL submuestreado 1:3 (-43846 filas marcadas incluir=false)" },
+        "validation": { "NORMAL": 4392, "PNEUMONIA": 122, "nota": "regenerada POR PACIENTE desde pool train+val oficial" },
+        "test": { "NORMAL": 9861, "PNEUMONIA": 555, "nota": "test oficial intacto" },
+        "fuga_pacientes": { "train_validation": 0, "train_test": 0, "validation_test": 0 }
+      },
+      "hallazgos_exploracion": {
+        "imagenes_danadas_muestra_3000": 0,
+        "resolucion": "320x320 uniforme (RGB)",
+        "desbalance_original": "58.6 : 1 en train oficial (778 PNEUMONIA vs 45544 NORMAL)",
+        "fuga_detectada_y_corregida": "la validation oficial compartía 4571 pacientes con train; se regeneró patient-wise",
+        "class_weights": { "NORMAL": 0.667, "PNEUMONIA": 2.0 }
+      },
+      "advertencia_dominio": "ADULTOS (v1 es pediátrico): comparar métricas v1-vs-v2 directamente NO es válido; usar como dominios separados o evaluar shift explícitamente",
+      "reportes": ["data/reportes/v2_exploracion/"],
+      "estado": "listo_para_entrenar"
+    },
+    {
+      "id": "descartados_evaluados",
+      "nota": "repos evaluados y descartados para entrenamiento",
+      "items": [
+        { "repo": "mmenendezg/raw_pneumonia_x_ray", "motivo": "mismo Kermany et al. re-splitteado (5232 train = 5216+16 de v1; test 624 idéntico); cero información nueva" },
+        { "repo": "MadElf1337/Pneumonia_Images", "motivo": "mini-muestra de 416 imágenes del mismo dataset (7%); inútil para entrenar" }
+      ]
+    }
+  ]
+}

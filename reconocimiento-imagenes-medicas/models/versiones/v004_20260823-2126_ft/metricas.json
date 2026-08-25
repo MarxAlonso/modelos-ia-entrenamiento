@@ -1,0 +1,98 @@
+{
+  "version": "v004",
+  "fecha": "2026-08-23T21:42:13",
+  "arquitectura": "mobilenetv2_1.00_224_finetuning",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v004",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": "v003_20260823-2049_mobilenetv2_fe",
+    "arquitectura": "mobilenetv2_1.00_224_finetuning",
+    "base_imagenet": "mobilenetv2",
+    "capas_descongeladas": 30,
+    "batchnorm_congeladas": true,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 10,
+    "epochs_reales": 10,
+    "learning_rate_fine_tuning": 1e-05,
+    "loss": "binary_crossentropy",
+    "normalizacion": "mobilenetv2",
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 1.937,
+      "1": 0.674
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 4
+    },
+    "semilla": 42,
+    "notas": "Fine tuning de v003: ultimas 30 capas de MobileNetV2 descongeladas (BN congeladas), lr 1e-5. Objetivo: subir recall_normal manteniendo recall_pneumonia."
+  },
+  "tiempo_entrenamiento_min": 15.3,
+  "mejor_epoca": 7,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.8446,
+    "precision_pneumonia": 0.8046,
+    "recall_pneumonia": 0.9923,
+    "f1_pneumonia": 0.8886,
+    "precision_normal": 0.979,
+    "recall_normal": 0.5983,
+    "f1_normal": 0.7427,
+    "f1_macro": 0.8157,
+    "roc_auc": 0.9719,
+    "matriz": {
+      "TN": 140,
+      "FP": 94,
+      "FN": 3,
+      "TP": 387
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 23.69
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 8.8,
+      "accuracy": 0.8654,
+      "f1_macro": 0.8442,
+      "recall_pneumonia": 0.9872,
+      "roc_auc": 0.9732,
+      "matriz": {
+        "TN": 155,
+        "FP": 79,
+        "FN": 5,
+        "TP": 385
+      },
+      "latencia_ms": 54.03
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 8.2,
+      "imagenes_representativas": 200,
+      "accuracy": 0.8446,
+      "f1_macro": 0.8145,
+      "recall_pneumonia": 0.9974,
+      "roc_auc": 0.9549,
+      "matriz": {
+        "TN": 138,
+        "FP": 96,
+        "FN": 1,
+        "TP": 389
+      },
+      "latencia_ms": 7.23
+    }
+  }
+}

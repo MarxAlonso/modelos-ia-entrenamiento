@@ -1,0 +1,91 @@
+---
+import Base from "../../layouts/Base.astro";
+import datos from "../../data/versiones.json";
+
+export function getStaticPaths() {
+  return datos.versiones.map((v) => ({ params: { id: v.id }, props: { v } }));
+}
+
+const { v } = Astro.props;
+const dominio = v.dataset.startsWith("v1") ? "v1 pediátrico" : "v2 NIH adulto";
+const colorDominio = v.dataset.startsWith("v1") ? "var(--v1)" : "var(--v2)";
+const configInteresante: [string, any][] = [
+  ["dataset", v.config.dataset],
+  ["arquitectura", v.config.arquitectura],
+  ["base anterior", v.config.base_anterior],
+  ["epochs reales", v.config.epochs_reales ?? v.metricas?.mejor_epoca],
+  ["learning rate", v.config.learning_rate ?? v.config.learning_rate_fine_tuning],
+  ["batch", v.config.batch_size],
+  ["normalización", v.config.normalizacion],
+  ["recorte borde px", v.config.recorte_borde_px ?? 0],
+  ["early stopping", v.config.early_stopping ? `${v.config.early_stopping.monitor} (p${v.config.early_stopping.patience})` : undefined],
+  ["class weights", JSON.stringify(v.config.class_weights)],
+  ["semilla", v.config.semilla],
+];
+const m = v.metricas?.fp32;
+const cuant = v.metricas?.cuantizacion;
+---
+<Base titulo={v.id}>
+  <p class="ceja" style={`color:${colorDominio}`}>{dominio}</p>
+  <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap">
+    <h1 style="margin:0">{v.id}</h1>
+    <span class={`pill ${v.estado}`}>{v.estado}</span>
+    <span class="pill">{v.arquitectura}</span>
+  </div>
+
+  <div class="rejilla dos" style="margin-top:24px">
+    <section class="panel" style="padding:18px 20px">
+      <h2>test congelado</h2>
+      <dl class="kv">
+        <div><dt>accuracy</dt><dd>{m?.accuracy}</dd></div>
+        <div><dt>f1 macro</dt><dd><b>{m?.f1_macro}</b></dd></div>
+        <div><dt>recall pneumonia</dt><dd>{m?.recall_pneumonia}</dd></div>
+        <div><dt>recall normal</dt><dd>{m?.recall_normal}</dd></div>
+        <div><dt>roc-auc</dt><dd>{m?.roc_auc}</dd></div>
+        <div><dt>matriz TN·FP·FN·TP</dt><dd>{m ? `${m.matriz.TN}·${m.matriz.FP}·${m.matriz.FN}·${m.matriz.TP}` : "—"}</dd></div>
+        <div><dt>umbral</dt><dd>{m?.umbral}</dd></div>
+        <div><dt>tamaño fp32</dt><dd>{m?.tamano_mb} MB</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel" style="padding:18px 20px">
+      <h2>despliegue cuantizado</h2>
+      {cuant?.int8 ? (
+        <dl class="kv">
+          <div><dt>formato</dt><dd>int8 · {cuant.int8.tamano_mb} MB (×{cuant.int8.reduccion_vs_fp32})</dd></div>
+          <div><dt>accuracy int8</dt><dd>{cuant.int8.accuracy}</dd></div>
+          <div><dt>f1 macro int8</dt><dd>{cuant.int8.f1_macro}</dd></div>
+          <div><dt>latencia CPU</dt><dd>{cuant.int8.latencia_ms} ms/img</dd></div>
+          <div><dt>dynamic range</dt><dd>{cuant.dynamic_range.tamano_mb} MB · f1 {cuant.dynamic_range.f1_macro}</dd></div>
+        </dl>
+      ) : <p class="bajada">sin bloque de cuantización registrado.</p>}
+    </section>
+  </div>
+
+  <div class="rejilla dos" style="margin-top:16px">
+    <section class="panel" style="padding:18px 20px">
+      <h2>configuración exacta</h2>
+      <dl class="kv">
+        {configInteresante.filter(([, val]) => val !== undefined && val !== null).map(([k, val]) => (
+          <div><dt>{k}</dt><dd>{String(val)}</dd></div>
+        ))}
+      </dl>
+      {v.config.notas && <p class="bajada" style="margin-top:12px">«{v.config.notas}»</p>}
+    </section>
+
+    <section class="panel" style="padding:18px 20px">
+      <h2>evidencia visual</h2>
+      <div class="rejilla">
+        {v.imagenes.length === 0 && <p class="bajada">sin artefactos gráficos registrados para esta versión.</p>}
+        {v.imagenes.map((src) => (
+          <figure style="margin:0">
+            <img class="artefacto" src={src} alt={src.split("/").pop()} loading="lazy" />
+            <figcaption>{src.split("/").pop()}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <a class="pill" href="/versiones/" style="display:inline-block; margin-top:20px">← todas las versiones</a>
+</Base>

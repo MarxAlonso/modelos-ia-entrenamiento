@@ -1,0 +1,76 @@
+{
+  "version": "v005",
+  "fecha": "2026-08-25T13:36:23",
+  "arquitectura": "mobilenetv2_1.00_224_finetuning+umbral",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v005",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": "v004_20260823-2126_ft",
+    "arquitectura": "mobilenetv2_1.00_224_finetuning+umbral",
+    "modelo_fisico": "idéntico al de la base anterior; solo cambia el umbral",
+    "umbral_decision": 0.09,
+    "umbral_elegido_en": "validation",
+    "recall_pneu_minimo_restriccion": 0.97,
+    "normalizacion": "mobilenetv2",
+    "semilla": 42,
+    "notas": "Umbral optimizado por f1_macro en validation desde v004_20260823-2126_ft"
+  },
+  "tiempo_entrenamiento_min": 0.0,
+  "mejor_epoca": null,
+  "fp32": {
+    "umbral": 0.09,
+    "accuracy": 0.7917,
+    "precision_pneumonia": 0.751,
+    "recall_pneumonia": 0.9974,
+    "f1_pneumonia": 0.8568,
+    "precision_normal": 0.9906,
+    "recall_normal": 0.4487,
+    "f1_normal": 0.6176,
+    "f1_macro": 0.7372,
+    "roc_auc": 0.9719,
+    "matriz": {
+      "TN": 105,
+      "FP": 129,
+      "FN": 1,
+      "TP": 389
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 23.69
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 8.8,
+      "accuracy": 0.8654,
+      "f1_macro": 0.8442,
+      "recall_pneumonia": 0.9872,
+      "roc_auc": 0.9732,
+      "nota": "métricas heredadas de la base con umbral 0.5; evaluación propia con t*=0.09: ver abajo"
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 8.2,
+      "imagenes_representativas": 200,
+      "umbral": 0.09,
+      "accuracy": 0.7756,
+      "precision_pneumonia": 0.7367,
+      "recall_pneumonia": 0.9974,
+      "f1_pneumonia": 0.8475,
+      "precision_normal": 0.9896,
+      "recall_normal": 0.406,
+      "f1_normal": 0.5758,
+      "f1_macro": 0.7116,
+      "roc_auc": 0.9549,
+      "matriz": {
+        "TN": 95,
+        "FP": 139,
+        "FN": 1,
+        "TP": 389
+      },
+      "n_imagenes": 624,
+      "latencia_ms": 10.34
+    }
+  }
+}

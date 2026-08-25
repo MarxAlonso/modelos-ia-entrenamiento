@@ -1,0 +1,101 @@
+{
+  "version": "v007",
+  "fecha": "2026-08-25T15:31:00",
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "dataset": "v2_nih_chest_xray14",
+  "config": {
+    "version": "v007",
+    "dataset": "v2_nih_chest_xray14",
+    "manifiesto": "data\\manifiestos\\v2_splits.csv",
+    "base_anterior": null,
+    "arquitectura": "mobilenetv2_feature_extraction",
+    "base_imagenet": "mobilenetv2",
+    "base_congelada": true,
+    "capas_descongeladas": 0,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 20,
+    "epochs_reales": 12,
+    "learning_rate": 0.001,
+    "dropout_cabeza": 0.3,
+    "loss": "binary_crossentropy",
+    "normalizacion": "mobilenetv2",
+    "recorte_borde_px": 0,
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 0.667,
+      "1": 2.0
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 6
+    },
+    "reduce_lr": true,
+    "semilla": 42,
+    "notas": "Primera version sobre NIH adulto (v2): MobileNetV2 congelada, misma receta v003. Dominio separado de v1: metricas NO comparables directamente."
+  },
+  "tiempo_entrenamiento_min": 19.9,
+  "mejor_epoca": 10,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.3947,
+    "precision_pneumonia": 0.0719,
+    "recall_pneumonia": 0.8703,
+    "f1_pneumonia": 0.1329,
+    "precision_normal": 0.9805,
+    "recall_normal": 0.3679,
+    "f1_normal": 0.5351,
+    "f1_macro": 0.334,
+    "roc_auc": 0.6837,
+    "matriz": {
+      "TN": 3628,
+      "FP": 6233,
+      "FN": 72,
+      "TP": 483
+    },
+    "n_imagenes": 10416,
+    "tamano_mb": 11.6
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 4.3,
+      "accuracy": 0.4586,
+      "f1_macro": 0.3711,
+      "recall_pneumonia": 0.8036,
+      "roc_auc": 0.6737,
+      "matriz": {
+        "TN": 4331,
+        "FP": 5530,
+        "FN": 109,
+        "TP": 446
+      },
+      "latencia_ms": 87.5
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 4.0,
+      "imagenes_representativas": 200,
+      "accuracy": 0.4617,
+      "f1_macro": 0.3731,
+      "recall_pneumonia": 0.8054,
+      "roc_auc": 0.6813,
+      "matriz": {
+        "TN": 4362,
+        "FP": 5499,
+        "FN": 108,
+        "TP": 447
+      },
+      "latencia_ms": 9.29
+    }
+  }
+}

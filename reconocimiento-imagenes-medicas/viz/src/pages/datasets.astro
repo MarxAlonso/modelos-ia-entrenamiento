@@ -1,0 +1,51 @@
+---
+import Base from "../layouts/Base.astro";
+import datasets from "../data/datasets.json";
+
+const [v1, v2] = datasets.datasets.filter((d: any) => d.id.startsWith("v"));
+const descartados = datasets.datasets.find((d: any) => d.id === "descartados_evaluados");
+---
+<Base titulo="Datasets">
+  <p class="ceja">dos dominios clínicos · cero comparación cruzada</p>
+  <h1>Datasets versionados</h1>
+
+  <div class="rejilla dos" style="margin-top:24px">
+    {[{ d: v1, color: "var(--v1)", etiqueta: "v1 · pediátrico" }, { d: v2, color: "var(--v2)", etiqueta: "v2 · NIH adulto" }].map(({ d, color, etiqueta }) => (
+      <section class="panel" style="padding:18px 20px">
+        <p class="ceja" style={`color:${color}`}>{etiqueta}</p>
+        <h2 style="margin-bottom:4px">{d.nombre}</h2>
+        <p class="bajada" style="font-size:13px">{d.fuente_original}</p>
+        <dl class="kv" style="margin-top:12px">
+          <div><dt>total imágenes</dt><dd>{d.total_imagenes.toLocaleString("es")}</dd></div>
+          {d.splits_entrenamiento?.train && (
+            <div><dt>train incluido</dt><dd>{d.splits_entrenamiento.train.NORMAL} N / {d.splits_entrenamiento.train.PNEUMONIA} P</dd></div>
+          )}
+          {d.splits_entrenamiento?.test && (
+            <div><dt>test congelado</dt><dd>{d.splits_entrenamiento.test.NORMAL} N / {d.splits_entrenamiento.test.PNEUMONIA} P</dd></div>
+          )}
+          {d.splits_entrenamiento?.fuga_pacientes && (
+            <div><dt>fuga pacientes</dt><dd>0 en todos los pares ✔</dd></div>
+          )}
+          <div><dt>manifiesto</dt><dd>{d.splits_entrenamiento?.manifiesto ?? "—"}</dd></div>
+        </dl>
+        {"advertencia_dominio" in d && (
+          <p class="bajada" style="margin-top:10px; font-size:12.5px">⚠ {d.advertencia_dominio}</p>
+        )}
+        {"hallazgos_exploracion" in d && d.hallazgos_exploracion.desbalance_original && (
+          <p class="bajada" style="margin-top:6px; font-size:12.5px">desbalance original: {d.hallazgos_exploracion.desbalance_original}</p>
+        )}
+      </section>
+    ))}
+  </div>
+
+  {descartados && (
+    <section class="panel" style="padding:18px 20px; margin-top:16px">
+      <h2>evaluados y descartados</h2>
+      <dl class="kv">
+        {descartados.items.map((it: any) => (
+          <div><dt style="max-width:340px">{it.repo}</dt><dd style="text-align:right">{it.motivo}</dd></div>
+        ))}
+      </dl>
+    </section>
+  )}
+</Base>

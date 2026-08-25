@@ -1,0 +1,172 @@
+{
+  "actualizada": "2026-08-25T15:50:28",
+  "mejor_version": "v003",
+  "metrica_referencia": "f1_macro_test",
+  "versiones": [
+    {
+      "id": "v001",
+      "carpeta": "v001_20260823-1856_cnn",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "cnn_propia",
+      "accuracy": 0.5705,
+      "recall_normal": 0.3248,
+      "recall_pneumonia": 0.7179,
+      "precision_macro": 0.524,
+      "recall_macro": 0.5213,
+      "f1_macro": 0.5191,
+      "roc_auc": 0.5785,
+      "tamano_mb_fp32": 1.36,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 0.12,
+        "accuracy": 0.5673,
+        "f1_macro": 0.512,
+        "latencia_ms_cpu": 7.01
+      },
+      "tiempo_entrenamiento_min": 13.7,
+      "estado": "superada"
+    },
+    {
+      "id": "v002",
+      "carpeta": "v002_20260823-1919_cnn",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "cnn_propia",
+      "accuracy": 0.8077,
+      "recall_normal": 0.8376,
+      "recall_pneumonia": 0.7897,
+      "precision_macro": 0.7976,
+      "recall_macro": 0.8136,
+      "f1_macro": 0.8013,
+      "roc_auc": 0.8906,
+      "tamano_mb_fp32": 1.36,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 0.12,
+        "accuracy": 0.8109,
+        "f1_macro": 0.8039,
+        "latencia_ms_cpu": 11.39
+      },
+      "tiempo_entrenamiento_min": 83.7,
+      "estado": "superada"
+    },
+    {
+      "id": "v003",
+      "carpeta": "v003_20260823-2049_mobilenetv2_fe",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "mobilenetv2_feature_extraction",
+      "accuracy": 0.8654,
+      "recall_normal": 0.6624,
+      "recall_pneumonia": 0.9872,
+      "precision_macro": 0.8992,
+      "recall_macro": 0.8248,
+      "f1_macro": 0.8442,
+      "roc_auc": 0.9672,
+      "tamano_mb_fp32": 11.6,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.8702,
+        "f1_macro": 0.8504,
+        "latencia_ms_cpu": 7.13
+      },
+      "tiempo_entrenamiento_min": 21.3,
+      "estado": "vigente"
+    },
+    {
+      "id": "v004",
+      "carpeta": "v004_20260823-2126_ft",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "mobilenetv2_1.00_224_finetuning",
+      "accuracy": 0.8446,
+      "recall_normal": 0.5983,
+      "recall_pneumonia": 0.9923,
+      "precision_macro": 0.8918,
+      "recall_macro": 0.7953,
+      "f1_macro": 0.8157,
+      "roc_auc": 0.9719,
+      "tamano_mb_fp32": 23.69,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.8446,
+        "f1_macro": 0.8145,
+        "latencia_ms_cpu": 7.23
+      },
+      "tiempo_entrenamiento_min": 15.3,
+      "estado": "superada"
+    },
+    {
+      "id": "v005",
+      "carpeta": "v005_20260825-1335_umbral",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "mobilenetv2_1.00_224_finetuning+umbral",
+      "accuracy": 0.7917,
+      "recall_normal": 0.4487,
+      "recall_pneumonia": 0.9974,
+      "precision_macro": 0.8708,
+      "recall_macro": 0.723,
+      "f1_macro": 0.7372,
+      "roc_auc": 0.9719,
+      "tamano_mb_fp32": 23.69,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.7756,
+        "f1_macro": 0.7116,
+        "latencia_ms_cpu": 10.34
+      },
+      "tiempo_entrenamiento_min": 0.0,
+      "estado": "superada"
+    },
+    {
+      "id": "v006",
+      "carpeta": "v006_20260825-1403_mobilenetv2_fe",
+      "dataset": "v1_kaggle_chest_xray",
+      "arquitectura": "mobilenetv2_feature_extraction",
+      "accuracy": 0.859,
+      "recall_normal": 0.6368,
+      "recall_pneumonia": 0.9923,
+      "precision_macro": 0.9001,
+      "recall_macro": 0.8145,
+      "f1_macro": 0.835,
+      "roc_auc": 0.963,
+      "tamano_mb_fp32": 11.6,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.867,
+        "f1_macro": 0.8467,
+        "latencia_ms_cpu": 7.49
+      },
+      "tiempo_entrenamiento_min": 22.2,
+      "estado": "superada"
+    },
+    {
+      "id": "v007",
+      "carpeta": "v007_20260825-1507_mobilenetv2_fe",
+      "dataset": "v2_nih_chest_xray14",
+      "arquitectura": "mobilenetv2_feature_extraction",
+      "accuracy": 0.3947,
+      "recall_normal": 0.3679,
+      "recall_pneumonia": 0.8703,
+      "precision_macro": 0.5262,
+      "recall_macro": 0.6191,
+      "f1_macro": 0.334,
+      "roc_auc": 0.6837,
+      "tamano_mb_fp32": 11.6,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.4617,
+        "f1_macro": 0.3731,
+        "latencia_ms_cpu": 9.29
+      },
+      "tiempo_entrenamiento_min": 19.9,
+      "estado": "vigente"
+    }
+  ],
+  "mejor_por_dataset": {
+    "v1_kaggle_chest_xray": "v003",
+    "v2_nih_chest_xray14": "v007"
+  }
+}

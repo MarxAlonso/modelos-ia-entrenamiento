@@ -27,3 +27,11 @@ Untitled.ipynb
 # Archivos del sistema operativo
 .DS_Store
 Thumbs.db
+
+# reconocimiento-imagenes-medicas: imágenes de datasets (descargables, nunca al repo)
+reconocimiento-imagenes-medicas/data/versiones/
+# Nota: los modelo.keras de cada version se deciden caso por caso (<50MB si se sube)
+# Salidas generadas del dashboard Astro (regenerables con: pnpm run sync)
+reconocimiento-imagenes-medicas/viz/public/
+reconocimiento-imagenes-medicas/viz/src/data/
+reconocimiento-imagenes-medicas/viz/.astro/

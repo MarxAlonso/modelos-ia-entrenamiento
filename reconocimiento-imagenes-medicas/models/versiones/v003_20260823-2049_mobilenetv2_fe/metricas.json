@@ -1,0 +1,100 @@
+{
+  "version": "v003",
+  "fecha": "2026-08-23T21:10:53",
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "dataset": "v1_kaggle_chest_xray",
+  "config": {
+    "version": "v003",
+    "dataset": "v1_kaggle_chest_xray",
+    "manifiesto": "data/manifiestos/v1_splits.csv",
+    "base_anterior": null,
+    "arquitectura": "mobilenetv2_feature_extraction",
+    "base_imagenet": "mobilenetv2",
+    "base_congelada": true,
+    "capas_descongeladas": 0,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 20,
+    "epochs_reales": 12,
+    "learning_rate": 0.001,
+    "dropout_cabeza": 0.3,
+    "loss": "binary_crossentropy",
+    "normalizacion": "mobilenetv2",
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 1.937,
+      "1": 0.674
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 6
+    },
+    "reduce_lr": true,
+    "semilla": 42,
+    "notas": "Transfer learning: MobileNetV2 ImageNet congelada, feature extraction de la cabeza. Primer salto cualitativo esperado."
+  },
+  "tiempo_entrenamiento_min": 21.3,
+  "mejor_epoca": 7,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.8654,
+    "precision_pneumonia": 0.8297,
+    "recall_pneumonia": 0.9872,
+    "f1_pneumonia": 0.9016,
+    "precision_normal": 0.9688,
+    "recall_normal": 0.6624,
+    "f1_normal": 0.7868,
+    "f1_macro": 0.8442,
+    "roc_auc": 0.9672,
+    "matriz": {
+      "TN": 155,
+      "FP": 79,
+      "FN": 5,
+      "TP": 385
+    },
+    "n_imagenes": 624,
+    "tamano_mb": 11.6
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 4.3,
+      "accuracy": 0.8846,
+      "f1_macro": 0.8696,
+      "recall_pneumonia": 0.9795,
+      "roc_auc": 0.9688,
+      "matriz": {
+        "TN": 170,
+        "FP": 64,
+        "FN": 8,
+        "TP": 382
+      },
+      "latencia_ms": 56.86
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 4.0,
+      "imagenes_representativas": 200,
+      "accuracy": 0.8702,
+      "f1_macro": 0.8504,
+      "recall_pneumonia": 0.9872,
+      "roc_auc": 0.9603,
+      "matriz": {
+        "TN": 158,
+        "FP": 76,
+        "FN": 5,
+        "TP": 385
+      },
+      "latencia_ms": 7.13
+    }
+  }
+}

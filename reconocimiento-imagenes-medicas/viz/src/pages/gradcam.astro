@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import galerias from "../data/galerias.json";
+
+const conResumen = galerias.map((g) => ({
+  ...g,
+  centro: g.resumen?.energia_media_en_centro,
+  borde: g.resumen?.energia_media_en_borde,
+}));
+---
+<Base titulo="Grad-CAM">
+  <p class="ceja">auditoría visual · ¿dónde mira el modelo?</p>
+  <h1>Galerías Grad-CAM</h1>
+  <p class="bajada">
+    Casos más representativos de TP, TN, FP y FN del test congelado, ordenados por
+    confianza. La energía en bordes motivó el experimento de control v006 (ver docs).
+  </p>
+
+  {conResumen.map((g) => (
+    <section style="margin-top:28px">
+      <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap">
+        <h2 style="margin:0">{g.versionId}</h2>
+        <span class="pill">{g.overlays.length} mapas</span>
+        {g.centro !== undefined && (
+          <span style="font-family:var(--mono); font-size:11px; color:var(--tinta-2)">
+            energía centro <b style="color:var(--v1)">{(g.centro * 100).toFixed(1)}%</b>
+            · borde <b style="color:var(--v2)">{(g.borde * 100).toFixed(1)}%</b>
+          </span>
+        )}
+      </div>
+      <div class="rejilla dos" style="margin-top:14px">
+        {g.overlays.map((f) => (
+          <figure class="panel" style="padding:10px; margin:0">
+            <img class="artefacto" src={`${g.base}/${f}`} alt={f} loading="lazy" />
+            <figcaption>{f.replace(".png", "").replaceAll("_", " ")}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  ))}
+</Base>

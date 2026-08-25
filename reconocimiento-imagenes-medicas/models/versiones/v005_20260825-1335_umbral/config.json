@@ -1,0 +1,14 @@
+{
+  "version": "v005",
+  "dataset": "v1_kaggle_chest_xray",
+  "manifiesto": "data/manifiestos/v1_splits.csv",
+  "base_anterior": "v004_20260823-2126_ft",
+  "arquitectura": "mobilenetv2_1.00_224_finetuning+umbral",
+  "modelo_fisico": "idéntico al de la base anterior; solo cambia el umbral",
+  "umbral_decision": 0.09,
+  "umbral_elegido_en": "validation",
+  "recall_pneu_minimo_restriccion": 0.97,
+  "normalizacion": "mobilenetv2",
+  "semilla": 42,
+  "notas": "Umbral optimizado por f1_macro en validation desde v004_20260823-2126_ft"
+}

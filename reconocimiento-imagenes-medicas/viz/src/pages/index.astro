@@ -1,0 +1,101 @@
+---
+import Base from "../layouts/Base.astro";
+import datos from "../data/versiones.json";
+
+const { actualizada, mejorPorDataset, versiones } = datos;
+const porDataset: Record<string, typeof versiones> = {};
+for (const v of versiones) (porDataset[v.dataset] ??= []).push(v);
+
+const dominios = [
+  { id: "v1_kaggle_chest_xray", etiqueta: "V1 · PEDIÁTRICO", color: "var(--v1)", clase: "dominio-v1" },
+  { id: "v2_nih_chest_xray14", etiqueta: "V2 · NIH ADULTO", color: "var(--v2)", clase: "dominio-v2" },
+];
+
+const serieDe = (lista: typeof versiones) =>
+  [...lista].sort((a, b) => a.id.localeCompare(b.id)).map((v) => ({ id: v.id, f1: v.f1_macro, auc: v.roc_auc }));
+---
+<Base titulo="Resumen">
+  <p class="ceja">reconocimiento de imágenes médicas · registro de experimentos</p>
+  <h1>Evolución del modelo,<br/>versión sobre versión.</h1>
+  <p class="bajada">
+    Siete entrenamientos auditables en dos dominios clínicos distintos. Cada versión
+    parte del aprendizaje anterior y solo se compara contra su propio test congelado.
+  </p>
+
+  <div class="rejilla dos" style="margin-top:26px">
+    {dominios.map((d) => {
+      const lista = porDataset[d.id] ?? [];
+      const campeonId = mejorPorDataset[d.id];
+      const campeon = lista.find((v) => v.id === campeonId);
+      if (!campeon) return null;
+      return (
+        <section class="panel" style={`padding:18px 20px; --acento:${d.color}`}>
+          <p class="ceja" style={`color:${d.color}`}>{d.etiqueta}</p>
+          <div style="display:flex; align-items:baseline; gap:14px">
+            <span style="font-family:var(--mono); font-size:34px; font-weight:500">{campeon.f1_macro.toFixed(3)}</span>
+            <span style="font-family:var(--mono); font-size:11px; color:var(--tinta-2)">f1 macro · test congelado</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin:6px 0 12px">
+            <a href={`/versiones/${campeon.id}/`}><b>{campeon.id}</b></a>
+            <span class="pill vigente">vigente</span>
+            <span style="font-family:var(--mono); font-size:11px; color:var(--tinta-2)">ROC-AUC {campeon.roc_auc.toFixed(3)}</span>
+          </div>
+          <table>
+            <tbody>
+              <tr><td>recall neumonía</td><td class="num">{campeon.recall_pneumonia.toFixed(3)}</td></tr>
+              <tr><td>despliegue int8</td><td class="num">{campeon.cuantizado.tamano_mb} MB · {campeon.cuantizado.latencia_ms_cpu} ms</td></tr>
+              <tr><td>entrenamiento</td><td class="num">{campeon.tiempo_entrenamiento_min} min CPU</td></tr>
+            </tbody>
+          </table>
+        </section>
+      );
+    })}
+  </div>
+
+  <section class="panel" style="padding:18px 20px; margin-top:16px">
+    <h2>f1 macro por versión — cada dominio compite consigo mismo</h2>
+    <div style="height:280px"><canvas id="grafico-evolucion"></canvas></div>
+    <script type="application/json" id="datos-evolucion" set:html={JSON.stringify(
+      dominios.map((d) => ({ ...d, puntos: serieDe(porDataset[d.id] ?? []) }))
+    )} />
+    <script>
+      import Chart from "chart.js/auto";
+      const contenedor = document.getElementById("datos-evolucion")!;
+      const dominios = JSON.parse(contenedor.textContent!);
+      const reducida = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      new Chart(document.getElementById("grafico-evolucion") as HTMLCanvasElement, {
+        type: "line",
+        data: {
+          labels: [...new Set(dominios.flatMap((d: any) => d.puntos.map((p: any) => p.id)))],
+          datasets: dominios.map((d: any) => ({
+            label: d.etiqueta,
+            data: d.puntos.map((p: any) => p.f1),
+            borderColor: d.color,
+            backgroundColor: d.color,
+            pointRadius: 4,
+            tension: 0.25,
+            animation: reducida ? false : { duration: 700 },
+            spanGaps: true,
+          })),
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 1, grid: { color: "#1c2330" }, ticks: { font: { family: "IBM Plex Mono", size: 10 } } },
+            x: { grid: { display: false }, ticks: { font: { family: "IBM Plex Mono", size: 10 } } },
+          },
+          plugins: {
+            legend: { labels: { font: { family: "IBM Plex Mono", size: 10 }, boxWidth: 10 } },
+            tooltip: { titleFont: { family: "IBM Plex Mono" }, bodyFont: { family: "IBM Plex Mono" } },
+          },
+        },
+      });
+    </script>
+  </section>
+
+  <section style="margin-top:22px; display:flex; gap:18px; flex-wrap:wrap; align-items:center">
+    <span class="ceja" style="margin:0">actualizado {actualizada}</span>
+    <a class="pill" href="/versiones/">tabla completa de versiones →</a>
+    <a class="pill" href="/gradcam/">auditoría visual grad-cam →</a>
+  </section>
+</Base>
