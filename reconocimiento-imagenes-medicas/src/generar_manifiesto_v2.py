@@ -15,12 +15,16 @@ Decisiones implementadas (todas registradas en el propio CSV y en docs):
   D. class_weights se calculan sobre el train FINAL incluido.
 
 Salida:
-    data/manifiestos/v2_splits.csv
-      ruta_relativa, filename, paciente_id, labels_nih,
-      clase_binaria, split_oficial, split_final, incluir
+    data/manifiestos/v2_splits.csv          (estándar, test y val congelados)
+    data/manifiestos/v2_splits_duros.csv    (--negativos-duros N: añade N hallazgos
+        visualmente similares [Infiltration|Consolidation|Lung Opacity] como
+        negativos duros SOLO en train/validation; el TEST nunca cambia)
+
 Uso:
     python src/generar_manifiesto_v2.py
+    python src/generar_manifiesto_v2.py --negativos-duros 3000 --salida v2_splits_duros.csv
 """
+import argparse
 import hashlib
 from pathlib import Path
 
@@ -42,6 +46,12 @@ def clase_binaria(labels: str) -> str:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--negativos-duros", type=int, default=0,
+                        help="añade N hallazgos tipo-infiltración como negativos en train/val")
+    parser.add_argument("--salida", default="v2_splits.csv")
+    args = parser.parse_args()
+
     df = pd.read_csv(DATASET / "etiquetas_crudas.csv")
     df["clase_binaria"] = df["labels"].map(clase_binaria)
     df["paciente_id"] = df["filename"].str.slice(0, 8)
@@ -92,19 +102,43 @@ def main() -> None:
     excluir_norm = train_norm_todas.index.difference(norm_muestra_idx)
     pool.loc[excluir_norm, "incluir"] = False
 
+    # ------------------------------------------------------------------
+    # Negativos duros (opcional): hallazgos visualmente parecidos a
+    # neumonía, SOLO de train/val oficial (el test se queda congelado).
+    # Se etiquetan como NORMAL (no-neumonía) y quedan marcados con
+    # rol="negativo_duro" para auditoría.
+    # ------------------------------------------------------------------
+    pool["rol"] = "estandar"
+    if args.negativos_duros > 0:
+        MIMICOS = ("Infiltration", "Consolidation", "Lung Opacity")
+        es_mimico = (
+            (df.clase_binaria == "EXCLUIDA")
+            & (df.split.isin(["train", "validation"]))
+            & df.labels.apply(lambda s: any(m in s.split("|") for m in MIMICOS))
+        )
+        duros = df[es_mimico].sample(n=min(args.negativos_duros, int(es_mimico.sum())), random_state=rng).copy()
+        duros["clase_binaria"] = "NORMAL"
+        duros["rol"] = "negativo_duro"
+        duros["split_final"] = "train"
+        duros.loc[duros.paciente_id.isin(val_pneu | val_norm), "split_final"] = "validation"
+        duros["incluir"] = True
+        pool = pd.concat([pool, duros])
+        print(f"negativos duros añadidos: {len(duros)}")
+
     final = pd.concat([pool, test])[
         ["ruta_relativa", "filename", "paciente_id", "labels",
-         "clase_binaria", "split", "split_final", "incluir"]
+         "clase_binaria", "split", "split_final", "incluir", "rol"]
     ].rename(columns={"labels": "labels_nih", "split": "split_oficial"})
     final = final.sort_values(["split_final", "clase_binaria"]).reset_index(drop=True)
-    DESTINO.parent.mkdir(parents=True, exist_ok=True)
-    final.to_csv(DESTINO, index=False)
+    destino = DESTINO.parent / args.salida
+    final.to_csv(destino, index=False)
 
     # ------------------------------------------------------------------
     # Resumen + verificaciones anti-fuga + pesos
     # ------------------------------------------------------------------
     incluidos = final[final.incluir]
     conteo = incluidos.groupby(["split_final", "clase_binaria"]).size().unstack(fill_value=0)
+    duros_en_uso = int((incluidos.rol == "negativo_duro").sum())
     pac_val = set(incluidos[incluidos.split_final == "validation"].paciente_id)
     pac_train = set(incluidos[incluidos.split_final == "train"].paciente_id)
     pac_test = set(incluidos[incluidos.split_final == "test"].paciente_id)
@@ -115,8 +149,9 @@ def main() -> None:
         for c in ["NORMAL", "PNEUMONIA"]
     }
 
-    print(f"Manifiesto -> {DESTINO.resolve()}")
+    print(f"Manifiesto -> {destino.resolve()}")
     print(conteo)
+    print(f"negativos duros incluidos: {duros_en_uso}")
     print(f"excluidas multi-etiqueta sin neumonía: {n_excluidas}")
     print(f"NORMAL submuestreadas en train: {len(excluir_norm)}")
     print(f"fuga train/validation (pacientes): {len(pac_train & pac_val)}")

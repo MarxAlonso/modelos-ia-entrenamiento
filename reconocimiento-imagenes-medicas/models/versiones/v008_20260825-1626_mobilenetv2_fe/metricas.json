@@ -1,0 +1,103 @@
+{
+  "version": "v008",
+  "fecha": "2026-08-25T16:50:06",
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "dataset": "v2_nih_chest_xray14",
+  "config": {
+    "version": "v008",
+    "dataset": "v2_nih_chest_xray14",
+    "manifiesto": "data\\manifiestos\\v2_splits_duros.csv",
+    "base_anterior": null,
+    "arquitectura": "mobilenetv2_feature_extraction",
+    "base_imagenet": "mobilenetv2",
+    "base_congelada": true,
+    "capas_descongeladas": 0,
+    "img_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "epochs": 20,
+    "epochs_reales": 7,
+    "learning_rate": 0.001,
+    "dropout_cabeza": 0.3,
+    "loss": "binary_crossentropy",
+    "normalizacion": "mobilenetv2",
+    "recorte_borde_px": 0,
+    "dataset_variante": "v2duros",
+    "sobremuestreo_positivos": 2,
+    "augmentacion": [
+      "rotation_5deg",
+      "zoom_10",
+      "translation_10",
+      "contrast_8"
+    ],
+    "class_weights": {
+      "0": 0.65,
+      "1": 2.169
+    },
+    "early_stopping": {
+      "monitor": "val_auc",
+      "mode": "max",
+      "patience": 6
+    },
+    "reduce_lr": true,
+    "semilla": 42,
+    "notas": "NIH con negativos duros (3000 infiltraciones/consolidaciones como no-neumonia en train/val) + oversampling de positivos x2. Mismo test congelado que v007: comparacion directa."
+  },
+  "tiempo_entrenamiento_min": 19.5,
+  "mejor_epoca": 7,
+  "fp32": {
+    "umbral": 0.5,
+    "accuracy": 0.6762,
+    "precision_pneumonia": 0.087,
+    "recall_pneumonia": 0.5351,
+    "f1_pneumonia": 0.1497,
+    "precision_normal": 0.9632,
+    "recall_normal": 0.6841,
+    "f1_normal": 0.8,
+    "f1_macro": 0.4749,
+    "roc_auc": 0.6614,
+    "matriz": {
+      "TN": 6746,
+      "FP": 3115,
+      "FN": 258,
+      "TP": 297
+    },
+    "n_imagenes": 10416,
+    "tamano_mb": 11.6
+  },
+  "cuantizacion": {
+    "dynamic_range": {
+      "tamano_mb": 2.7,
+      "reduccion_vs_fp32": 4.3,
+      "accuracy": 0.6926,
+      "f1_macro": 0.4778,
+      "recall_pneumonia": 0.4811,
+      "roc_auc": 0.6564,
+      "matriz": {
+        "TN": 6947,
+        "FP": 2914,
+        "FN": 288,
+        "TP": 267
+      },
+      "latencia_ms": 55.06
+    },
+    "int8": {
+      "tamano_mb": 2.9,
+      "reduccion_vs_fp32": 4.0,
+      "imagenes_representativas": 200,
+      "accuracy": 0.696,
+      "f1_macro": 0.482,
+      "recall_pneumonia": 0.4991,
+      "roc_auc": 0.6607,
+      "matriz": {
+        "TN": 6973,
+        "FP": 2888,
+        "FN": 278,
+        "TP": 277
+      },
+      "latencia_ms": 6.45
+    }
+  }
+}

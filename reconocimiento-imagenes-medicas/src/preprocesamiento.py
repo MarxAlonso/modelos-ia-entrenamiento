@@ -65,6 +65,15 @@ DATASETS = {
         "solo_incluir": True,   # v2 submuestrea NORMAL en train (incluir=false auditable)
         "id": "v2_nih_chest_xray14",
     },
+    # Variante de tarea para NIH: añade hallazgos tipo-infiltración como
+    # negativos duros en train/val. MISMO test que v2 -> comparaciones válidas.
+    "v2duros": {
+        "manifiesto": Path("data/manifiestos/v2_splits_duros.csv"),
+        "raiz": Path("data/versiones/v2_nih_chest_xray14"),
+        "columna_clase": "clase_binaria",
+        "solo_incluir": True,
+        "id": "v2_nih_chest_xray14",
+    },
 }
 
 AUTOTUNE = tf.data.AUTOTUNE

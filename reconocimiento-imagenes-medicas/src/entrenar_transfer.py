@@ -26,6 +26,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -92,8 +93,10 @@ def main() -> None:
     parser.add_argument("--reduce-lr", action="store_true")
     parser.add_argument("--recorte-borde", type=int, default=0,
                         help="px eliminados de cada borde (experimento de control v006)")
-    parser.add_argument("--dataset", choices=list(["v1", "v2"]), default="v1",
+    parser.add_argument("--dataset", choices=list(["v1", "v2", "v2duros"]), default="v1",
                         help="dataset versionado a usar (manifiesto+raíz de preprocesamiento)")
+    parser.add_argument("--sobremuestrear-positivos", type=int, default=1,
+                        help="veces que se repite cada imagen PNEUMONIA de train (anti-desbalance)")
     parser.add_argument("--notas", default="")
     args = parser.parse_args()
 
@@ -108,6 +111,14 @@ def main() -> None:
     print(f"=== {args.version_id}: {args.base} feature extraction ===")
     df = cargar_manifiesto(dataset=args.dataset)
     dataset_id = df.attrs["dataset_id"]
+
+    # Oversampling de positivos SOLO en train (duplica filas, no imágenes nuevas)
+    if args.sobremuestrear_positivos > 1:
+        train_mask = df.split_final == "train"
+        positivos = df[train_mask & (df.clase == "PNEUMONIA")]
+        df = pd.concat([df, *[positivos] * (args.sobremuestrear_positivos - 1)], ignore_index=True)
+        print(f"positivos sobremuestreados x{args.sobremuestrear_positivos}: "
+              f"train={int(train_mask.sum())} -> {int((df.split_final == 'train').sum())} filas")
     train_ds = crear_pipeline(df, "train", batch_size=BATCH_SIZE, augment=True, normalizacion=normalizacion, recorte_borde=args.recorte_borde)
     val_ds = crear_pipeline(df, "validation", batch_size=BATCH_SIZE, normalizacion=normalizacion, recorte_borde=args.recorte_borde)
     test_ds = crear_pipeline(df, "test", batch_size=BATCH_SIZE, normalizacion=normalizacion, recorte_borde=args.recorte_borde)
@@ -164,6 +175,8 @@ def main() -> None:
         "loss": "binary_crossentropy",
         "normalizacion": normalizacion,
         "recorte_borde_px": args.recorte_borde,
+        "dataset_variante": args.dataset,
+        "sobremuestreo_positivos": args.sobremuestrear_positivos,
         "augmentacion": ["rotation_5deg", "zoom_10", "translation_10", "contrast_8"],
         "class_weights": {k: v for k, v in pesos.items()},
         "early_stopping": {"monitor": args.monitor, "mode": modo_monitor, "patience": args.patience},

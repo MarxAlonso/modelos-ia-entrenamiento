@@ -256,4 +256,6 @@ Dataset usado (versión) · Configuración completa
 | 9 — Dataset v2 NIH | ✅ Completada (`docs/13-fase-9-dataset-v2.md`) · 112 120 imágenes adulto, manifiesto sin fuga, dominio separado de v1 |
 | 10 — v007 NIH | ✅ Completada (`docs/14-v007-nih.md`) · f1 0.334 / AUC 0.684: etiquetas débiles + dominio duro, análisis y opciones v008 · registro ahora por dominio (v003 campeón v1, v007 campeón v2) |
 | Dashboard Astro | ✅ Implementado (`viz/`, build verificado: 11 páginas) |
-| Resto | ⬜ Pendiente (v008 NIH / ResNet50 / demo inferencia tflite) |
+| Inferencia TFLite | ✅ Completada (`docs/15-fase-inferencia-tflite.md`) |
+| 11 — v008 NIH | ✅ Completada (`docs/16-v008-negativos-duros.md`) · f1 0.334→0.475, FP −50% · v008 campeón de v2 |
+| Resto | ⬜ Pendiente (WSL2+GPU DenseNet / RSNA v3) |
