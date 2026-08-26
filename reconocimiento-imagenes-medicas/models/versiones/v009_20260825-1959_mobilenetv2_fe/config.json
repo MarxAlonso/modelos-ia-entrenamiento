@@ -1,0 +1,43 @@
+{
+  "version": "v009",
+  "dataset": "v3_rsna",
+  "manifiesto": "data\\manifiestos\\v3_splits.csv",
+  "base_anterior": null,
+  "arquitectura": "mobilenetv2_feature_extraction",
+  "base_imagenet": "mobilenetv2",
+  "base_congelada": true,
+  "capas_descongeladas": 0,
+  "img_size": [
+    224,
+    224
+  ],
+  "batch_size": 32,
+  "epochs": 12,
+  "epochs_reales": 8,
+  "learning_rate": 0.001,
+  "dropout_cabeza": 0.3,
+  "loss": "binary_crossentropy",
+  "normalizacion": "mobilenetv2",
+  "recorte_borde_px": 0,
+  "dataset_variante": "v3",
+  "sobremuestreo_positivos": 1,
+  "max_normal_train": 5000,
+  "augmentacion": [
+    "rotation_5deg",
+    "zoom_10",
+    "translation_10",
+    "contrast_8"
+  ],
+  "class_weights": {
+    "0": 0.981,
+    "1": 1.02
+  },
+  "early_stopping": {
+    "monitor": "val_auc",
+    "mode": "max",
+    "patience": 4
+  },
+  "reduce_lr": true,
+  "semilla": 42,
+  "notas": "Primera version sobre RSNA (etiquetas de radiologos): MobileNetV2 congelada, NORMAL de train limitado a 5000 para CPU. Dominio separado de v1 y v2."
+}

@@ -1,5 +1,5 @@
 {
-  "actualizada": "2026-08-25T17:02:26",
+  "actualizada": "2026-08-25T20:30:23",
   "mejor_version": "v003",
   "metrica_referencia": "f1_macro_test",
   "versiones": [
@@ -186,10 +186,34 @@
       },
       "tiempo_entrenamiento_min": 19.5,
       "estado": "vigente"
+    },
+    {
+      "id": "v009",
+      "carpeta": "v009_20260825-1959_mobilenetv2_fe",
+      "dataset": "v3_rsna",
+      "arquitectura": "mobilenetv2_feature_extraction",
+      "accuracy": 0.66,
+      "recall_normal": 0.5931,
+      "recall_pneumonia": 0.8902,
+      "precision_macro": 0.6688,
+      "recall_macro": 0.7416,
+      "f1_macro": 0.6356,
+      "roc_auc": 0.8377,
+      "tamano_mb_fp32": 11.6,
+      "cuantizado": {
+        "formato": "int8",
+        "tamano_mb": 2.9,
+        "accuracy": 0.6893,
+        "f1_macro": 0.6593,
+        "latencia_ms_cpu": 7.35
+      },
+      "tiempo_entrenamiento_min": 26.0,
+      "estado": "vigente"
     }
   ],
   "mejor_por_dataset": {
     "v1_kaggle_chest_xray": "v003",
-    "v2_nih_chest_xray14": "v008"
+    "v2_nih_chest_xray14": "v008",
+    "v3_rsna": "v009"
   }
 }

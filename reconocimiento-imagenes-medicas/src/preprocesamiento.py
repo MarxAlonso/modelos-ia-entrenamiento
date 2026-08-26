@@ -74,6 +74,14 @@ DATASETS = {
         "solo_incluir": True,
         "id": "v2_nih_chest_xray14",
     },
+    # RSNA: etiquetas de radiólogos, 1024², cajas disponibles. Split propio.
+    "v3": {
+        "manifiesto": Path("data/manifiestos/v3_splits.csv"),
+        "raiz": Path("data/versiones/v3_rsna"),
+        "columna_clase": "clase",
+        "solo_incluir": False,
+        "id": "v3_rsna",
+    },
 }
 
 AUTOTUNE = tf.data.AUTOTUNE

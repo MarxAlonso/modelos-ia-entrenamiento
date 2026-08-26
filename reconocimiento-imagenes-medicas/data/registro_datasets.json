@@ -70,6 +70,32 @@
       "estado": "listo_para_entrenar"
     },
     {
+      "id": "v3_rsna",
+      "nombre": "RSNA Pneumonia Detection Challenge",
+      "origen_hf": "kellly/RSNA-Pneumonia-Detection (zip oficial 3.75 GB)",
+      "fuente_original": "RSNA Pneumonia Detection Challenge (Kaggle 2018) — etiquetas por radiólogos",
+      "contexto_clinico": "Radiografías PA adulto; Target=1 equivale a 'Lung Opacity' confirmada; cajas por consenso",
+      "total_imagenes": 26684,
+      "conteo_split_oficial": { "nota": "RSNA no trae split oficial" },
+      "splits_entrenamiento": {
+        "manifiesto": "data/manifiestos/v3_splits.csv",
+        "semilla": 42,
+        "estrategia": "patient-wise estratificado 80/10/10 (1 imagen = 1 paciente, fuga imposible por construcción)",
+        "train": { "NORMAL": 16538, "PNEUMONIA": 4810 },
+        "validation": { "NORMAL": 2067, "PNEUMONIA": 601 },
+        "test": { "NORMAL": 2067, "PNEUMONIA": 601 }
+      },
+      "hallazgos_exploracion": {
+        "imagenes_danadas_muestra_2000": 0,
+        "resolucion": "1024x1024 uniforme (L)",
+        "desbalance_normal_pneu": "3.44 : 1",
+        "cajas_por_positiva": { "1": 2614, "2": 3266, "3": 119, "4": 13 }
+      },
+      "advertencia_dominio": "adulto, otro hospital/país que NIH: tampoco comparable directo con v1 ni v2",
+      "reportes": ["data/reportes/v3_exploracion/"],
+      "estado": "listo_para_entrenar"
+    },
+    {
       "id": "descartados_evaluados",
       "nota": "repos evaluados y descartados para entrenamiento",
       "items": [

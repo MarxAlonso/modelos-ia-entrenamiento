@@ -1,0 +1,41 @@
+{
+  "dataset": "v3_rsna",
+  "origen": "kellly/RSNA-Pneumonia-Detection (espejo del challenge oficial Kaggle/RSNA)",
+  "fuente_original": "RSNA Pneumonia Detection Challenge — etiquetas por radiólogos",
+  "total_pacientes": 26684,
+  "target": {
+    "NORMAL": 20672,
+    "PNEUMONIA": 6012
+  },
+  "desbalance_normal_pneu": 3.44,
+  "clase_detalle": {
+    "No Lung Opacity / Not Normal": 11821,
+    "Normal": 8851,
+    "Lung Opacity": 6012
+  },
+  "cajas_por_imagen_positiva": {
+    "1": 2614,
+    "2": 3266,
+    "3": 119,
+    "4": 13
+  },
+  "integridad_muestra": {
+    "muestreadas": 2000,
+    "danadas": 0,
+    "resolucion": {
+      "min_ancho": 1024,
+      "max_ancho": 1024,
+      "min_alto": 1024,
+      "max_alto": 1024
+    },
+    "modos_color": {
+      "L": 2000
+    }
+  },
+  "implicaciones_entrenamiento": [
+    "Desbalance 3.44:1 -> class weights + oversampling disponibles en entrenar_transfer",
+    "1 imagen = 1 paciente: el manifiesto parte por paciente y la fuga es imposible por construccion",
+    "Cajas conservadas en manifiesto para localizacion futura",
+    "Etiqueta 'Lung Opacity' de RSNA = opacidad confirmada por radiologo (mas limpia que NIH)"
+  ]
+}

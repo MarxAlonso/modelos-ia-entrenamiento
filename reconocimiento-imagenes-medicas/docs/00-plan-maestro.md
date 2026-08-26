@@ -258,4 +258,5 @@ Dataset usado (versión) · Configuración completa
 | Dashboard Astro | ✅ Implementado (`viz/`, build verificado: 11 páginas) |
 | Inferencia TFLite | ✅ Completada (`docs/15-fase-inferencia-tflite.md`) |
 | 11 — v008 NIH | ✅ Completada (`docs/16-v008-negativos-duros.md`) · f1 0.334→0.475, FP −50% · v008 campeón de v2 |
-| Resto | ⬜ Pendiente (WSL2+GPU DenseNet / RSNA v3) |
+| 12 — Dataset v3 RSNA + v009 | ✅ Completada (`docs/17-fase-12-dataset-v3-rsna.md`) · 26 684 img radiólogo · f1 0.636 / AUC 0.838 · 3 dominios con campeón |
+| Resto | ⬜ Pendiente (WSL2+GPU DenseNet / localización con cajas / cross-dataset) |
