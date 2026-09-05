@@ -12,3 +12,7 @@ tensorboard>=2.21
 huggingface_hub>=0.30
 pyarrow>=18.0
 kagglehub>=0.3
+pydicom>=3.0
+fastapi>=0.115
+uvicorn[standard]>=0.32
+python-multipart>=0.0.17

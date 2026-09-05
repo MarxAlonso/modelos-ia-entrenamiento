@@ -1,0 +1,154 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base titulo="Demo">
+  <p class="ceja">demo local · herramienta académica, no diagnóstico real</p>
+  <h1>Sube una radiografía</h1>
+  <p class="bajada">
+    El sistema la procesa con el modelo campeón cuantizado del dominio elegido
+    (2-3 MB, inferencia en tu CPU) y devuelve clase, probabilidad y el mapa Grad-CAM.
+  </p>
+
+  <div style="display:flex; gap:10px; margin:20px 0 8px; flex-wrap:wrap">
+    {[
+      { id: "v1", etiqueta: "Pediátrico · v003", desc: "radiografías de niños" },
+      { id: "v2", etiqueta: "Adulto NIH · v008", desc: "estilo NIH" },
+      { id: "v3", etiqueta: "Adulto RSNA · v009", desc: "estilo RSNA" },
+    ].map((d, i) => (
+      <label class="selector" data-id={d.id}>
+        <input type="radio" name="dominio" value={d.id} checked={i === 0} />
+        <span><b>{d.etiqueta}</b><small>{d.desc}</small></span>
+      </label>
+    ))}
+  </div>
+
+  <div id="zona" class="panel zona" tabindex="0" role="button" aria-label="subir imagen">
+    <input type="file" id="archivo" accept="image/*" hidden />
+    <span class="zona-texto">Arrastra una imagen aquí o <u>haz clic para elegir</u></span>
+    <small class="ceja" style="margin-top:6px">jpg / png / jpeg · máx 15 MB</small>
+  </div>
+
+  <button id="analizar" class="boton" disabled>Analizar radiografía</button>
+  <p id="estado" class="bajada" style="margin-top:10px; min-height:1.4em"></p>
+
+  <section id="resultado" class="rejilla dos" hidden style="margin-top:18px">
+    <div class="panel" style="padding:18px 20px">
+      <p class="ceja">veredicto del modelo</p>
+      <div id="clase" style="font-family:var(--mono); font-size:30px; font-weight:500"></div>
+      <div style="height:14px; background:#0d1117; border-radius:999px; border:1px solid var(--regla); overflow:hidden; margin:10px 0 4px">
+        <div id="barra" style="height:100%; width:0%; transition:width .6s ease"></div>
+      </div>
+      <div style="font-family:var(--mono); font-size:11px; color:var(--tinta-2)" id="detalle"></div>
+    </div>
+    <div class="rejilla dos">
+      <figure class="panel" style="padding:10px; margin:0">
+        <img id="img-original" class="artefacto" alt="original" />
+        <figcaption>original</figcaption>
+      </figure>
+      <figure class="panel" style="padding:10px; margin:0">
+        <img id="img-gradcam" class="artefacto" alt="grad-cam" />
+        <figcaption>Grad-CAM</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <style>
+    .selector input { position: absolute; opacity: 0; }
+    .selector span {
+      display: block; border: 1px solid var(--regla); border-radius: 6px;
+      padding: 10px 14px; cursor: pointer; font-family: var(--mono); font-size: 11.5px;
+      color: var(--tinta-2);
+    }
+    .selector span b { display: block; font-weight: 500; color: var(--tinta); }
+    .selector small { font-size: 10px; letter-spacing: .06em; }
+    .selector input:checked + span { border-color: var(--v1); color: var(--tinta); background: #101a1f; }
+    .selector input:focus-visible + span { outline: 2px solid var(--v1); }
+
+    .zona {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 150px; margin-top: 12px; cursor: pointer;
+      border-style: dashed !important;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .zona.arrastre { border-color: var(--v1) !important; background: #101a1f; }
+    .zona-texto { font-family: var(--mono); font-size: 12.5px; color: var(--tinta); }
+    .zona u { text-decoration-color: var(--v1); }
+
+    .boton {
+      margin-top: 16px; font-family: var(--mono); font-size: 13px; letter-spacing: .1em;
+      padding: 11px 26px; border-radius: 5px; cursor: pointer;
+      background: var(--v1); color: #08201d; border: none; font-weight: 600;
+    }
+    .boton:disabled { opacity: .35; cursor: not-allowed; }
+
+    #resultado img { max-height: 300px; object-fit: contain; }
+  </style>
+
+  <script>
+    const zona = document.getElementById("zona") as HTMLElement;
+    const inputArchivo = document.getElementById("archivo") as HTMLInputElement;
+    const boton = document.getElementById("analizar") as HTMLButtonElement;
+    const estado = document.getElementById("estado") as HTMLParagraphElement;
+
+    let archivo: File | null = null;
+
+    function dominioElegido(): string {
+      return (document.querySelector('input[name="dominio"]:checked') as HTMLInputElement).value;
+    }
+    function asignar(f?: File | null) {
+      archivo = f ?? null;
+      boton.disabled = !archivo;
+      if (archivo) estado.textContent = `listo: ${archivo.name} (${(archivo.size / 1024).toFixed(0)} KB)`;
+    }
+
+    zona.addEventListener("click", () => inputArchivo.click());
+    zona.addEventListener("keydown", (e) => { if ((e as KeyboardEvent).key === "Enter") inputArchivo.click(); });
+    inputArchivo.addEventListener("change", () => asignar(inputArchivo.files?.[0]));
+    for (const ev of ["dragover", "dragenter"]) {
+      zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add("arrastre"); });
+    }
+    for (const ev of ["dragleave", "drop"]) {
+      zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.remove("arrastre"); });
+    }
+    zona.addEventListener("drop", (e) => {
+      const ev = e as DragEvent;
+      asignar(ev.dataTransfer?.files?.[0]);
+    });
+
+    boton.addEventListener("click", async () => {
+      if (!archivo) return;
+      boton.disabled = true;
+      estado.textContent = "procesando…";
+      const fd = new FormData();
+      fd.append("imagen", archivo);
+      fd.append("dominio", dominioElegido());
+
+      try {
+        const r = await fetch("http://127.0.0.1:8000/api/predict", { method: "POST", body: fd });
+        if (!r.ok) throw new Error((await r.json()).detail ?? `HTTP ${r.status}`);
+        const d = await r.json();
+
+        const neumonia = d.clase === "PNEUMONIA";
+        const colorClase = neumonia ? "#e0684b" : "#58c97b";
+        document.getElementById("clase")!.textContent = d.clase;
+        document.getElementById("clase")!.style.color = colorClase;
+        const barra = document.getElementById("barra")!;
+        barra.style.width = `${d.probabilidad}%`;
+        barra.style.background = colorClase;
+        document.getElementById("detalle")!.textContent =
+          `probabilidad PNEUMONIA ${d.probabilidad}% · umbral ${d.umbral} · ${d.latencia_ms} ms · modelo int8`;
+        (document.getElementById("img-original") as HTMLImageElement).src = d.original_png;
+        (document.getElementById("img-gradcam") as HTMLImageElement).src = d.gradcam_png;
+        document.getElementById("resultado")!.hidden = false;
+        estado.textContent = "";
+      } catch (err: any) {
+        estado.textContent =
+          err.message === "Failed to fetch"
+            ? "no pude contactar al servidor ¿ejecutaste python src/servidor_demo.py?"
+            : `error: ${err.message}`;
+      } finally {
+        boton.disabled = false;
+      }
+    });
+  </script>
+</Base>

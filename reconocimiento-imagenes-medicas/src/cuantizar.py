@@ -75,7 +75,9 @@ class InterpreteTFLite:
         self.output_detail = self.interp.get_output_details()[0]
 
     def __call__(self, x: np.ndarray) -> np.ndarray:
-        self.interp.set_tensor(self.input_detail["index"], x.astype(np.float32))
+        if hasattr(x, "numpy"):
+            x = x.numpy()
+        self.interp.set_tensor(self.input_detail["index"], np.asarray(x, dtype=np.float32))
         self.interp.invoke()
         return self.interp.get_tensor(self.output_detail["index"])
 
