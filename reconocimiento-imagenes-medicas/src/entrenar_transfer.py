@@ -93,7 +93,7 @@ def main() -> None:
     parser.add_argument("--reduce-lr", action="store_true")
     parser.add_argument("--recorte-borde", type=int, default=0,
                         help="px eliminados de cada borde (experimento de control v006)")
-    parser.add_argument("--dataset", choices=list(["v1", "v2", "v2duros", "v3"]), default="v1",
+    parser.add_argument("--dataset", choices=list(preprocesamiento.DATASETS), default="v1",
                         help="dataset versionado a usar (manifiesto+raíz de preprocesamiento)")
     parser.add_argument("--sobremuestrear-positivos", type=int, default=1,
                         help="veces que se repite cada imagen PNEUMONIA de train (anti-desbalance)")

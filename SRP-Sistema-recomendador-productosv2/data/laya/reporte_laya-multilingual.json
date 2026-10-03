@@ -1,0 +1,40 @@
+{
+  "modelo": "convaiinnovations/laya-multilingual",
+  "seg_por_caso": 0.526,
+  "todos": {
+    "n": 300,
+    "satisfaccion": {
+      "accuracy": 0.3667,
+      "mae": 1.1339,
+      "dentro_de_1": 0.55
+    },
+    "recomendaria": {
+      "accuracy": 0.6433,
+      "brier": 0.1915
+    }
+  },
+  "en": {
+    "n": 188,
+    "satisfaccion": {
+      "accuracy": 0.3351,
+      "mae": 0.9864,
+      "dentro_de_1": 0.6117
+    },
+    "recomendaria": {
+      "accuracy": 0.617,
+      "brier": 0.203
+    }
+  },
+  "es": {
+    "n": 112,
+    "satisfaccion": {
+      "accuracy": 0.4196,
+      "mae": 1.3814,
+      "dentro_de_1": 0.4464
+    },
+    "recomendaria": {
+      "accuracy": 0.6875,
+      "brier": 0.1723
+    }
+  }
+}

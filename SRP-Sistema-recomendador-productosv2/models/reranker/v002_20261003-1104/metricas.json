@@ -1,0 +1,168 @@
+{
+  "sasrec_version": "v003_20261003-1048",
+  "n_usuarios_eval": 3864,
+  "protocolo": "1 positivo + 99 negativos, @10; cross-fitting 5 pliegues",
+  "azar": {
+    "hr@10": 0.104,
+    "ndcg@10": 0.046,
+    "categoria@1": 0.2453,
+    "categoria@3": 0.5124
+  },
+  "popularidad": {
+    "hr@10": 0.4736,
+    "ndcg@10": 0.3443,
+    "categoria@1": 0.3701,
+    "categoria@3": 0.6346
+  },
+  "sasrec": {
+    "hr@10": 0.4788,
+    "ndcg@10": 0.3542,
+    "categoria@1": 0.4211,
+    "categoria@3": 0.6718
+  },
+  "reranker": {
+    "hr@10": 0.5072,
+    "ndcg@10": 0.3707,
+    "categoria@1": 0.4441,
+    "categoria@3": 0.6791
+  },
+  "confianza": {
+    "ece_top10": 0.0272,
+    "por_decil": [
+      {
+        "conf_media": 0.309,
+        "acierto_real": 0.287,
+        "n": 387
+      },
+      {
+        "conf_media": 0.358,
+        "acierto_real": 0.306,
+        "n": 386
+      },
+      {
+        "conf_media": 0.39,
+        "acierto_real": 0.324,
+        "n": 386
+      },
+      {
+        "conf_media": 0.421,
+        "acierto_real": 0.426,
+        "n": 387
+      },
+      {
+        "conf_media": 0.455,
+        "acierto_real": 0.474,
+        "n": 386
+      },
+      {
+        "conf_media": 0.492,
+        "acierto_real": 0.526,
+        "n": 386
+      },
+      {
+        "conf_media": 0.538,
+        "acierto_real": 0.581,
+        "n": 387
+      },
+      {
+        "conf_media": 0.592,
+        "acierto_real": 0.585,
+        "n": 386
+      },
+      {
+        "conf_media": 0.67,
+        "acierto_real": 0.684,
+        "n": 386
+      },
+      {
+        "conf_media": 0.818,
+        "acierto_real": 0.879,
+        "n": 387
+      }
+    ],
+    "selectivo_70": {
+      "precision": 0.6979,
+      "cobertura": 0.3531,
+      "umbral": 0.5359
+    },
+    "selectivo_80": {
+      "precision": 0.8045,
+      "cobertura": 0.1758,
+      "umbral": 0.6438
+    },
+    "selectivo_90": {
+      "precision": 0.8895,
+      "cobertura": 0.0842,
+      "umbral": 0.7437
+    }
+  },
+  "por_largo_historial": {
+    "1-1": {
+      "n": 3283,
+      "hr@10": 0.5206
+    },
+    "2-2": {
+      "n": 422,
+      "hr@10": 0.4384
+    },
+    "3-4": {
+      "n": 118,
+      "hr@10": 0.4322
+    },
+    ">=5": {
+      "n": 41,
+      "hr@10": 0.3659
+    }
+  },
+  "pesos": {
+    "sasrec": 0.3799,
+    "log_pop": 0.0486,
+    "tt_media": -0.0278,
+    "tt_max": 0.3373,
+    "tt_ultima": 0.0697,
+    "cat_frac": 0.1531,
+    "cat_ultima": -0.1464,
+    "pub_frac": 0.0031,
+    "tienda": 0.1056,
+    "rating": 0.0188,
+    "log_resenas": 0.4538
+  },
+  "catalogo_completo": {
+    "protocolo": "recall@10 contra los 71,214 productos, via el pool del backend (600)",
+    "real_dentro_del_pool": 0.2459,
+    "popularidad": 0.0411,
+    "sasrec": 0.0461,
+    "rrf_similitud+sasrec (backend actual)": 0.0445,
+    "reranker": 0.0523,
+    "ece_top10": 0.0124,
+    "selectivo_20": {
+      "precision": 0.197,
+      "cobertura": 0.0262,
+      "umbral": 0.1192
+    },
+    "selectivo_30": {
+      "precision": 0.2804,
+      "cobertura": 0.0129,
+      "umbral": 0.3154
+    },
+    "selectivo_50": {
+      "precision": 0.25,
+      "cobertura": 0.001,
+      "umbral": 0.3694
+    },
+    "pesos": {
+      "sasrec": 0.5091,
+      "log_pop": 0.6947,
+      "tt_media": 0.1433,
+      "tt_max": -0.028,
+      "tt_ultima": 0.5116,
+      "cat_frac": 0.2483,
+      "cat_ultima": -0.2436,
+      "pub_frac": -0.0351,
+      "tienda": 0.2182,
+      "rating": 0.1412,
+      "log_resenas": 0.1986,
+      "ninguno": 7.9912
+    }
+  }
+}

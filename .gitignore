@@ -8,7 +8,9 @@ __pycache__/
 sistema-recomendador-productos/data/raw_amazon/
 sistema-recomendador-productos/data/amazon/resenas.csv
 sistema-recomendador-productos/data/amazon/productos.csv
+sistema-recomendador-productos/
 
+reconocimiento-imagenes-medicas/
 # Builds regenerables
 dist/
 
@@ -35,3 +37,6 @@ reconocimiento-imagenes-medicas/data/versiones/
 reconocimiento-imagenes-medicas/viz/public/
 reconocimiento-imagenes-medicas/viz/src/data/
 reconocimiento-imagenes-medicas/viz/.astro/
+
+# SRP v2: CSV >100MB (limite de GitHub); se regenera con 01_limpieza_az.py
+SRP-Sistema-recomendador-productosv2/data/processed_az/interacciones_clean.csv

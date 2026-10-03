@@ -33,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from cuantizar import InterpreteTFLite, registrar  # noqa: E402
 from entrenar import calcular_metricas  # noqa: E402
 from preprocesamiento import (  # noqa: E402
+    DATASETS,
     SEMILLA,
     cargar_manifiesto,
     crear_pipeline,
@@ -60,8 +61,8 @@ def barrido(y: np.ndarray, p: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.nd
     return ts, np.array(f1s), np.array(recalls)
 
 
-def elegir_umbral(ts, f1s, recalls) -> float:
-    validos = recalls >= RECALL_PNEU_MINIMO
+def elegir_umbral(ts, f1s, recalls, recall_minimo: float = RECALL_PNEU_MINIMO) -> float:
+    validos = recalls >= recall_minimo
     if validos.any():
         idx = int(np.argmax(np.where(validos, f1s, -1)))
     else:
@@ -73,6 +74,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version-id", required=True)
     parser.add_argument("--desde", required=True, type=Path)
+    parser.add_argument("--dataset", choices=list(DATASETS), default="v1",
+                        help="dataset versionado (debe ser el MISMO con el que se entreno la version origen)")
+    parser.add_argument("--recall-minimo", type=float, default=RECALL_PNEU_MINIMO,
+                        help="recall_pneumonia minimo exigido al elegir t* (0 = maximizar f1_macro sin restriccion)")
     parser.add_argument("--notas", default="")
     args = parser.parse_args()
 
@@ -86,14 +91,15 @@ def main() -> None:
     normalizacion = config_previa.get("normalizacion", "rescale")
 
     print(f"=== {args.version_id}: ajuste de umbral desde {args.desde.name} ===")
-    df = cargar_manifiesto()
-    val_ds = crear_pipeline(df, "validation", batch_size=32, normalizacion=normalizacion)
+    recorte = int(config_previa.get("recorte_borde_px", 0))
+    df = cargar_manifiesto(dataset=args.dataset)
+    val_ds = crear_pipeline(df, "validation", batch_size=32, normalizacion=normalizacion, recorte_borde=recorte)
 
     modelo = tf.keras.models.load_model(args.desde / "modelo.keras")
     y_val, p_val = probabilidades(modelo, val_ds)
 
     ts, f1s, recalls = barrido(y_val, p_val)
-    t_opt = elegir_umbral(ts, f1s, recalls)
+    t_opt = elegir_umbral(ts, f1s, recalls, args.recall_minimo)
     print(f"umbral óptimo en validation: {t_opt} (f1_macro={f1s[np.argmin(np.abs(ts-t_opt))]:.4f})")
 
     # Gráfico del barrido (evidencia visual de la elección)
@@ -101,7 +107,7 @@ def main() -> None:
     ax.plot(ts, f1s, label="f1_macro (validation)", color="#4C9BD6", lw=2)
     ax.plot(ts, recalls, label="recall_pneumonia (validation)", color="#E0684B", lw=1.5, ls="--")
     ax.axvline(t_opt, color="#333", ls=":", label=f"t* = {t_opt}")
-    ax.axhline(RECALL_PNEU_MINIMO, color="gray", ls=":", lw=1)
+    ax.axhline(args.recall_minimo, color="gray", ls=":", lw=1)
     ax.set_xlabel("Umbral de decisión")
     ax.set_ylabel("Métrica")
     ax.set_title("Barrido de umbrales sobre validation (test intacto)")
@@ -113,7 +119,7 @@ def main() -> None:
     # ------------------------------------------------------------------
     # Evaluación ÚNICA en test con el umbral elegido
     # ------------------------------------------------------------------
-    test_ds_keras = crear_pipeline(df, "test", batch_size=32, normalizacion=normalizacion)
+    test_ds_keras = crear_pipeline(df, "test", batch_size=32, normalizacion=normalizacion, recorte_borde=recorte)
     y_test, p_test = probabilidades(modelo, test_ds_keras)
     metricas_fp32 = calcular_metricas(y_test, p_test, umbral=t_opt)
     metricas_fp32["tamano_mb"] = metricas_previas["fp32"]["tamano_mb"]
@@ -121,7 +127,7 @@ def main() -> None:
     # int8 heredado (mismos pesos cuantizados; el umbral se aplica igual)
     ruta_int8_origen = args.desde / "modelo_quant_int8.tflite"
     interp = InterpreteTFLite(ruta_int8_origen)
-    test_ds_unit = crear_pipeline(df, "test", batch_size=1, normalizacion=normalizacion)
+    test_ds_unit = crear_pipeline(df, "test", batch_size=1, normalizacion=normalizacion, recorte_borde=recorte)
     ys8, ps8, lats = [], [], []
     for i, (x, y) in enumerate(test_ds_unit):
         import time
@@ -134,7 +140,10 @@ def main() -> None:
         ps8.append(p)
     metricas_int8 = calcular_metricas(np.array(ys8), np.array(ps8), umbral=t_opt)
 
-    # Artefactos de despliegue heredados (copia para versión autocontenida)
+    # Artefactos heredados (copia para versión autocontenida). modelo.keras es
+    # obligatorio: promover_campeon.py lo exige, la demo lo usa para Grad-CAM y
+    # ciclo_mejora.py afina desde él en la ronda siguiente.
+    shutil.copy2(args.desde / "modelo.keras", dir_version / "modelo.keras")
     shutil.copy2(ruta_int8_origen, dir_version / "modelo_quant_int8.tflite")
     shutil.copy2(args.desde / "modelo_quant_dyn.tflite", dir_version / "modelo_quant_dyn.tflite")
 
@@ -146,10 +155,13 @@ def main() -> None:
         "base_anterior": args.desde.name,
         "arquitectura": f"{config_previa['arquitectura']}+umbral",
         "modelo_fisico": "idéntico al de la base anterior; solo cambia el umbral",
+        "img_size": config_previa.get("img_size", [224, 224]),
         "umbral_decision": t_opt,
         "umbral_elegido_en": "validation",
-        "recall_pneu_minimo_restriccion": RECALL_PNEU_MINIMO,
+        "recall_pneu_minimo_restriccion": args.recall_minimo,
         "normalizacion": normalizacion,
+        "recorte_borde_px": recorte,
+        "dataset_variante": args.dataset,
         "semilla": SEMILLA,
         "notas": args.notas or f"Umbral optimizado por f1_macro en validation desde {args.desde.name}",
     }

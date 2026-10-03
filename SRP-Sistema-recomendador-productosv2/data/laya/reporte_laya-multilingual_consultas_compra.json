@@ -1,0 +1,112 @@
+{
+  "modelo": "convaiinnovations/laya-multilingual",
+  "seg_por_caso": 0.8,
+  "consultas_compra": {
+    "todos": {
+      "n": 400,
+      "categoria": {
+        "accuracy": 0.575,
+        "selectivo": {
+          "0.35": {
+            "precision": 0.5926,
+            "cobertura": 0.945
+          },
+          "0.5": {
+            "precision": 0.6231,
+            "cobertura": 0.8025
+          },
+          "0.7": {
+            "precision": 0.6904,
+            "cobertura": 0.5975
+          },
+          "0.9": {
+            "precision": 0.7487,
+            "cobertura": 0.4675
+          }
+        }
+      },
+      "publico": {
+        "accuracy": 0.5925,
+        "selectivo": {
+          "0.35": {
+            "precision": 0.6042,
+            "cobertura": 0.9475
+          },
+          "0.5": {
+            "precision": 0.7391,
+            "cobertura": 0.4025
+          },
+          "0.7": {
+            "precision": 0.925,
+            "cobertura": 0.1
+          },
+          "0.9": {
+            "precision": 1.0,
+            "cobertura": 0.0125
+          }
+        }
+      },
+      "es_regalo": {
+        "accuracy": 0.3425
+      },
+      "sensibilidad_precio": {
+        "accuracy": 0.3375,
+        "mae": 1.1169,
+        "dentro_de_1": 0.49
+      }
+    },
+    "es": {
+      "n": 400,
+      "categoria": {
+        "accuracy": 0.575,
+        "selectivo": {
+          "0.35": {
+            "precision": 0.5926,
+            "cobertura": 0.945
+          },
+          "0.5": {
+            "precision": 0.6231,
+            "cobertura": 0.8025
+          },
+          "0.7": {
+            "precision": 0.6904,
+            "cobertura": 0.5975
+          },
+          "0.9": {
+            "precision": 0.7487,
+            "cobertura": 0.4675
+          }
+        }
+      },
+      "publico": {
+        "accuracy": 0.5925,
+        "selectivo": {
+          "0.35": {
+            "precision": 0.6042,
+            "cobertura": 0.9475
+          },
+          "0.5": {
+            "precision": 0.7391,
+            "cobertura": 0.4025
+          },
+          "0.7": {
+            "precision": 0.925,
+            "cobertura": 0.1
+          },
+          "0.9": {
+            "precision": 1.0,
+            "cobertura": 0.0125
+          }
+        }
+      },
+      "es_regalo": {
+        "accuracy": 0.3425
+      },
+      "sensibilidad_precio": {
+        "accuracy": 0.3375,
+        "mae": 1.1169,
+        "dentro_de_1": 0.49
+      }
+    }
+  }
+}

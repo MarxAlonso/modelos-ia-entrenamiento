@@ -1,0 +1,59 @@
+{
+  "consulta": {
+    "categoria": {
+      "type": "choice",
+      "instructions": "¿Qué tipo de producto quiere comprar el cliente?",
+      "criteria": {
+        "ropa": "vestidos, camisas, polos, blusas, pantalones, jeans, shorts, faldas, casacas, chompas, ropa de baño",
+        "calzado": "zapatos, zapatillas, botas, sandalias",
+        "joyeria": "aretes, collares, pulseras, anillos, dijes",
+        "relojes": "relojes o correas para reloj o smartwatch",
+        "lentes": "lentes de sol o anteojos",
+        "bolsos": "carteras, bolsos, mochilas, billeteras, maletas",
+        "ropa_interior": "medias, calcetines, ropa interior, pijamas",
+        "accesorios": "correas, gorros, gorras, bufandas, guantes, corbatas",
+        "otros": "otra cosa, o no dice qué producto quiere"
+      }
+    },
+    "publico": {
+      "type": "choice",
+      "instructions": "¿Para quién es el producto?",
+      "criteria": {
+        "mujer": "para una mujer",
+        "hombre": "para un hombre",
+        "ninos": "para un bebé, niño o niña",
+        "unisex": "no lo dice o sirve para cualquiera"
+      }
+    },
+    "es_regalo": {
+      "type": "noul",
+      "instructions": "¿El cliente compra el producto para regalarlo a otra persona?"
+    },
+    "sensibilidad_precio": {
+      "type": "score",
+      "instructions": "¿Qué tan importante es para el cliente que el producto sea barato?",
+      "criteria": [
+        "no menciona el precio",
+        "le importa algo el precio",
+        "quiere algo barato o económico"
+      ]
+    }
+  },
+  "resena": {
+    "satisfaccion": {
+      "type": "score",
+      "instructions": "¿Qué tan satisfecho quedó el cliente con el producto según su reseña?",
+      "criteria": [
+        "muy insatisfecho",
+        "insatisfecho",
+        "neutral",
+        "satisfecho",
+        "muy satisfecho"
+      ]
+    },
+    "recomendaria": {
+      "type": "noul",
+      "instructions": "¿El cliente recomendaría este producto a otra persona?"
+    }
+  }
+}

@@ -259,4 +259,5 @@ Dataset usado (versión) · Configuración completa
 | Inferencia TFLite | ✅ Completada (`docs/15-fase-inferencia-tflite.md`) |
 | 11 — v008 NIH | ✅ Completada (`docs/16-v008-negativos-duros.md`) · f1 0.334→0.475, FP −50% · v008 campeón de v2 |
 | 12 — Dataset v3 RSNA + v009 | ✅ Completada (`docs/17-fase-12-dataset-v3-rsna.md`) · 26 684 img radiólogo · f1 0.636 / AUC 0.838 · 3 dominios con campeón |
-| Resto | ⬜ Pendiente (WSL2+GPU DenseNet / localización con cajas / cross-dataset) |
+| 13 — Modelo universal + ciclo continuo | 🚧 En curso (`docs/18-fase-13-modelo-universal.md`) · dataset unión `vu` (33 537 img, 3 dominios) · v010 f1 0.669 / AUC 0.856 · `models/campeon/` como artefacto único de la demo · `ciclo_mejora.py` automatiza fine tuning → cuantización → promoción |
+| Resto | ⬜ Pendiente (WSL2+GPU DenseNet / localización con cajas / evaluación cruzada universal vs especialistas) |

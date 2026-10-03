@@ -82,6 +82,16 @@ DATASETS = {
         "solo_incluir": False,
         "id": "v3_rsna",
     },
+    # UNIÓN multi-dominio (v1 + v2duros + v3). Las rutas del manifiesto ya
+    # incluyen la carpeta del dataset de origen, por eso la raíz es el padre
+    # común. Lo genera src/generar_manifiesto_union.py.
+    "vu": {
+        "manifiesto": Path("data/manifiestos/vu_splits.csv"),
+        "raiz": Path("data/versiones"),
+        "columna_clase": "clase",
+        "solo_incluir": False,
+        "id": "vu_union_multidominio",
+    },
 }
 
 AUTOTUNE = tf.data.AUTOTUNE

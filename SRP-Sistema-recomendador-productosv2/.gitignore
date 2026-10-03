@@ -1,0 +1,15 @@
+# Local Pi runtime state
+.atl/
+
+# Datos pesados (regenerables con 00/01_limpieza y src/datos.py)
+data/raw/
+data/interim/
+data/processed/
+data/splits/
+# Modelos entrenados (cientos de MB: compartir aparte, no en git)
+models/two_tower/
+models/sasrec/
+models/servir/
+models/laya_srp/
+
+version.md

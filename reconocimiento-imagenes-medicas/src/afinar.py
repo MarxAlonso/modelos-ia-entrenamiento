@@ -34,13 +34,13 @@ import tensorflow as tf
 sys.path.insert(0, str(Path(__file__).parent))
 from entrenar import calcular_metricas, guardar_matriz, obtener_predicciones  # noqa: E402
 from preprocesamiento import (  # noqa: E402
+    DATASETS,
     SEMILLA,
     cargar_manifiesto,
     crear_pipeline,
     pesos_de_clase,
 )
 
-DATASET_ID = "v1_kaggle_chest_xray"
 BATCH_SIZE = 32
 
 
@@ -79,6 +79,10 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--patience", type=int, default=4)
     parser.add_argument("--monitor", default="val_auc")
+    parser.add_argument("--dataset", choices=list(DATASETS), default="v1",
+                        help="dataset versionado sobre el que se afina (debe ser el MISMO de la versión origen)")
+    parser.add_argument("--recorte-borde", type=int, default=0,
+                        help="px eliminados de cada borde; por defecto se hereda del config de la versión origen")
     parser.add_argument("--notas", default="")
     args = parser.parse_args()
 
@@ -92,11 +96,15 @@ def main() -> None:
     print(f"=== {args.version_id}: fine tuning desde {args.desde.parent.name} ===")
     config_previa = json.loads((args.desde.parent / "config.json").read_text(encoding="utf-8"))
     normalizacion = config_previa.get("normalizacion", "rescale")
+    # El preproceso geométrico DEBE ser el mismo que el de la versión origen,
+    # o los pesos que estamos puliendo verían imágenes distintas a las suyas.
+    recorte = args.recorte_borde or int(config_previa.get("recorte_borde_px", 0))
 
-    df = cargar_manifiesto()
-    train_ds = crear_pipeline(df, "train", batch_size=BATCH_SIZE, augment=True, normalizacion=normalizacion)
-    val_ds = crear_pipeline(df, "validation", batch_size=BATCH_SIZE, normalizacion=normalizacion)
-    test_ds = crear_pipeline(df, "test", batch_size=BATCH_SIZE, normalizacion=normalizacion)
+    df = cargar_manifiesto(dataset=args.dataset)
+    dataset_id = df.attrs["dataset_id"]
+    train_ds = crear_pipeline(df, "train", batch_size=BATCH_SIZE, augment=True, normalizacion=normalizacion, recorte_borde=recorte)
+    val_ds = crear_pipeline(df, "validation", batch_size=BATCH_SIZE, normalizacion=normalizacion, recorte_borde=recorte)
+    test_ds = crear_pipeline(df, "test", batch_size=BATCH_SIZE, normalizacion=normalizacion, recorte_borde=recorte)
     pesos = {int(k): v for k, v in pesos_de_clase(df).items()}
 
     modelo = tf.keras.models.load_model(args.desde)
@@ -143,8 +151,9 @@ def main() -> None:
 
     config = {
         "version": args.version_id,
-        "dataset": DATASET_ID,
-        "manifiesto": "data/manifiestos/v1_splits.csv",
+        "dataset": dataset_id,
+        "manifiesto": str(DATASETS[args.dataset]["manifiesto"]),
+        "dataset_variante": args.dataset,
         "base_anterior": args.desde.parent.name,
         "arquitectura": f"{base.name}_finetuning",
         "base_imagenet": base.name.replace("_1.00_224", ""),
@@ -157,6 +166,7 @@ def main() -> None:
         "learning_rate_fine_tuning": args.lr,
         "loss": "binary_crossentropy",
         "normalizacion": normalizacion,
+        "recorte_borde_px": recorte,
         "augmentacion": ["rotation_5deg", "zoom_10", "translation_10", "contrast_8"],
         "class_weights": {k: v for k, v in pesos.items()},
         "early_stopping": {"monitor": args.monitor, "mode": modo_monitor, "patience": args.patience},
@@ -169,7 +179,7 @@ def main() -> None:
         "version": args.version_id,
         "fecha": datetime.now().isoformat(timespec="seconds"),
         "arquitectura": config["arquitectura"],
-        "dataset": DATASET_ID,
+        "dataset": dataset_id,
         "config": config,
         "tiempo_entrenamiento_min": round(minutos, 1),
         "mejor_epoca": int(np.argmin(historial.history["val_loss"])) + 1,

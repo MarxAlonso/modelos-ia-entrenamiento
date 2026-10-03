@@ -1,11 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import datos from "../../data/versiones.json";
-
-const dominioEtiqueta: Record<string, string> = {
-  v1_kaggle_chest_xray: "v1 pediátrico",
-  v2_nih_chest_xray14: "v2 NIH adulto",
-};
+import { dominioDe } from "../../lib/dominios";
 const lista = [...datos.versiones].sort((a, b) =>
   a.dataset.localeCompare(b.dataset) || a.id.localeCompare(b.id)
 );
@@ -29,7 +25,7 @@ const lista = [...datos.versiones].sort((a, b) =>
         {lista.map((v) => (
           <tr>
             <td><a href={`/versiones/${v.id}/`}>{v.id}</a></td>
-            <td class={v.dataset.startsWith("v1") ? "dominio-v1" : "dominio-v2"}>{dominioEtiqueta[v.dataset]}</td>
+            <td class={dominioDe(v.dataset).clase}>{dominioDe(v.dataset).corta}</td>
             <td>{v.arquitectura}</td>
             <td class="num">{v.accuracy.toFixed(3)}</td>
             <td class="num">{v.recall_pneumonia.toFixed(3)}</td>

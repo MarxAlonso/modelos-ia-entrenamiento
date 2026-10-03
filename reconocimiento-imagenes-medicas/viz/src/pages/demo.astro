@@ -5,27 +5,21 @@ import Base from "../layouts/Base.astro";
   <p class="ceja">demo local · herramienta académica, no diagnóstico real</p>
   <h1>Sube una radiografía</h1>
   <p class="bajada">
-    El sistema la procesa con el modelo campeón cuantizado del dominio elegido
-    (2-3 MB, inferencia en tu CPU) y devuelve clase, probabilidad y el mapa Grad-CAM.
+    Por defecto la analiza el <b>modelo universal</b>: un único archivo TensorFlow
+    entrenado sobre los tres dominios del proyecto a la vez, así que no hace falta
+    saber de qué hospital viene la placa. Devuelve clase, probabilidad y el mapa
+    Grad-CAM de dónde miró para decidir.
   </p>
 
-  <div style="display:flex; gap:10px; margin:20px 0 8px; flex-wrap:wrap">
-    {[
-      { id: "v1", etiqueta: "Pediátrico · v003", desc: "radiografías de niños" },
-      { id: "v2", etiqueta: "Adulto NIH · v008", desc: "estilo NIH" },
-      { id: "v3", etiqueta: "Adulto RSNA · v009", desc: "estilo RSNA" },
-    ].map((d, i) => (
-      <label class="selector" data-id={d.id}>
-        <input type="radio" name="dominio" value={d.id} checked={i === 0} />
-        <span><b>{d.etiqueta}</b><small>{d.desc}</small></span>
-      </label>
-    ))}
+  <div id="modelos" class="selector-fila">
+    <span class="ceja cargando">consultando modelos disponibles…</span>
   </div>
+  <p id="ficha-campeon" class="ceja ficha" hidden></p>
 
   <div id="zona" class="panel zona" tabindex="0" role="button" aria-label="subir imagen">
-    <input type="file" id="archivo" accept="image/*" hidden />
+    <input type="file" id="archivo" accept="image/*,.dcm,.dicom" hidden />
     <span class="zona-texto">Arrastra una imagen aquí o <u>haz clic para elegir</u></span>
-    <small class="ceja" style="margin-top:6px">jpg / png / jpeg · máx 15 MB</small>
+    <small class="ceja" style="margin-top:6px">jpg / png / webp / bmp / dicom · máx 15 MB</small>
   </div>
 
   <button id="analizar" class="boton" disabled>Analizar radiografía</button>
@@ -39,6 +33,7 @@ import Base from "../layouts/Base.astro";
         <div id="barra" style="height:100%; width:0%; transition:width .6s ease"></div>
       </div>
       <div style="font-family:var(--mono); font-size:11px; color:var(--tinta-2)" id="detalle"></div>
+      <p id="aviso-entrada" class="aviso" hidden></p>
     </div>
     <div class="rejilla dos">
       <figure class="panel" style="padding:10px; margin:0">
@@ -53,6 +48,7 @@ import Base from "../layouts/Base.astro";
   </section>
 
   <style>
+    .selector-fila { display: flex; gap: 10px; margin: 20px 0 8px; flex-wrap: wrap; }
     .selector input { position: absolute; opacity: 0; }
     .selector span {
       display: block; border: 1px solid var(--regla); border-radius: 6px;
@@ -63,6 +59,10 @@ import Base from "../layouts/Base.astro";
     .selector small { font-size: 10px; letter-spacing: .06em; }
     .selector input:checked + span { border-color: var(--v1); color: var(--tinta); background: #101a1f; }
     .selector input:focus-visible + span { outline: 2px solid var(--v1); }
+    .selector.no-disponible span { opacity: .35; cursor: not-allowed; }
+    .selector .marca { color: var(--v1); letter-spacing: .06em; }
+
+    .ficha { margin: 2px 0 0; font-size: 10.5px; color: var(--tinta-2); }
 
     .zona {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -81,19 +81,87 @@ import Base from "../layouts/Base.astro";
     }
     .boton:disabled { opacity: .35; cursor: not-allowed; }
 
+    .aviso {
+      margin: 12px 0 0; padding: 9px 11px; border-radius: 5px;
+      border: 1px solid #6b4a1f; background: #1d1608;
+      font-family: var(--mono); font-size: 11px; line-height: 1.5; color: #e8c07d;
+    }
+
     #resultado img { max-height: 300px; object-fit: contain; }
   </style>
 
   <script>
+    const API = "http://127.0.0.1:8000";
+
     const zona = document.getElementById("zona") as HTMLElement;
     const inputArchivo = document.getElementById("archivo") as HTMLInputElement;
     const boton = document.getElementById("analizar") as HTMLButtonElement;
     const estado = document.getElementById("estado") as HTMLParagraphElement;
+    const contenedorModelos = document.getElementById("modelos") as HTMLElement;
+    const fichaCampeon = document.getElementById("ficha-campeon") as HTMLParagraphElement;
 
     let archivo: File | null = null;
 
+    const escapar = (t: string) =>
+      t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+    // ------------------------------------------------------------------
+    // Selector de modelo: lo dicta el servidor, no el HTML. Así promover un
+    // campeón nuevo (src/promover_campeon.py) se refleja aquí sin tocar la UI.
+    // ------------------------------------------------------------------
+    async function cargarModelos() {
+      try {
+        const dominios = await (await fetch(`${API}/api/dominios`)).json();
+        contenedorModelos.innerHTML = dominios
+          .map((d: any) => {
+            const marca = d.universal ? '<small class="marca">recomendado</small>' : "";
+            const etiqueta = d.version ? `${d.etiqueta} · ${d.version}` : d.etiqueta;
+            const desc = d.disponible ? d.desc : "sin promover todavía";
+            return `<label class="selector ${d.disponible ? "" : "no-disponible"}" title="${escapar(d.carpeta)}">
+              <input type="radio" name="dominio" value="${d.id}"
+                ${d.por_defecto && d.disponible ? "checked" : ""} ${d.disponible ? "" : "disabled"} />
+              <span><b>${escapar(etiqueta)}</b><small>${escapar(desc)}</small>${marca}</span>
+            </label>`;
+          })
+          .join("");
+
+        // Si el universal aún no está promovido, no dejamos la página sin selección.
+        if (!document.querySelector('input[name="dominio"]:checked')) {
+          const primero = document.querySelector(
+            'input[name="dominio"]:not([disabled])'
+          ) as HTMLInputElement | null;
+          if (primero) primero.checked = true;
+        }
+
+        const r = await fetch(`${API}/api/campeon`);
+        if (r.ok) {
+          const c = await r.json();
+          fichaCampeon.textContent =
+            `campeón universal ${c.version} · ${c.arquitectura} · f1 macro ${c.f1_macro} · ` +
+            `int8 ${c.int8.tamano_mb} MB · ${c.int8.latencia_ms} ms · umbral ${c.contrato_inferencia.umbral_decision}`;
+          fichaCampeon.hidden = false;
+        }
+      } catch {
+        contenedorModelos.innerHTML =
+          '<span class="ceja">servidor apagado · ejecuta <b>python src/servidor_demo.py</b> y recarga</span>';
+      }
+    }
+    cargarModelos();
+
+    // FastAPI devuelve {detail: "texto"} en HTTPException y {detail: [..]} en
+    // errores de validación (422); un 500 sin manejar puede no traer JSON.
+    async function mensajeDeError(r: Response): Promise<string> {
+      try {
+        const cuerpo = await r.json();
+        if (typeof cuerpo.detail === "string") return cuerpo.detail;
+        if (Array.isArray(cuerpo.detail)) return cuerpo.detail.map((e: any) => e.msg).join("; ");
+      } catch {}
+      return `el servidor respondió HTTP ${r.status}`;
+    }
+
     function dominioElegido(): string {
-      return (document.querySelector('input[name="dominio"]:checked') as HTMLInputElement).value;
+      const elegido = document.querySelector('input[name="dominio"]:checked') as HTMLInputElement | null;
+      return elegido?.value ?? "auto";
     }
     function asignar(f?: File | null) {
       archivo = f ?? null;
@@ -124,8 +192,8 @@ import Base from "../layouts/Base.astro";
       fd.append("dominio", dominioElegido());
 
       try {
-        const r = await fetch("http://127.0.0.1:8000/api/predict", { method: "POST", body: fd });
-        if (!r.ok) throw new Error((await r.json()).detail ?? `HTTP ${r.status}`);
+        const r = await fetch(`${API}/api/predict`, { method: "POST", body: fd });
+        if (!r.ok) throw new Error(await mensajeDeError(r));
         const d = await r.json();
 
         const neumonia = d.clase === "PNEUMONIA";
@@ -136,7 +204,15 @@ import Base from "../layouts/Base.astro";
         barra.style.width = `${d.probabilidad}%`;
         barra.style.background = colorClase;
         document.getElementById("detalle")!.textContent =
-          `probabilidad PNEUMONIA ${d.probabilidad}% · umbral ${d.umbral} · ${d.latencia_ms} ms · modelo int8`;
+          // La decisión la toma el int8 (pasos de 1/256); el fp32 da el valor fino.
+          `probabilidad PNEUMONIA ${d.probabilidad}% (fp32 ${d.probabilidad_gradcam_keras}%) · ` +
+          `umbral ${d.umbral} · ${d.latencia_ms} ms · ` +
+          `modelo ${d.modelo.version} int8 · entrada ${d.entrada.formato} ${d.entrada.resolucion}`;
+
+        const aviso = document.getElementById("aviso-entrada") as HTMLParagraphElement;
+        aviso.textContent = d.entrada.aviso_entrada ?? "";
+        aviso.hidden = !d.entrada.aviso_entrada;
+
         (document.getElementById("img-original") as HTMLImageElement).src = d.original_png;
         (document.getElementById("img-gradcam") as HTMLImageElement).src = d.gradcam_png;
         document.getElementById("resultado")!.hidden = false;

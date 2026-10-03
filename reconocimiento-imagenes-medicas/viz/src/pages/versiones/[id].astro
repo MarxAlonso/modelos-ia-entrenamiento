@@ -1,14 +1,15 @@
 ---
 import Base from "../../layouts/Base.astro";
 import datos from "../../data/versiones.json";
+import { dominioDe } from "../../lib/dominios";
 
 export function getStaticPaths() {
   return datos.versiones.map((v) => ({ params: { id: v.id }, props: { v } }));
 }
 
 const { v } = Astro.props;
-const dominio = v.dataset.startsWith("v1") ? "v1 pediátrico" : "v2 NIH adulto";
-const colorDominio = v.dataset.startsWith("v1") ? "var(--v1)" : "var(--v2)";
+const dominio = dominioDe(v.dataset).corta;
+const colorDominio = dominioDe(v.dataset).color;
 const configInteresante: [string, any][] = [
   ["dataset", v.config.dataset],
   ["arquitectura", v.config.arquitectura],

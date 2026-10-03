@@ -1,15 +1,16 @@
 ---
 import Base from "../layouts/Base.astro";
 import datos from "../data/versiones.json";
+import { DOMINIOS } from "../lib/dominios";
 
 const { actualizada, mejorPorDataset, versiones } = datos;
 const porDataset: Record<string, typeof versiones> = {};
 for (const v of versiones) (porDataset[v.dataset] ??= []).push(v);
 
-const dominios = [
-  { id: "v1_kaggle_chest_xray", etiqueta: "V1 · PEDIÁTRICO", color: "var(--v1)", clase: "dominio-v1" },
-  { id: "v2_nih_chest_xray14", etiqueta: "V2 · NIH ADULTO", color: "var(--v2)", clase: "dominio-v2" },
-];
+const dominios = DOMINIOS.filter((d) => porDataset[d.id]?.length);
+const nVersiones = versiones.length;
+const palabras = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis"];
+const nDominios = palabras[dominios.length] ?? String(dominios.length);
 
 const serieDe = (lista: typeof versiones) =>
   [...lista].sort((a, b) => a.id.localeCompare(b.id)).map((v) => ({ id: v.id, f1: v.f1_macro, auc: v.roc_auc }));
@@ -18,7 +19,7 @@ const serieDe = (lista: typeof versiones) =>
   <p class="ceja">reconocimiento de imágenes médicas · registro de experimentos</p>
   <h1>Evolución del modelo,<br/>versión sobre versión.</h1>
   <p class="bajada">
-    Siete entrenamientos auditables en dos dominios clínicos distintos. Cada versión
+    {nVersiones} entrenamientos auditables en {nDominios} dominios clínicos distintos. Cada versión
     parte del aprendizaje anterior y solo se compara contra su propio test congelado.
   </p>
 

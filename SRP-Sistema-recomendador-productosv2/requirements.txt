@@ -1,0 +1,14 @@
+# torch con CUDA (GTX 1650): instalar primero
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch
+transformers>=5
+safetensors
+tokenizers
+pandas
+pyarrow
+onnx
+onnxruntime
+onnxscript
+laya
+fastapi
+uvicorn

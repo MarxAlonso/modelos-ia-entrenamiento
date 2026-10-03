@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SRP Recomendador</title>
+<style>
+  :root {
+    --fondo: #f5f3ee; --panel: #ffffff; --panel-2: #faf8f4; --texto: #1d1b18; --suave: #66615a; --tenue: #8f8a81;
+    --borde: #e3ddd2; --acento: #b4532a; --acento-2: #d9774a; --acento-suave: #f6e6dc; --ok: #2f7d4f; --ok-suave: #e1f0e6;
+    --gris-barra: #c9c3b8; --sombra: 0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(0,0,0,.05);
+    --c-ropa: #b07cc6; --c-calzado: #5b8fc7; --c-joyeria: #d1a23a; --c-relojes: #6f9a4f; --c-lentes: #3fa3a0;
+    --c-bolsos: #c46b52; --c-ropa_interior: #8b7fc9; --c-accesorios: #b8954a; --c-otros: #8f8a81;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --fondo: #161513; --panel: #211f1c; --panel-2: #1b1a17; --texto: #ece8e1; --suave: #a8a297; --tenue: #7d776e;
+            --borde: #34312c; --acento: #e3804f; --acento-2: #f09a6c; --acento-suave: #3b2a20; --ok: #62c38b; --ok-suave: #1f3428;
+            --gris-barra: #4a4640; --sombra: none; }
+  }
+  html { font-size: 15px; }
+  html.presentacion { font-size: 18px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--fondo); color: var(--texto); }
+  button { font: inherit; color: inherit; }
+  input, textarea { font: inherit; color: inherit; background: var(--panel-2); border: 1px solid var(--borde); border-radius: 10px; padding: .6rem .8rem; width: 100%; }
+  input:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+
+  /* ---------- cabecera y pasos ---------- */
+  header { position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--borde); }
+  .barra { display: flex; align-items: center; gap: 1rem; padding: .7rem 1.5rem; max-width: 1440px; margin: 0 auto; flex-wrap: wrap; }
+  .marca { font-weight: 700; letter-spacing: -.01em; font-size: 1.05rem; white-space: nowrap; }
+  .marca span { color: var(--acento); }
+  nav.pasos { display: flex; gap: .25rem; flex-wrap: wrap; }
+  nav.pasos button { border: 0; background: none; padding: .45rem .8rem; border-radius: 999px; cursor: pointer; color: var(--suave); font-size: .92rem; display: flex; gap: .45rem; align-items: center; }
+  nav.pasos button .num { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; border-radius: 50%; border: 1.5px solid currentColor; font-size: .75rem; font-weight: 700; }
+  nav.pasos button.activo { background: var(--acento-suave); color: var(--acento); font-weight: 600; }
+  nav.pasos button.activo .num { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .derecha { margin-left: auto; display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+  .pill { border: 1px solid var(--borde); border-radius: 999px; padding: .1rem .65rem; font-size: .78rem; color: var(--suave); white-space: nowrap; }
+  .pill.ok { color: var(--ok); border-color: currentColor; }
+  .pill.alerta { color: var(--acento); border-color: currentColor; }
+  .btn { border: 1px solid var(--borde); background: var(--panel); border-radius: 9px; padding: .45rem .85rem; cursor: pointer; font-size: .9rem; }
+  .btn:hover { border-color: var(--acento); }
+  .btn.primario { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .btn.chico { padding: .3rem .6rem; font-size: .8rem; }
+
+  main { max-width: 1440px; margin: 0 auto; padding: 1.5rem; }
+  @media (max-width: 760px) { main { padding: 1rem; } .barra { padding: .6rem 1rem; } }
+  .vista { display: none; animation: aparecer .25s ease; }
+  .vista.activa { display: block; }
+  @keyframes aparecer { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .tarjeta-panel { background: var(--panel); border: 1px solid var(--borde); border-radius: 14px; box-shadow: var(--sombra); padding: 1.2rem 1.3rem; }
+  h2.titulo-vista { font-size: 1.6rem; margin: 0 0 .3rem; letter-spacing: -.02em; }
+  p.bajada { color: var(--suave); margin: 0 0 1.2rem; max-width: 70ch; }
+  h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; color: var(--suave); margin: 0 0 .7rem; font-weight: 650; }
+  .nota { font-size: .85rem; color: var(--suave); }
+
+  /* ---------- 1. como funciona ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin-bottom: 1.4rem; }
+  @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: .9rem 1rem; }
+  .stat .v { font-size: 1.9rem; font-weight: 700; letter-spacing: -.02em; }
+  .stat .l { font-size: .85rem; color: var(--suave); }
+  .tubo { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; align-items: stretch; }
+  @media (max-width: 1000px) { .tubo { grid-template-columns: 1fr; } .flecha { transform: rotate(90deg); } }
+  .etapa { background: var(--panel); border: 1px solid var(--borde); border-radius: 14px; padding: 1rem; position: relative; margin: 0 1.1rem; }
+  @media (max-width: 1000px) { .etapa { margin: 1rem 0; } }
+  .etapa:not(:last-child)::after { content: "→"; position: absolute; right: -1.15rem; top: 50%; transform: translate(50%, -50%); color: var(--acento); font-size: 1.4rem; font-weight: 700; }
+  @media (max-width: 1000px) { .etapa:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -1.15rem; transform: translate(50%, 50%); } }
+  .etapa .ico { font-size: 1.8rem; }
+  .etapa .nom { font-weight: 700; margin: .3rem 0 .1rem; }
+  .etapa .tipo { font-size: .75rem; color: var(--acento); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  .etapa p { font-size: .88rem; color: var(--suave); margin: .45rem 0 0; }
+  .etapa .arch { margin-top: .6rem; font: .75rem ui-monospace, monospace; color: var(--tenue); }
+  .etapa.destacada { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
+
+  /* ---------- 2. historial ---------- */
+  .dos-col { display: grid; grid-template-columns: 300px 1fr; gap: 1.2rem; align-items: start; }
+  @media (max-width: 960px) { .dos-col { grid-template-columns: 1fr; } }
+  .lateral { position: sticky; top: 4.6rem; display: flex; flex-direction: column; gap: 1rem; max-height: calc(100vh - 5.6rem); overflow: auto; }
+  @media (max-width: 960px) { .lateral { position: static; max-height: none; } }
+  .persona { display: flex; gap: .7rem; align-items: center; padding: .6rem .7rem; border: 1px solid var(--borde); border-radius: 11px; cursor: pointer; margin-bottom: .5rem; background: var(--panel); text-align: left; width: 100%; }
+  .persona:hover { border-color: var(--acento); }
+  .persona.activa { border-color: var(--acento); background: var(--acento-suave); }
+  .persona .av { flex: 0 0 2.4rem; height: 2.4rem; border-radius: 10px; display: grid; place-items: center; font-size: 1.3rem; }
+  .persona .n { font-weight: 600; font-size: .92rem; }
+  .persona .m { font-size: .78rem; color: var(--suave); }
+  .bloque { margin-bottom: 1.2rem; }
+  .cab { display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  .cab h3 { margin: 0; }
+  .cab .der { margin-left: auto; }
+  .linea { display: flex; gap: .7rem; overflow-x: auto; padding: .7rem .1rem .5rem; scroll-snap-type: x proximity; }
+  .compra { flex: 0 0 12.5rem; border: 1px solid var(--borde); border-radius: 12px; padding: .7rem; background: var(--panel); position: relative; scroll-snap-align: start; transition: box-shadow .15s, border-color .15s, transform .15s; }
+  .compra .num { position: absolute; top: -.65rem; left: .7rem; background: var(--texto); color: var(--panel); font-size: .7rem; font-weight: 700; border-radius: 999px; padding: .05rem .5rem; }
+  .compra.resaltada { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); transform: translateY(-2px); }
+  .compra.nueva { border-style: dashed; border-color: var(--acento); }
+  .compra .ico { font-size: 1.4rem; }
+  .t2 { font-size: .85rem; font-weight: 550; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .embudo { display: flex; align-items: stretch; gap: .35rem; flex-wrap: wrap; }
+  .paso-embudo { flex: 1 1 8rem; background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: .55rem .7rem; position: relative; min-width: 8rem; }
+  .paso-embudo .v { font-size: 1.25rem; font-weight: 700; letter-spacing: -.01em; }
+  .paso-embudo .l { font-size: .76rem; color: var(--suave); line-height: 1.3; }
+  .paso-embudo .barrita { height: 4px; border-radius: 4px; background: var(--acento); margin-top: .45rem; opacity: .85; }
+
+  .grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr)); gap: .9rem; }
+  .prod { border: 1px solid var(--borde); border-radius: 13px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; transition: border-color .15s, transform .15s; position: relative; }
+  .prod:hover { border-color: var(--acento); transform: translateY(-2px); }
+  .prod .img { height: 5.2rem; display: grid; place-items: center; font-size: 2.4rem; position: relative; }
+  .prod .rank { position: absolute; top: .5rem; left: .5rem; background: var(--panel); border-radius: 999px; font-size: .72rem; font-weight: 700; padding: .05rem .5rem; }
+  .prod .badge-nuevo { position: absolute; top: .5rem; right: .5rem; background: var(--acento); color: #fff; border-radius: 999px; font-size: .68rem; font-weight: 700; padding: .05rem .5rem; }
+  .prod .cuerpo { padding: .7rem .8rem .8rem; display: flex; flex-direction: column; gap: .3rem; flex: 1; }
+  .sub { font-size: .76rem; color: var(--suave); }
+  .razon { font-size: .78rem; border-radius: 8px; padding: .35rem .5rem; background: var(--panel-2); border: 1px solid var(--borde); margin-top: auto; line-height: 1.35; }
+  .razon b { color: var(--texto); }
+  .razon.parecido { border-left: 3px solid var(--acento); }
+  .razon.popular { border-left: 3px solid var(--c-joyeria); }
+  .razon.busqueda { border-left: 3px solid var(--c-calzado); }
+  .acciones { display: flex; gap: .35rem; margin-top: .4rem; }
+  .acciones .btn { flex: 1; }
+  .vacio { color: var(--suave); font-size: .92rem; padding: 1.4rem; text-align: center; border: 1px dashed var(--borde); border-radius: 12px; background: var(--panel-2); }
+  .cargando { opacity: .45; pointer-events: none; transition: opacity .15s; }
+  .resultado { display: flex; gap: .5rem; align-items: center; padding: .4rem 0; border-bottom: 1px dashed var(--borde); font-size: .85rem; }
+  .resultado .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .toast { position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%) translateY(150%); background: var(--texto); color: var(--panel); padding: .7rem 1.1rem; border-radius: 12px; font-size: .9rem; transition: transform .25s; z-index: 30; max-width: calc(100vw - 2rem); }
+  .toast.ver { transform: translateX(-50%) translateY(0); }
+
+  /* ---------- 3. laya ---------- */
+  .ejemplos { display: flex; flex-wrap: wrap; gap: .45rem; margin: .7rem 0 0; }
+  .ejemplo { border: 1px solid var(--borde); background: var(--panel); border-radius: 999px; padding: .3rem .8rem; font-size: .84rem; cursor: pointer; }
+  .ejemplo:hover { border-color: var(--acento); color: var(--acento); }
+  .decisiones { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin: 1rem 0; }
+  @media (max-width: 1100px) { .decisiones { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .decisiones { grid-template-columns: 1fr; } }
+  .decision { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: .8rem .9rem; }
+  .decision .preg { font-size: .78rem; color: var(--suave); margin-bottom: .2rem; }
+  .decision .resp { font-weight: 700; font-size: 1.05rem; }
+  .decision .estado-filtro { font-size: .72rem; font-weight: 600; margin: .15rem 0 .5rem; }
+  .estado-filtro.si { color: var(--ok); } .estado-filtro.no { color: var(--tenue); }
+  .opcion { display: grid; grid-template-columns: 6.2rem 1fr 2.6rem; gap: .4rem; align-items: center; font-size: .76rem; margin: .18rem 0; }
+  .opcion .nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--suave); }
+  .opcion .riel { height: .55rem; background: var(--panel-2); border-radius: 4px; overflow: hidden; }
+  .opcion .relleno { height: 100%; background: var(--gris-barra); border-radius: 0 4px 4px 0; }
+  .opcion.elegida .relleno { background: var(--acento); }
+  .opcion.elegida .nombre { color: var(--texto); font-weight: 600; }
+  .opcion .pct { text-align: right; font-variant-numeric: tabular-nums; color: var(--suave); }
+
+  /* ---------- 4. resultados ---------- */
+  .graficos { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 960px) { .graficos { grid-template-columns: 1fr; } }
+  .grafico h4 { margin: 0 0 .2rem; font-size: 1rem; }
+  .grafico .q { font-size: .82rem; color: var(--suave); margin: 0 0 .9rem; }
+  .fila-barra { display: grid; grid-template-columns: 11rem 1fr 3.4rem; gap: .6rem; align-items: center; margin: .45rem 0; font-size: .85rem; }
+  @media (max-width: 560px) { .fila-barra { grid-template-columns: 7.5rem 1fr 3rem; } }
+  .fila-barra .nombre { color: var(--suave); line-height: 1.25; }
+  .fila-barra.nuestro .nombre { color: var(--texto); font-weight: 650; }
+  .fila-barra .riel { height: 1.15rem; position: relative; }
+  .fila-barra .relleno { height: 100%; background: var(--gris-barra); border-radius: 0 4px 4px 0; min-width: 2px; transition: width .6s ease; }
+  .fila-barra.nuestro .relleno { background: var(--acento); }
+  .fila-barra .val { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+  .fila-barra:hover .relleno { filter: brightness(1.08); }
+  .leyenda { display: flex; gap: 1rem; font-size: .78rem; color: var(--suave); margin-top: .6rem; flex-wrap: wrap; }
+  .leyenda i { display: inline-block; width: .75rem; height: .75rem; border-radius: 3px; vertical-align: -1px; margin-right: .3rem; }
+  .lectura { border-left: 3px solid var(--acento); padding: .2rem 0 .2rem .9rem; color: var(--suave); font-size: .9rem; margin-top: .9rem; }
+  details.tabla { margin-top: .6rem; font-size: .8rem; color: var(--suave); }
+  details.tabla table { border-collapse: collapse; margin-top: .4rem; }
+  details.tabla td, details.tabla th { border-bottom: 1px solid var(--borde); padding: .2rem .7rem .2rem 0; text-align: left; }
+
+  /* ---------- 5. resenas ---------- */
+  .resena-res { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; margin-top: 1rem; }
+  @media (max-width: 700px) { .resena-res { grid-template-columns: 1fr; } }
+  .estrellas { font-size: 1.9rem; letter-spacing: .1rem; color: var(--c-joyeria); }
+  .medidor { height: .8rem; background: var(--panel-2); border-radius: 999px; overflow: hidden; margin-top: .5rem; border: 1px solid var(--borde); }
+  .medidor div { height: 100%; background: var(--acento); border-radius: 999px; transition: width .5s; }
+
+  /* ---------- ficha del cliente ---------- */
+  .buscador-cliente { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+  .buscador-cliente input { flex: 1 1 22rem; font: 1.05rem ui-monospace, monospace; padding: .75rem 1rem; }
+  .atajos { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
+  .atajo { display: flex; gap: .45rem; align-items: center; border: 1px solid var(--borde); background: var(--panel); border-radius: 999px; padding: .3rem .8rem .3rem .4rem; font-size: .84rem; cursor: pointer; }
+  .atajo:hover, .atajo.activa { border-color: var(--acento); }
+  .atajo.activa { background: var(--acento-suave); }
+  .atajo .mini { width: 1.6rem; height: 1.6rem; border-radius: 50%; display: grid; place-items: center; font-size: .9rem; }
+  .ficha { display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: center; }
+  @media (max-width: 760px) { .ficha { grid-template-columns: auto 1fr; } .ficha .cifras { grid-column: 1 / -1; } }
+  .avatar { width: 4.6rem; height: 4.6rem; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; font-weight: 700; color: #fff; background: var(--acento); }
+  .ficha .nombre { font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+  .ficha .ficticio { font-size: .7rem; font-weight: 600; color: var(--tenue); border: 1px solid var(--borde); border-radius: 999px; padding: .05rem .5rem; vertical-align: middle; margin-left: .4rem; }
+  .ficha .uid { font: .82rem ui-monospace, monospace; color: var(--suave); margin: .15rem 0 .5rem; }
+  .cifras { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+  .cifra .v { font-size: 1.35rem; font-weight: 700; }
+  .cifra .l { font-size: .75rem; color: var(--suave); }
+  .gustos { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .gusto { font-size: .8rem; border-radius: 999px; padding: .15rem .6rem; border: 1px solid var(--borde); }
+  .compra .fecha { font-size: .72rem; color: var(--tenue); }
+  .compra .est { color: var(--c-joyeria); font-size: .8rem; letter-spacing: .05em; }
+  .compra .op { font-size: .76rem; color: var(--suave); font-style: italic; margin-top: .3rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .compra { flex-basis: 14rem; }
+  .estrella-top { display: grid; grid-template-columns: 9rem 1fr; gap: 1.1rem; align-items: center; border: 2px solid var(--acento); border-radius: 16px; padding: 1rem; background: color-mix(in oklab, var(--acento) 8%, var(--panel)); margin-bottom: 1rem; }
+  @media (max-width: 640px) { .estrella-top { grid-template-columns: 1fr; } }
+  .estrella-top .img { height: 7.5rem; border-radius: 12px; display: grid; place-items: center; font-size: 3.4rem; }
+  .estrella-top .etiqueta { font-size: .78rem; font-weight: 700; color: var(--acento); text-transform: uppercase; letter-spacing: .06em; }
+  .estrella-top .tt { font-size: 1.15rem; font-weight: 650; margin: .2rem 0 .3rem; }
+  .veredicto { display: grid; grid-template-columns: minmax(14rem, 22rem) 1fr; gap: 1.2rem; align-items: center; margin-bottom: 1rem; }
+  @media (max-width: 760px) { .veredicto { grid-template-columns: 1fr; } }
+  .veredicto .grande { font-size: 1.6rem; font-weight: 750; letter-spacing: -.02em; line-height: 1.2; }
+  .veredicto .grande.ok { color: var(--ok); }
+  .prod.real { outline: 3px solid var(--ok); outline-offset: -1px; }
+  .prod .badge-real { position: absolute; top: .5rem; right: .5rem; background: var(--ok); color: #fff; border-radius: 999px; font-size: .68rem; font-weight: 700; padding: .05rem .5rem; }
+
+  dialog { border: 1px solid var(--borde); border-radius: 16px; background: var(--panel); color: var(--texto); width: min(980px, calc(100vw - 2rem)); padding: 1.2rem; }
+  dialog::backdrop { background: rgba(0,0,0,.4); }
+</style>
+</head>
+<body>
+<header>
+  <div class="barra">
+    <div class="marca">SRP <span>·</span> Recomendador</div>
+    <nav class="pasos" id="pasos">
+      <button data-vista="como" class="activo"><span class="num">1</span>Cómo funciona</button>
+      <button data-vista="historial"><span class="num">2</span>Cliente</button>
+      <button data-vista="busqueda"><span class="num">3</span>Búsqueda con Laya</button>
+      <button data-vista="resultados"><span class="num">4</span>Resultados</button>
+      <button data-vista="resenas"><span class="num">5</span>Reseñas</button>
+    </nav>
+    <div class="derecha">
+      <span id="estado"><span class="pill">conectando…</span></span>
+      <button class="btn chico" id="btnPresentacion" title="Letra más grande para proyectar">Modo presentación</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= 1. COMO FUNCIONA ======================= -->
+  <section class="vista activa" id="v-como">
+    <h2 class="titulo-vista">¿Qué le recomendamos a cada cliente?</h2>
+    <p class="bajada">Un sistema que combina tres modelos Transformer: entiende lo que el cliente escribe, encuentra productos parecidos a lo que busca o compró, y ordena las recomendaciones según la secuencia de sus compras.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">202,734</div><div class="l">reseñas de clientes (Amazon, moda)</div></div>
+      <div class="stat"><div class="v">71,214</div><div class="l">productos en el catálogo</div></div>
+      <div class="stat"><div class="v">186,521</div><div class="l">clientes</div></div>
+      <div class="stat"><div class="v">91%</div><div class="l">compró una sola vez → hay que recomendar también sin historial</div></div>
+    </div>
+    <h3>El recorrido de una recomendación</h3>
+    <div class="tubo">
+      <div class="etapa"><div class="ico">🧑‍💻</div><div class="tipo">Entrada</div><div class="nom">El cliente</div>
+        <p>Su <b>historial de compras</b> (en orden) o lo que <b>escribe</b>: “busco aretes de plata para mi mamá”.</p></div>
+      <div class="etapa"><div class="ico">🧭</div><div class="tipo">Transformer · mmBERT</div><div class="nom">Laya</div>
+        <p>Lee el texto y responde preguntas cerradas en una sola pasada: <b>¿qué categoría? ¿para quién? ¿es regalo? ¿le importa el precio?</b> Sus respuestas se usan como filtros.</p>
+        <div class="arch">model.safetensors · rl_agent_config.json</div></div>
+      <div class="etapa destacada"><div class="ico">🔎</div><div class="tipo">Transformer · MiniLM (afinado)</div><div class="nom">Two-tower</div>
+        <p>Convierte consultas y productos en <b>vectores de 384 números</b>; lo parecido queda cerca. Entiende español aunque el catálogo esté en inglés.</p>
+        <div class="arch">model.safetensors · encoder.onnx</div></div>
+      <div class="etapa destacada"><div class="ico">🧠</div><div class="tipo">Transformer secuencial</div><div class="nom">SASRec</div>
+        <p>Lee el <b>orden</b> de las compras con atención y estima qué compraría después. Reordena los candidatos.</p>
+        <div class="arch">sasrec.pt · sasrec.onnx</div></div>
+      <div class="etapa"><div class="ico">🎁</div><div class="tipo">Salida</div><div class="nom">Top recomendaciones</div>
+        <p>Cada producto viene con su <b>porqué</b>: a qué compra tuya se parece, o si es de lo más comprado.</p></div>
+    </div>
+    <div style="display:flex;gap:.6rem;margin-top:1.6rem;flex-wrap:wrap">
+      <button class="btn primario" onclick="ir('historial')">Buscar un cliente →</button>
+      <button class="btn" onclick="ir('resultados')">Ver resultados del entrenamiento</button>
+    </div>
+  </section>
+
+  <!-- ======================= 2. CLIENTE ======================= -->
+  <section class="vista" id="v-historial">
+    <h2 class="titulo-vista">¿Qué le recomendamos a este cliente?</h2>
+    <p class="bajada">Escribe el ID de un cliente (o elige uno de los ejemplos): verás quién es, qué compró y qué le recomendaría el sistema. Con <b>“Hacer la prueba”</b> ocultamos su última compra real y vemos si el sistema la habría adivinado.</p>
+
+    <div class="tarjeta-panel bloque">
+      <div class="buscador-cliente">
+        <input id="userId" placeholder="ID del cliente, ej. AENBKERVDUFIPVKNUUTDQRLFENFQ" autocomplete="off" spellcheck="false">
+        <button class="btn primario" id="irUsuario">Ver cliente</button>
+        <button class="btn" onclick="clienteAzar()">🎲 Al azar</button>
+        <button class="btn" id="personaNueva" onclick="clienteNuevo()">✨ Cliente nuevo</button>
+      </div>
+      <div class="atajos" id="personas"><span class="nota">Cargando clientes de ejemplo…</span></div>
+    </div>
+
+    <div id="zonaCliente">
+      <div class="tarjeta-panel bloque" id="ficha"></div>
+
+      <div class="tarjeta-panel bloque" id="panelArmar" hidden>
+        <h3>Agregar compras al cliente nuevo</h3>
+        <div style="display:flex;gap:.4rem;max-width:40rem"><input id="qProducto" placeholder="reloj deportivo, vestido rojo, mochila…"><button class="btn" id="buscarProducto">Buscar</button>
+          <button class="btn" onclick="vaciar()">Vaciar</button></div>
+        <div id="resultadosProducto" style="margin-top:.5rem;max-width:40rem"></div>
+      </div>
+
+      <div class="tarjeta-panel bloque">
+        <div class="cab"><h3>① Su historial de compras</h3><span class="nota" id="notaHistorial"></span></div>
+        <div id="historial" class="linea"></div>
+      </div>
+
+      <div class="tarjeta-panel bloque">
+        <div class="cab"><h3>② Lo que le recomendamos</h3><span class="nota" id="estrategia"></span><div class="der nota" id="msRecs"></div></div>
+        <div id="destacada"></div>
+        <div id="embudo" class="embudo bloque"></div>
+        <div id="recomendaciones" class="grilla"></div>
+      </div>
+
+      <div class="tarjeta-panel bloque" id="panelPrueba">
+        <div class="cab"><h3>③ ¿El sistema habría acertado?</h3>
+          <span class="nota">Ocultamos su última compra real, recomendamos solo con las anteriores y vemos en qué puesto quedó lo que de verdad compró.</span>
+          <div class="der" style="display:flex;gap:.4rem"><button class="btn primario" id="btnPrueba">Hacer la prueba</button>
+            <button class="btn" id="btnAcierto" title="Busca entre clientes reales uno en el que el sistema acertó">Ver un cliente donde acertó</button></div></div>
+        <div id="resultadoPrueba"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 3. BUSQUEDA CON LAYA ======================= -->
+  <section class="vista" id="v-busqueda">
+    <h2 class="titulo-vista">Búsqueda en lenguaje natural con Laya</h2>
+    <p class="bajada">El cliente escribe como habla. <b>Laya</b> interpreta la consulta respondiendo cuatro preguntas (las barras muestran su confianza en cada opción) y el <b>two-tower</b> busca los productos que mejor coinciden.</p>
+    <div class="tarjeta-panel bloque">
+      <div style="display:flex;gap:.5rem"><input id="consulta" style="font-size:1.05rem" placeholder="Escribe lo que buscas…"><button class="btn primario" id="buscar">Buscar</button></div>
+      <div class="ejemplos" id="ejemplos"></div>
+      <label class="nota" style="display:flex;gap:.4rem;align-items:center;margin-top:.8rem;cursor:pointer">
+        <input type="checkbox" id="personalizar" style="width:auto"> Personalizar con el historial del cliente elegido en el paso 2 <span id="clientePers" style="font-weight:600"></span>
+      </label>
+    </div>
+    <div id="decisiones"></div>
+    <div id="embudoBusqueda" class="embudo bloque"></div>
+    <div id="resultadosConsulta" class="grilla"></div>
+  </section>
+
+  <!-- ======================= 4. RESULTADOS ======================= -->
+  <section class="vista" id="v-resultados">
+    <h2 class="titulo-vista">¿Funciona? Resultados medidos</h2>
+    <p class="bajada">Todo se mide sobre clientes y compras que los modelos <b>nunca vieron</b> durante el entrenamiento. En naranja, lo que usa el sistema; en gris, las alternativas con las que se compara.</p>
+    <div class="graficos" id="graficos"><div class="vacio">Cargando métricas…</div></div>
+    <div class="leyenda"><span><i style="background:var(--acento)"></i>lo que usa el sistema</span><span><i style="background:var(--gris-barra)"></i>alternativa / línea base</span></div>
+  </section>
+
+  <!-- ======================= 5. RESENAS ======================= -->
+  <section class="vista" id="v-resenas">
+    <h2 class="titulo-vista">Leer reseñas sin estrellas</h2>
+    <p class="bajada">Muchos comentarios llegan sin calificación. Laya lee la reseña y estima cuántas estrellas habría puesto el cliente y si recomendaría el producto: una señal extra de satisfacción.</p>
+    <div class="tarjeta-panel">
+      <textarea id="textoResena" rows="3" placeholder="Escribe una reseña…"></textarea>
+      <div class="ejemplos" id="ejemplosResena"></div>
+      <button class="btn primario" style="margin-top:.8rem" id="analizar">Analizar reseña</button>
+      <div id="resenaRes"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlgSimilares">
+  <div class="cab"><h3>Más como este</h3><span class="nota" id="dlgTitulo"></span><div class="der"><button class="btn chico" onclick="dlgSimilares.close()">Cerrar</button></div></div>
+  <div id="similares" class="grilla"></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const ICONO = { ropa: "👗", calzado: "👟", joyeria: "💍", relojes: "⌚", lentes: "🕶️", bolsos: "👜", ropa_interior: "🧦", accesorios: "🧢", otros: "🛍️" };
+const NOMBRE = { ropa: "Ropa", calzado: "Calzado", joyeria: "Joyería", relojes: "Relojes", lentes: "Lentes", bolsos: "Bolsos", ropa_interior: "Ropa interior", accesorios: "Accesorios", otros: "Otros" };
+const PUBLICO = { mujer: "mujer", hombre: "hombre", ninos: "niños", unisex: "cualquiera" };
+const EJEMPLOS = ["busco unos aretes de plata para regalarle a mi mamá", "zapatillas para correr de hombre, algo barato",
+  "un vestido elegante para una boda en verano", "una mochila para el colegio de mi hijo", "reloj deportivo resistente al agua",
+  "lentes de sol para la playa"];
+const EJEMPLOS_RESENA = ["La talla vino muy pequeña y la tela se siente barata, no lo volvería a comprar.",
+  "Me encantó, la calidad es excelente y llegó antes de lo esperado.", "Está bien por el precio, aunque el color es distinto al de la foto."];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fondoCat = (c) => `color-mix(in oklab, var(--c-${c in ICONO ? c : "otros"}) 26%, var(--panel))`;
+const num = (n) => Number(n).toLocaleString("es-PE");
+const pct = (x) => `${Math.round(x * 100)}%`;
+const st = { userId: null, titulo: null, nuevo: false, historial: [], anteriores: new Set(), personas: [] };
+
+async function api(ruta, opciones = {}) {
+  const r = await fetch(ruta, { headers: { "content-type": "application/json" }, ...opciones });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.statusText);
+  return r.json();
+}
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("ver"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("ver"), 3200); }
+
+/* ---------------- navegacion ---------------- */
+function ir(vista) {
+  document.querySelectorAll(".vista").forEach((v) => v.classList.toggle("activa", v.id === "v-" + vista));
+  document.querySelectorAll("#pasos button").forEach((b) => b.classList.toggle("activo", b.dataset.vista === vista));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (location.hash !== "#" + vista) history.replaceState(null, "", "#" + vista);
+  if (vista === "resultados") pintarResultados();
+  if (vista === "busqueda") $("clientePers").textContent = st.titulo ? `(${st.titulo})` : "(ninguno elegido)";
+}
+document.querySelectorAll("#pasos button").forEach((b) => (b.onclick = () => ir(b.dataset.vista)));
+$("btnPresentacion").onclick = () => {
+  const on = document.documentElement.classList.toggle("presentacion");
+  try { localStorage.setItem("srp-presentacion", on ? "1" : "0"); } catch {}
+};
+try { if (localStorage.getItem("srp-presentacion") === "1") document.documentElement.classList.add("presentacion"); } catch {}
+
+/* ---------------- piezas comunes ---------------- */
+function razon(p) {
+  const r = p.porque || {};
+  const par = r.parecido_a, pop = r.popular;
+  if (r.coincide_busqueda != null) {
+    let s = `<div class="razon busqueda">🔎 Coincide <b>${pct(r.coincide_busqueda)}</b> con tu búsqueda`;
+    if (par && par.similitud >= 0.6) s += `<br>🔗 y se parece a tu compra <b>#${par.posicion}</b>`;
+    return s + "</div>";
+  }
+  if (par && par.similitud >= 0.6)
+    return `<div class="razon parecido">🔗 Parecido a tu compra <b>#${par.posicion}</b> (${pct(par.similitud)})<br><span class="sub">${esc(par.titulo.slice(0, 55))}…</span></div>`;
+  if (pop) return `<div class="razon popular">🔥 <b>#${pop.puesto}</b> de los más comprados (${num(pop.compras)} compras)${par ? `<br><span class="sub">suele comprarse junto a lo que llevas</span>` : ""}</div>`;
+  if (par) return `<div class="razon parecido">🔗 Relacionado con tu compra <b>#${par.posicion}</b> (${pct(par.similitud)})</div>`;
+  return "";
+}
+function tarjeta(p, i, { acciones = true, nuevo = false } = {}) {
+  const par = p.porque && p.porque.parecido_a;
+  return `<div class="prod" ${par ? `data-hist="${par.posicion}"` : ""}>
+    <div class="img" style="background:${fondoCat(p.categoria)}">${ICONO[p.categoria] || "🛍️"}
+      ${i != null ? `<span class="rank">#${i + 1}</span>` : ""}${nuevo ? `<span class="badge-nuevo">NUEVO</span>` : ""}</div>
+    <div class="cuerpo">
+      <div class="sub">${NOMBRE[p.categoria] || p.categoria} · ${PUBLICO[p.publico] || p.publico}</div>
+      <div class="t2" title="${esc(p.titulo)}">${esc(p.titulo)}</div>
+      <div class="sub">★ ${p.rating_promedio.toFixed(1)} · ${num(p.numero_resenas)} reseñas${p.precio != null ? ` · $${p.precio}` : ""}</div>
+      ${razon(p)}
+      ${acciones ? `<div class="acciones">
+        <button class="btn chico" data-accion="similares" data-pid="${esc(p.product_id)}" data-t="${esc(p.titulo)}">Parecidos</button>
+        <button class="btn chico primario" data-accion="comprar" data-pid="${esc(p.product_id)}" data-t="${esc(p.titulo)}">Comprar</button></div>` : ""}
+    </div></div>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-accion]");
+  if (!b) return;
+  if (b.dataset.accion === "comprar") comprar(b.dataset.pid, b.dataset.t);
+  if (b.dataset.accion === "similares") verSimilares(b.dataset.pid, b.dataset.t);
+});
+function embudo(contenedor, t, conHistorial) {
+  if (!t) { $(contenedor).innerHTML = ""; return; }
+  const pasos = [[t.catalogo, "productos en el catálogo"]];
+  if (t.tras_filtro !== t.catalogo) pasos.push([t.tras_filtro, "tras los filtros de Laya"]);
+  if (t.pool) pasos.push([t.pool, t.pool > t.pool_similares ? `candidatos: ${num(t.pool_similares)} más parecidos + los más comprados` : "candidatos más parecidos (two-tower)"]);
+  if (t.sasrec) pasos.push(["SASRec", conHistorial ? "reordena según la secuencia de compras" : "desempata según el historial"]);
+  pasos.push([t.final, "recomendaciones finales"]);
+  const max = t.catalogo;
+  $(contenedor).innerHTML = pasos.map(([v, l]) => `<div class="paso-embudo"><div class="v">${typeof v === "number" ? num(v) : v}</div><div class="l">${l}</div>
+      <div class="barrita" style="width:${typeof v === "number" ? Math.max(4, Math.round(100 * Math.log10(v + 1) / Math.log10(max + 1))) : 100}%"></div></div>`).join("");
+}
+
+/* ---------------- 2. cliente ---------------- */
+const estrellas = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+const iniciales = (nombre) => nombre.split(" ").map((x) => x[0]).slice(0, 2).join("");
+const fechaLarga = (f) => f ? new Date(f + "T00:00:00").toLocaleDateString("es-PE", { year: "numeric", month: "short", day: "numeric" }) : "";
+
+async function cargarPersonas() {
+  try {
+    st.personas = await api("/escenarios");
+    $("personas").innerHTML = `<span class="nota" style="align-self:center">Ejemplos:</span>` + st.personas.map((p, i) =>
+      `<button class="atajo" data-i="${i}" title="${esc(p.user_id)}"><span class="mini" style="background:${fondoCat(p.categoria)}">${ICONO[p.categoria]}</span>
+        <span><b>${esc(p.nombre || p.titulo)}</b> · ${esc(p.titulo.toLowerCase())}</span></button>`).join("");
+    $("personas").querySelectorAll(".atajo").forEach((b) => (b.onclick = () => elegir(st.personas[+b.dataset.i].user_id)));
+  } catch (e) { $("personas").innerHTML = `<span class="nota">No se pudieron cargar: ${esc(e.message)}</span>`; }
+}
+function marcarAtajo(userId) {
+  document.querySelectorAll(".atajo").forEach((b) => b.classList.toggle("activa", b.title === userId));
+}
+async function elegir(userId) {
+  userId = userId.trim();
+  Object.assign(st, { userId, nuevo: false, historial: [], anteriores: new Set() });
+  $("userId").value = userId; marcarAtajo(userId);
+  $("panelArmar").hidden = true; $("panelPrueba").hidden = false; $("resultadoPrueba").innerHTML = "";
+  $("ficha").innerHTML = `<div class="nota">Buscando al cliente…</div>`;
+  try {
+    const p = await api(`/usuarios/${encodeURIComponent(userId)}/perfil`);
+    st.titulo = p.nombre;
+    pintarFicha(p);
+    history.replaceState(null, "", `?cliente=${encodeURIComponent(userId)}#historial`);
+    await recomendar();
+  } catch (e) {
+    st.titulo = null;
+    $("ficha").innerHTML = `<div class="vacio">No encontramos un cliente con el ID <b>${esc(userId)}</b>. Revisa que esté completo (28 caracteres) o prueba con un ejemplo.</div>`;
+    ["historial", "recomendaciones", "destacada", "embudo"].forEach((id) => ($(id).innerHTML = ""));
+    $("panelPrueba").hidden = true;
+  }
+}
+function pintarFicha(p) {
+  const total = p.categorias.reduce((a, c) => a + c.compras, 0);
+  $("ficha").innerHTML = `<div class="ficha">
+    <div class="avatar" style="background:var(--c-${p.categorias[0]?.categoria || "otros"})">${esc(iniciales(p.nombre))}</div>
+    <div>
+      <div class="nombre">${esc(p.nombre)}<span class="ficticio" title="El dataset de Amazon es anónimo: el nombre es inventado y siempre es el mismo para este ID">nombre ficticio</span></div>
+      <div class="uid">ID ${esc(p.user_id)}</div>
+      <div class="gustos">${p.categorias.map((c) => `<span class="gusto" style="background:${fondoCat(c.categoria)}">${ICONO[c.categoria]} ${NOMBRE[c.categoria]} · ${Math.round(100 * c.compras / total)}%</span>`).join("")}</div>
+      ${p.afinidad ? `<div class="nota" style="margin-top:.35rem">⚖️ La compra <b>#${p.compra_mas_influyente}</b> es la que más pesa en su perfil (${Math.round(p.peso_ultima_compra * 100)}% la última) · ${p.resenas_escritas} reseña(s) escrita(s)</div>` : ""}
+    </div>
+    <div class="cifras">
+      <div class="cifra"><div class="v">${p.compras}</div><div class="l">compras</div></div>
+      ${p.estrellas_promedio != null ? `<div class="cifra"><div class="v">${p.estrellas_promedio.toFixed(1)} ★</div><div class="l">calificación que suele dar</div></div>` : ""}
+      ${p.desde ? `<div class="cifra"><div class="v" style="font-size:1rem">${fechaLarga(p.desde)}<br>→ ${fechaLarga(p.hasta)}</div><div class="l">primera y última compra</div></div>` : ""}
+    </div></div>`;
+}
+function clienteNuevo() {
+  Object.assign(st, { userId: null, titulo: "Cliente nuevo", nuevo: true, historial: [], anteriores: new Set() });
+  marcarAtajo(null); $("userId").value = "";
+  $("panelArmar").hidden = false; $("panelPrueba").hidden = true;
+  $("ficha").innerHTML = `<div class="ficha"><div class="avatar">✨</div><div><div class="nombre">Cliente nuevo</div>
+    <div class="nota">Todavía no compró nada. Agrega compras con el buscador de abajo o pulsando <b>Comprar</b> en una recomendación, y mira cómo cambia lo que le recomendamos.</div></div></div>`;
+  recomendar();
+}
+async function clienteAzar() {
+  const [u] = await api(`/usuarios/ejemplo?n=1&minimo=3&semilla=${Math.floor(Math.random() * 1e6)}`);
+  elegir(u.user_id);
+}
+function vaciar() { st.historial = []; st.anteriores = new Set(); recomendar(); }
+
+function destacada(p) {
+  const r = p.porque || {}, par = r.parecido_a, pop = r.popular;
+  let motivo = "";
+  if (par && par.similitud >= 0.6) motivo = `Se parece a su compra #${par.posicion} (${pct(par.similitud)} de similitud): <i>${esc(par.titulo.slice(0, 70))}</i>`;
+  else if (pop) motivo = `Es el #${pop.puesto} de los más comprados por todos los clientes (${num(pop.compras)} compras)`;
+  else if (par) motivo = `Relacionado con su compra #${par.posicion}`;
+  return `<div class="estrella-top">
+    <div class="img" style="background:${fondoCat(p.categoria)}">${ICONO[p.categoria] || "🛍️"}</div>
+    <div><div class="etiqueta">🎯 Lo más probable que compre</div>
+      <div class="tt">${esc(p.titulo)}</div>
+      <div class="sub">${NOMBRE[p.categoria] || p.categoria} · ${PUBLICO[p.publico] || p.publico} · ★ ${p.rating_promedio.toFixed(1)} (${num(p.numero_resenas)} reseñas)${p.precio != null ? ` · $${p.precio}` : ""}</div>
+      ${motivo ? `<div class="nota" style="margin-top:.45rem">Por qué: ${motivo}</div>` : ""}
+      <div class="acciones" style="max-width:20rem">
+        <button class="btn chico" data-accion="similares" data-pid="${esc(p.product_id)}" data-t="${esc(p.titulo)}">Parecidos</button>
+        <button class="btn chico primario" data-accion="comprar" data-pid="${esc(p.product_id)}" data-t="${esc(p.titulo)}">Comprar</button></div>
+    </div></div>`;
+}
+
+async function recomendar({ animarNueva = false } = {}) {
+  const recs = $("recomendaciones");
+  recs.classList.add("cargando");
+  try {
+    let r;
+    if (st.nuevo) r = await api("/recomendar/historial", { method: "POST", body: JSON.stringify({ product_ids: st.historial.map((p) => p.product_id), k: 13 }) });
+    else if (st.userId) r = await api(`/recomendar/usuario/${encodeURIComponent(st.userId)}?k=13`);
+    else return;
+    if (st.nuevo) st.historial = r.historial;
+    pintarHistorial(r.historial, animarNueva);
+    embudo("embudo", r.traza, r.usuario_con_historial);
+    const inf = r.traza && r.traza.influencia_historial;
+    $("estrategia").textContent = r.usuario_con_historial
+      ? `parecidos a sus compras (two-tower) + populares → ordenados por SASRec${inf ? ` · ${inf.recs_parecidas_historial}/${r.recomendaciones.length + 1} vienen de su historial` : ""}${r.perfil && r.perfil.afinidad ? ` · le gusta ${NOMBRE[r.perfil.afinidad.categoria] || r.perfil.afinidad.categoria} (${Math.round(r.perfil.afinidad.frac_categoria * 100)}%)` : ""}`
+      : "sin compras: lo más comprado";
+    $("msRecs").textContent = `${r.ms} ms`;
+    const previas = st.anteriores, [primera, ...resto] = r.recomendaciones;
+    $("destacada").innerHTML = primera ? destacada(primera) : "";
+    recs.innerHTML = resto.map((p, i) => tarjeta(p, i + 1, { nuevo: previas.size > 0 && !previas.has(p.product_id) })).join("");
+    st.anteriores = new Set(r.recomendaciones.map((p) => p.product_id));
+    recs.querySelectorAll(".prod[data-hist]").forEach((c) => {
+      c.onmouseenter = () => resaltarCompra(+c.dataset.hist, true);
+      c.onmouseleave = () => resaltarCompra(+c.dataset.hist, false);
+    });
+  } catch (e) { recs.innerHTML = `<div class="vacio">Error: ${esc(e.message)}</div>`; }
+  finally { recs.classList.remove("cargando"); }
+}
+function compraHtml(p, i, { quitar = false, nueva = false } = {}) {
+  const peso = p.peso != null ? `<span class="sub" title="Cuánto pesa esta compra en tu perfil (recencia × estrellas × reseña)"> · ⚖️ ${Math.round(p.peso * 100)}%</span>` : "";
+  return `<div class="compra ${nueva ? "nueva" : ""}" data-pos="${i + 1}"><span class="num">#${i + 1}</span>
+    <div class="ico">${ICONO[p.categoria] || "🛍️"}</div>
+    ${p.fecha ? `<div class="fecha">${fechaLarga(p.fecha)}</div>` : ""}
+    <div class="t2" title="${esc(p.titulo)}">${esc(p.titulo)}</div>
+    ${p.estrellas ? `<div class="est" title="calificación que le dio">${estrellas(p.estrellas)}</div>` : `<div class="sub">${NOMBRE[p.categoria] || ""}</div>`}${peso}
+    ${p.resena ? `<div class="op" title="${esc(p.resena)}">“${esc(p.resena)}”</div>` : ""}
+    ${quitar ? `<button class="btn chico" style="margin-top:.4rem" onclick="quitar(${i})">Quitar</button>` : ""}</div>`;
+}
+function pintarHistorial(hist, animarNueva) {
+  $("notaHistorial").textContent = hist.length ? `${hist.length} compras · de la más antigua a la más reciente →` : "";
+  $("historial").innerHTML = hist.length
+    ? hist.map((p, i) => compraHtml(p, i, { quitar: st.nuevo, nueva: animarNueva && i === hist.length - 1 })).join("")
+    : `<div class="vacio" style="flex:1">Todavía no compró nada: se le recomienda lo más popular.</div>`;
+  if (animarNueva) $("historial").scrollTo({ left: $("historial").scrollWidth, behavior: "smooth" });
+}
+function resaltarCompra(pos, on) {
+  const el = $("historial").querySelector(`.compra[data-pos="${pos}"]`);
+  if (!el) return;
+  el.classList.toggle("resaltada", on);
+  if (on) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+}
+function quitar(i) { st.historial.splice(i, 1); recomendar(); }
+
+async function hacerPrueba() {
+  if (!st.userId) return;
+  const caja = $("resultadoPrueba");
+  caja.innerHTML = `<div class="vacio">Ocultando la última compra y recomendando con las anteriores…</div>`;
+  try {
+    const r = await api(`/usuarios/${encodeURIComponent(st.userId)}/prueba?k=12`);
+    const o = r.oculta;
+    let titular, detalle;
+    if (r.puesto && r.puesto <= r.k) {
+      titular = `<div class="grande ok">✅ ¡Acertó! La puso en el puesto #${r.puesto}</div>`;
+      detalle = `de ${num(r.catalogo)} productos posibles. Aparece abajo marcada en verde.`;
+    } else if (r.puesto) {
+      titular = `<div class="grande">Quedó en el puesto #${r.puesto}</div>`;
+      detalle = `de ${num(r.catalogo)} productos (entre el ${(100 * r.puesto / r.catalogo).toFixed(2)}% mejor ubicado). No llegó al top ${r.k}.`;
+    } else {
+      titular = `<div class="grande">No la habría recomendado</div>`;
+      detalle = `No entró entre los ${num(r.candidatos)} candidatos. Por parecido a sus compras quedaba en el puesto #${num(r.puesto_por_similitud)} de ${num(r.catalogo)}: compró algo distinto a lo de siempre.`;
+    }
+    caja.innerHTML = `<div class="veredicto">
+        <div><div class="nota" style="margin-bottom:.4rem">Su última compra real${o.fecha ? ` (${fechaLarga(o.fecha)})` : ""}:</div>
+          <div class="linea" style="padding-top:.8rem">${compraHtml(o, r.historial_usado.length)}</div></div>
+        <div>${titular}<p class="nota" style="font-size:.95rem">${detalle}</p>
+          <p class="nota">Recomendado solo con sus ${r.historial_usado.length} compras anteriores · ${r.ms} ms</p></div>
+      </div>
+      <h3>Lo que le habríamos recomendado antes de esa compra</h3>
+      <div class="grilla">${r.recomendaciones.map((p, i) => {
+        const html = tarjeta(p, i, { acciones: false });
+        return p.product_id === o.product_id ? html.replace('<div class="prod"', '<div class="prod real"').replace('<div class="img"', '<span class="badge-real">LO QUE COMPRÓ</span><div class="img"') : html;
+      }).join("")}</div>`;
+  } catch (e) { caja.innerHTML = `<div class="vacio">${esc(e.message)}</div>`; }
+}
+$("btnPrueba").onclick = hacerPrueba;
+$("btnAcierto").onclick = async () => {
+  const caja = $("resultadoPrueba");
+  caja.innerHTML = `<div class="vacio">Revisando clientes reales… (la primera vez tarda unos segundos)</div>`;
+  try {
+    const a = await api("/usuarios/aciertos");
+    if (!a.clientes.length) { caja.innerHTML = `<div class="vacio">En ${a.revisados} clientes revisados no hubo aciertos en el top ${a.k}.</div>`; return; }
+    st.ultimoAcierto = ((st.ultimoAcierto ?? -1) + 1) % a.clientes.length;
+    const c = a.clientes[st.ultimoAcierto];
+    await elegir(c.user_id);
+    await hacerPrueba();
+    $("resultadoPrueba").insertAdjacentHTML("afterbegin", `<div class="nota" style="margin-bottom:.8rem">
+      Ojo: esto <b>no</b> pasa siempre. De ${a.revisados} clientes revisados al azar, el sistema acertó en el top ${a.k} con
+      <b>${a.aciertos}</b> (${(100 * a.tasa).toFixed(1)}%). Pulsa de nuevo para ver otro caso.</div>`);
+    $("panelPrueba").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) { caja.innerHTML = `<div class="vacio">${esc(e.message)}</div>`; }
+};
+
+async function comprar(pid, titulo) {
+  if (!st.nuevo) {  // la compra simulada parte del historial real del cliente
+    if (st.userId) { const r = await api(`/recomendar/usuario/${encodeURIComponent(st.userId)}?k=1`); st.historial = r.historial; }
+    st.nuevo = true; $("panelArmar").hidden = false; $("panelPrueba").hidden = true;
+  }
+  st.historial.push({ product_id: pid });
+  if (dlgSimilares.open) dlgSimilares.close();
+  ir("historial");
+  await recomendar({ animarNueva: true });
+  toast(`🛒 Compra simulada: ${titulo.slice(0, 60)}… Lo marcado como NUEVO apareció por esta compra.`);
+}
+async function verSimilares(pid, titulo) {
+  $("dlgTitulo").textContent = titulo.slice(0, 90);
+  $("similares").innerHTML = `<div class="vacio">Buscando…</div>`;
+  dlgSimilares.showModal();
+  const r = await api(`/productos/${encodeURIComponent(pid)}/similares?k=8`);
+  $("similares").innerHTML = r.map((p, i) => tarjeta({ ...p, porque: {} }, i, { acciones: false })
+    .replace('<div class="sub">★', `<div class="razon parecido">🔗 similitud <b>${pct(p.similitud)}</b></div><div class="sub">★`)).join("");
+}
+async function buscarProducto() {
+  const q = $("qProducto").value.trim();
+  if (q.length < 2) return;
+  $("resultadosProducto").innerHTML = `<div class="nota">Buscando…</div>`;
+  const r = await api(`/productos/buscar?q=${encodeURIComponent(q)}&k=6`);
+  $("resultadosProducto").innerHTML = r.map((p) => `<div class="resultado"><span>${ICONO[p.categoria] || "🛍️"}</span>
+      <span class="t" title="${esc(p.titulo)}">${esc(p.titulo)}</span>
+      <button class="btn chico" data-accion="comprar" data-pid="${esc(p.product_id)}" data-t="${esc(p.titulo)}">+ Comprar</button></div>`).join("");
+}
+$("buscarProducto").onclick = buscarProducto;
+$("qProducto").onkeydown = (e) => { if (e.key === "Enter") buscarProducto(); };
+$("irUsuario").onclick = () => { const id = $("userId").value.trim(); if (id) elegir(id); };
+$("userId").onkeydown = (e) => { if (e.key === "Enter") $("irUsuario").click(); };
+
+/* ---------------- 3. busqueda con laya ---------------- */
+$("ejemplos").innerHTML = EJEMPLOS.map((t) => `<button class="ejemplo">${esc(t)}</button>`).join("");
+$("ejemplos").querySelectorAll(".ejemplo").forEach((b) => (b.onclick = () => { $("consulta").value = b.textContent; buscarConsulta(); }));
+$("buscar").onclick = buscarConsulta;
+$("consulta").onkeydown = (e) => { if (e.key === "Enter") buscarConsulta(); };
+
+function barrasOpciones(probs, elegida, etiquetas = {}) {
+  return Object.entries(probs).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v]) =>
+    `<div class="opcion ${k === elegida ? "elegida" : ""}"><span class="nombre">${esc(etiquetas[k] || k)}</span>
+     <span class="riel"><span class="relleno" style="display:block;width:${Math.max(2, v * 100)}%"></span></span><span class="pct">${pct(v)}</span></div>`).join("");
+}
+async function buscarConsulta() {
+  const texto = $("consulta").value.trim();
+  if (texto.length < 2) return;
+  $("decisiones").innerHTML = `<div class="vacio">🧭 Laya está leyendo la consulta… (la primera vez carga el modelo, unos segundos)</div>`;
+  $("resultadosConsulta").innerHTML = ""; $("embudoBusqueda").innerHTML = "";
+  const cuerpo = { texto, k: 8 };
+  if ($("personalizar").checked) {
+    if (st.nuevo) cuerpo.historial_ids = st.historial.map((p) => p.product_id);
+    else if (st.userId) cuerpo.user_id = st.userId;
+  }
+  try {
+    const r = await api("/recomendar/consulta", { method: "POST", body: JSON.stringify(cuerpo) });
+    const a = r.respuestas_laya, d = r.decision_laya;
+    if (a) {
+      const afinado = $("estado").dataset.afinado === "1";
+      const cat = a.categoria, pub = a.publico, reg = a.es_regalo, pre = a.sensibilidad_precio;
+      const nivelPrecio = ["no menciona el precio", "le importa algo", "quiere algo barato"];
+      const nivelElegido = Object.entries(pre.probabilities).sort((x, y) => y[1] - x[1])[0][0];
+      $("decisiones").innerHTML = `<div class="decisiones">
+        <div class="decision"><div class="preg">¿Qué tipo de producto busca?</div><div class="resp">${ICONO[cat.choice] || ""} ${NOMBRE[cat.choice] || cat.choice}</div>
+          <div class="estado-filtro ${d.categoria ? "si" : "no"}">${d.categoria ? "✓ aplicado como filtro" : "✗ no se filtra (confianza baja u “otros”)"}</div>${barrasOpciones(cat.probabilities, cat.choice, NOMBRE)}</div>
+        <div class="decision"><div class="preg">¿Para quién es?</div><div class="resp">${PUBLICO[pub.choice] || pub.choice}</div>
+          <div class="estado-filtro ${d.publico ? "si" : "no"}">${d.publico ? "✓ aplicado como filtro" : "✗ no se filtra"}</div>${barrasOpciones(pub.probabilities, pub.choice, PUBLICO)}</div>
+        <div class="decision"><div class="preg">¿Es un regalo?</div><div class="resp">${reg.noul >= 0.5 ? "Sí" : "No"} <span class="nota">(${pct(reg.noul)})</span></div>
+          <div class="estado-filtro ${d.es_regalo ? "si" : "no"}">${afinado ? (d.es_regalo ? "✓ prioriza productos bien valorados" : "✗ sin efecto") : "✗ desactivado hasta afinar Laya"}</div>${barrasOpciones({ "sí": reg.noul, "no": 1 - reg.noul }, reg.noul >= 0.5 ? "sí" : "no")}</div>
+        <div class="decision"><div class="preg">¿Le importa el precio?</div><div class="resp">${nivelPrecio[+nivelElegido]}</div>
+          <div class="estado-filtro ${d.sensibilidad_precio > 0 ? "si" : "no"}">${afinado ? (d.sensibilidad_precio > 0 ? "✓ favorece lo económico" : "✗ sin efecto") : "✗ desactivado hasta afinar Laya"}</div>${barrasOpciones(Object.fromEntries(Object.entries(pre.probabilities).map(([k, v]) => [nivelPrecio[+k], v])), nivelPrecio[+nivelElegido])}</div>
+      </div><div class="nota" style="margin:-.3rem 0 1rem">Laya: ${r.ms.laya} ms · recomendador: ${r.ms.recomendador} ms${r.usuario_con_historial ? " · personalizado con el historial" : ""}</div>`;
+    } else {
+      $("decisiones").innerHTML = `<div class="vacio">${esc(r.aviso || "Sin respuesta de Laya")}</div>`;
+    }
+    embudo("embudoBusqueda", r.traza, false);
+    $("resultadosConsulta").innerHTML = r.recomendaciones.map((p, i) => tarjeta(p, i)).join("");
+  } catch (e) { $("decisiones").innerHTML = `<div class="vacio">Error: ${esc(e.message)}</div>`; }
+}
+
+/* ---------------- 4. resultados ---------------- */
+function grafico({ titulo, pregunta, filas, lectura, formato = (v) => v.toFixed(3) }) {
+  filas = filas.filter((f) => typeof f.v === "number");  // una metrica ausente no rompe el grafico
+  const max = Math.max(...filas.map((f) => f.v)) * 1.08;
+  return `<div class="tarjeta-panel grafico"><h4>${titulo}</h4><p class="q">${pregunta}</p>
+    ${filas.map((f) => `<div class="fila-barra ${f.nuestro ? "nuestro" : ""}" title="${esc(f.n)}: ${formato(f.v)}">
+      <span class="nombre">${esc(f.n)}</span><span class="riel"><span class="relleno" style="display:block;width:${(100 * f.v / max).toFixed(1)}%"></span></span>
+      <span class="val">${formato(f.v)}</span></div>`).join("")}
+    ${lectura ? `<div class="lectura">${lectura}</div>` : ""}
+    <details class="tabla"><summary>Ver tabla</summary><table><tr><th>Modelo</th><th>Valor</th></tr>
+      ${filas.map((f) => `<tr><td>${esc(f.n)}</td><td>${formato(f.v)}</td></tr>`).join("")}</table></details></div>`;
+}
+let resultadosPintados = false;
+async function pintarResultados() {
+  if (resultadosPintados) return;
+  try {
+    const m = await api("/metricas");
+    const tt = m.two_tower_test || {}, cmp = m.comparacion || {}, cc = m.catalogo_completo || {};
+    const g = [];
+    g.push(grafico({ titulo: "Búsqueda por texto (cliente nuevo)", pregunta: "Con la reseña de un cliente nuevo como consulta: ¿qué tan seguido aparece el producto que compró entre los 10 primeros de 71,214? (recall@10)",
+      filas: [{ n: "Encoder sin afinar", v: 0.0381 }, { n: "Two-tower afinado", v: tt.busqueda_texto_usuario_nuevo?.["recall@10_catalogo"] ?? 0, nuestro: true }],
+      lectura: "Afinar el Transformer con nuestras reseñas duplicó la calidad de la búsqueda (×2.1)." }));
+    if (cc["popularidad"]) g.push(grafico({ titulo: "Recomendación por historial", pregunta: "¿Qué tan seguido la siguiente compra real del cliente está entre las 10 primeras recomendaciones de 71,214 productos? (recall@10)",
+      filas: [{ n: "Lo más comprado", v: cc["popularidad"]["recall@10"] }, { n: "SASRec", v: cc["sasrec+pop"]["recall@10"] },
+              { n: "Solo parecidos (two-tower)", v: cc["two_tower_item2item"]["recall@10"] }, { n: "Two-tower + SASRec", v: cc["rrf item2item+sasrec"]["recall@10"], nuestro: true }],
+      formato: (v) => v.toFixed(4),
+      lectura: "La combinación es la mejor, pero por poco: en este dataset la siguiente compra suele ser un producto popular de otra categoría, así que “lo más comprado” es un rival muy difícil." }));
+    if (cmp.sasrec) g.push(grafico({ titulo: "Protocolo clásico 1 + 99", pregunta: "Entre el producto real y 99 al azar, ¿queda el real en el top 10? (HR@10, como en los papers)",
+      filas: [{ n: "Lo más comprado", v: cmp.popularidad?.["hr@10"] }, { n: "SASRec + popularidad", v: cmp.sasrec?.["hr@10"], nuestro: true },
+              { n: "Two-tower + SASRec", v: cmp["fusion_two_tower+sasrec"]?.["hr@10"] }, { n: "Solo parecidos", v: cmp.two_tower?.["hr@10"] }],
+      lectura: "Con negativos al azar casi todos son productos raros, y eso favorece a lo popular (Krichene & Rendle, 2020). Por eso decidimos con la métrica sobre el catálogo completo." }));
+    const base = m.laya["laya-multilingual"], basec = m.laya["laya-multilingual_consultas_compra"];
+    if (base || basec) {
+      const filas = [];
+      if (basec) { const q = basec.consultas_compra.todos;
+        filas.push({ n: "Consulta: categoría", v: q.categoria.accuracy }, { n: "Consulta: público", v: q.publico.accuracy },
+                   { n: "Consulta: ¿regalo?", v: q.es_regalo.accuracy }, { n: "Consulta: precio", v: q.sensibilidad_precio.accuracy }); }
+      if (base) { const r = base.resenas_moda ? base.resenas_moda.todos : base.todos;
+        filas.push({ n: "Reseña: estrellas", v: r.satisfaccion.accuracy }, { n: "Reseña: ¿recomendaría?", v: r.recomendaria.accuracy }); }
+      g.push(grafico({ titulo: `Laya ${m.laya_afinado ? "afinado" : "sin afinar (zero-shot)"}`, pregunta: "Acierto de Laya en cada pregunta, sobre consultas y reseñas de prueba (accuracy)",
+        filas, formato: pct,
+        lectura: m.laya_afinado ? "" : "Sin afinar, “¿regalo?” y “precio” aciertan menos que no usarlos, por eso hoy solo se aplican categoría y público. El notebook de Kaggle afina Laya con 13 mil casos del proyecto." }));
+    }
+    $("graficos").innerHTML = g.join("");
+    resultadosPintados = true;
+  } catch (e) { $("graficos").innerHTML = `<div class="vacio">Error: ${esc(e.message)}</div>`; }
+}
+
+/* ---------------- 5. resenas ---------------- */
+$("ejemplosResena").innerHTML = EJEMPLOS_RESENA.map((t) => `<button class="ejemplo">${esc(t)}</button>`).join("");
+$("ejemplosResena").querySelectorAll(".ejemplo").forEach((b) => (b.onclick = () => { $("textoResena").value = b.textContent; analizar(); }));
+$("analizar").onclick = analizar;
+async function analizar() {
+  const texto = $("textoResena").value.trim();
+  if (texto.length < 3) return;
+  $("resenaRes").innerHTML = `<div class="vacio" style="margin-top:1rem">🧭 Laya está leyendo la reseña…</div>`;
+  try {
+    const r = await api("/resenas/analizar", { method: "POST", body: JSON.stringify({ texto }) });
+    const e = Math.round(r.rating_estimado);
+    $("resenaRes").innerHTML = `<div class="resena-res">
+      <div class="tarjeta-panel"><h3>Estrellas estimadas</h3><div class="estrellas">${"★".repeat(e)}<span style="opacity:.25">${"★".repeat(5 - e)}</span></div>
+        <div class="nota">${r.rating_estimado.toFixed(1)} de 5</div></div>
+      <div class="tarjeta-panel"><h3>¿Lo recomendaría?</h3><div style="font-size:1.6rem;font-weight:700">${pct(r.recomendaria)}</div>
+        <div class="medidor"><div style="width:${pct(r.recomendaria)}"></div></div><div class="nota" style="margin-top:.4rem">probabilidad de que sí</div></div>
+    </div><div class="nota" style="margin-top:.6rem">Modelo: ${esc(r.checkpoint)}</div>`;
+  } catch (err) { $("resenaRes").innerHTML = `<div class="vacio">Error: ${esc(err.message)}</div>`; }
+}
+
+/* ---------------- inicio ---------------- */
+(async () => {
+  try {
+    const s = await api("/salud");
+    $("estado").dataset.afinado = s.laya.afinado ? "1" : "0";
+    $("estado").innerHTML = `<span class="pill">modelo ${esc(s.modelo)}</span> <span class="pill ${s.laya.afinado ? "ok" : "alerta"}">Laya ${s.laya.afinado ? "afinado" : "zero-shot"}</span>`;
+  } catch { $("estado").innerHTML = `<span class="pill alerta">backend no disponible</span>`; }
+  const inicial = location.hash.slice(1);
+  if (document.getElementById("v-" + inicial)) ir(inicial);
+  await cargarPersonas();
+  const cliente = new URLSearchParams(location.search).get("cliente");  // /app/?cliente=ID#historial
+  if (cliente) elegir(cliente);
+  else if (st.personas[0]) elegir(st.personas[0].user_id);
+  const q = new URLSearchParams(location.search).get("q");  // /app/?q=...#busqueda
+  if (q) { $("consulta").value = q; buscarConsulta(); }
+})();
+</script>
+</body>
+</html>
