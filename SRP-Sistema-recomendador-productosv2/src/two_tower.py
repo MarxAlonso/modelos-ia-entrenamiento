@@ -221,6 +221,33 @@ def nueva_carpeta(tipo):
     return ruta
 
 
+@torch.no_grad()
+def minar_negativos_duros(encoder, tok, pares, textos_prod, K, trozo=512):
+    """Para cada par (consulta, producto) busca los K productos que el encoder actual
+    confunde con el correcto (los mas parecidos que NO son el correcto).
+
+    Con solo negativos dentro del lote, el encoder nunca ve un confuso real: el lote de 64
+    es facil de separar y el modelo no aprende a distinguir el producto correcto de uno
+    que se le parece de verdad (misma categoria, mismo estilo). Estos son los negativos
+    que separan al modelo de verdad.
+    """
+    emb_items = codificar(encoder, tok, textos_prod, MAX_LEN_PRODUCTO)
+    rng = np.random.default_rng(SEMILLA)
+    negs = np.zeros((len(pares), K), dtype=np.int64)
+    textos = [PREFIJO_CONSULTA + q[:400] for q, _ in pares]
+    for s in range(0, len(textos), trozo):
+        idx = np.arange(s, min(s + trozo, len(textos)))
+        q = codificar(encoder, tok, [textos[i] for i in idx], MAX_LEN_CONSULTA)
+        sim = q @ emb_items.T
+        for j, i in enumerate(idx):
+            sim[j, pares[i][1]] = -np.inf          # el correcto no es un negativo
+            top = np.argpartition(-sim[j], K)[:K]
+            negs[i] = top[rng.permutation(K)]
+        del sim
+    print(f"  negativos duros minados: {K} por par ({len(pares):,} pares)")
+    return negs
+
+
 def ultima_version(tipo):
     base = os.path.join(MODELOS, tipo)
     vs = sorted(d for d in os.listdir(base) if d[:1] == "v") if os.path.isdir(base) else []
@@ -241,7 +268,17 @@ def main():
     ap.add_argument("--solo-evaluar-base", action="store_true")
     ap.add_argument("--terminar", action="store_true",
                     help="evalua y exporta la ultima version ya entrenada (si se corto la evaluacion)")
+    ap.add_argument("--negativos-duros", type=int, default=0,
+                    help="K negativos duros por par (0 = solo los del lote)")
+    ap.add_argument("--paciencia", type=int, default=0,
+                    help="cortar si el recall@10 de busqueda no mejora en N epocas (0 = todas)")
+    ap.add_argument("--max-len-producto", type=int, default=0,
+                    help="0 = el de comun.py; 128 da mas contexto del producto")
+    ap.add_argument("--max-pares", type=int, default=0,
+                    help="0 = todos; recorta el numero de pares (para pruebas rapidas)")
     args = ap.parse_args()
+    if args.max_len_producto:
+        globals()["MAX_LEN_PRODUCTO"] = args.max_len_producto
     random.seed(SEMILLA); np.random.seed(SEMILLA); torch.manual_seed(SEMILLA)
     print(f"Dispositivo: {DISPOSITIVO}" + (f" ({torch.cuda.get_device_name(0)})" if DISPOSITIVO == "cuda" else ""))
 
@@ -269,6 +306,9 @@ def main():
     rng = random.Random(SEMILLA)
     test_claves = set(zip(pd.concat([test, val])["user_id"], pd.concat([test, val])["item_idx"]))
     pares = construir_pares(train, cat, test_claves, args.max_resenas, rng)
+    if args.max_pares and len(pares) > args.max_pares:
+        pares = random.Random(SEMILLA).sample(pares, args.max_pares)
+        print(f"  pares recortados a {len(pares):,}")
     textos_prod = (PREFIJO_PRODUCTO + cat["texto"]).tolist()
 
     # El vocabulario (250k tokens x 384) queda congelado: es el 80 % de los parametros, casi
@@ -284,6 +324,11 @@ def main():
     m_val, _ = evaluar(encoder, tok, cat, val, cand_val, hist_val, popularidad)
     print(f"  val antes de afinar: hr@{K}={m_val[f'hr@{K}']:.4f} ndcg@{K}={m_val[f'ndcg@{K}']:.4f}")
     historial.append({"paso": 0, **{k: v for k, v in m_val.items() if k != "popularidad"}})
+    mejor_recall, mejor_epoca, mejor_estado = -1.0, 0, None
+
+    negs_duros = None
+    if args.negativos_duros > 0:
+        negs_duros = minar_negativos_duros(encoder, tok, pares, textos_prod, args.negativos_duros)
 
     for ep in range(args.epocas):
         encoder.train()
@@ -299,10 +344,27 @@ def main():
             with torch.autocast(DISPOSITIVO, dtype=torch.float16, enabled=AMP):
                 eq = encoder(bq["input_ids"], bq["attention_mask"])
                 ep_ = encoder(bp["input_ids"], bp["attention_mask"])
+            if negs_duros is not None:
+                # negativos duros: K por consulta, codificados junto a los positivos
+                nh = negs_duros[s:s + args.lote]          # [B, K]
+                textos_neg = [textos_prod[j] for fila in nh for j in fila]
+                bn = tok(textos_neg, padding=True, truncation=True, max_length=MAX_LEN_PRODUCTO, return_tensors="pt").to(DISPOSITIVO)
+                with torch.autocast(DISPOSITIVO, dtype=torch.float16, enabled=AMP):
+                    en_ = encoder(bn["input_ids"], bn["attention_mask"])
+                ep_ = torch.cat([ep_, en_], 0)            # [B + B*K, dim]
             logits = args.escala * eq.float() @ ep_.float().T
-            etiquetas = torch.arange(len(lote_u), device=DISPOSITIVO)
-            # simetrica: consulta->producto y producto->consulta
-            loss = (F.cross_entropy(logits, etiquetas) + F.cross_entropy(logits.T, etiquetas)) / 2
+            if negs_duros is None:
+                etiquetas = torch.arange(len(lote_u), device=DISPOSITIVO)
+                # simetrica: consulta->producto y producto->consulta
+                loss = (F.cross_entropy(logits, etiquetas) + F.cross_entropy(logits.T, etiquetas)) / 2
+            else:
+                n_neg = negs_duros.shape[1]
+                # cada consulta tiene su positivo en la columna i*(1+n_neg)
+                etiquetas = torch.tensor([i * (1 + n_neg) for i in range(len(lote_u))], device=DISPOSITIVO)
+                loss = F.cross_entropy(logits, etiquetas)
+                # simetrica solo sobre los positivos del lote (producto -> consulta)
+                loss = (loss + F.cross_entropy(logits[:, :len(lote_u)].T,
+                                               torch.arange(len(lote_u), device=DISPOSITIVO))) / 2
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)
@@ -314,6 +376,22 @@ def main():
         m_val, _ = evaluar(encoder, tok, cat, val, cand_val, hist_val, popularidad)
         print(f"  val epoca {ep + 1}: hr@{K}={m_val[f'hr@{K}']:.4f} ndcg@{K}={m_val[f'ndcg@{K}']:.4f}")
         historial.append({"paso": paso, **{k: v for k, v in m_val.items() if k != "popularidad"}})
+        # criterio de parada: el recall@10 de la busqueda de texto (la tarea del two-tower)
+        if args.paciencia:
+            items_val = codificar(encoder, tok, (PREFIJO_PRODUCTO + cat["texto"]).tolist(), MAX_LEN_PRODUCTO)
+            qf = codificar(encoder, tok, (PREFIJO_CONSULTA + val["resena"].str.slice(0, 400)).tolist(),
+                           MAX_LEN_CONSULTA)
+            r10 = recall_catalogo(qf, items_val, val["item_idx"].to_numpy(), 10)
+            print(f"    recall@10 de busqueda (validacion): {r10:.4f}")
+            if r10 > mejor_recall:
+                mejor_recall, mejor_epoca = r10, ep + 1
+                mejor_estado = {k: v.detach().clone() for k, v in encoder.state_dict().items()}
+            elif ep + 1 - mejor_epoca >= args.paciencia:
+                print(f"  parada temprana en la epoca {ep+1} (mejor: {mejor_epoca}, recall {mejor_recall:.4f})")
+                break
+    if mejor_estado is not None:
+        encoder.load_state_dict(mejor_estado)
+        print(f"  se conserva la epoca {mejor_epoca} (recall@10 de busqueda {mejor_recall:.4f})")
 
     # Se guarda ANTES de evaluar: si el proceso muere en la evaluacion (tarda minutos), el
     # entrenamiento no se pierde y se termina con --terminar.
@@ -322,7 +400,8 @@ def main():
     tok.save_pretrained(os.path.join(carpeta, "hf"))
     with open(os.path.join(carpeta, "entrenamiento.json"), "w", encoding="utf-8") as f:
         json.dump({"historial_val": historial, "origen": origen, "args": vars(args), "n_pares": len(pares),
-                   "seg": round(time.time() - t0)}, f, indent=2)
+                   "negativos_duros": bool(negs_duros), "mejor_epoca": mejor_epoca,
+                   "mejor_recall_busqueda": mejor_recall, "seg": round(time.time() - t0)}, f, indent=2)
     print(f"  pesos guardados en {carpeta}")
     evaluar_y_exportar(encoder, tok, carpeta, cat, test, cand_test, hist_test, popularidad, frio)
 

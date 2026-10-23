@@ -17,11 +17,23 @@ Flujo:
 import hashlib
 import json
 import os
+import sys
 
 import numpy as np
 import onnxruntime as ort
 import pandas as pd
 from tokenizers import Tokenizer
+
+# Los rasgos del re-ranker viven en un modulo COMPARTIDO (src/rasgos.py) que publicar.py
+# copia a models/servir/rasgos.py: asi lo que el modelo aprendio y lo que el servicio
+# calcula son exactamente las mismas formulas.
+_RUTA_RASGOS = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))), "models", "servir", "rasgos.py")
+if os.path.exists(_RUTA_RASGOS):
+    sys.path.insert(0, os.path.dirname(_RUTA_RASGOS))
+    import rasgos as _rasgos
+else:  # publicacion anterior: el backend calculaba los rasgos aqui mismo
+    _rasgos = None
 
 # Deben coincidir con src/comun.py y src/sasrec.py
 PREFIJO_CONSULTA = "consulta: "
@@ -71,12 +83,22 @@ class Recomendador:
                                             providers=["CPUExecutionProvider"])
         self.sasrec = ort.InferenceSession(os.path.join(carpeta, "sasrec.onnx"), opciones,
                                            providers=["CPUExecutionProvider"])
-        # re-ranker aprendido (src/reranker.py); publicaciones anteriores no lo traen -> RRF
+        # re-ranker aprendido: hay tres formatos (lineal, GBDT de LightGBM y MLP en ONNX).
+        # El que se publica es el que gano en la evaluacion (src/evaluacion.py).
         ruta_rr = os.path.join(carpeta, "reranker.json")
         self.reranker = leer("reranker.json") if os.path.exists(ruta_rr) else None
+        self.formato_rr = None
         if self.reranker:
-            for c in ("media", "desv", "w"):
-                self.reranker[c] = np.asarray(self.reranker[c], dtype=np.float32)
+            self.formato_rr = self.reranker.get("formato", "lineal")
+            if self.formato_rr == "lineal":
+                for c in ("media", "desv", "w"):
+                    self.reranker[c] = np.asarray(self.reranker[c], dtype=np.float32)
+            elif self.formato_rr == "mlp":
+                ruta_red = os.path.join(carpeta, self.reranker["onnx"])
+                self.red = ort.InferenceSession(ruta_red, opciones, providers=["CPUExecutionProvider"])
+            elif self.formato_rr == "gbdt":
+                import lightgbm as lgb
+                self.gbdt = lgb.Booster(model_file=os.path.join(carpeta, self.reranker["modelo"]))
             self._cat = self.catalogo["categoria"].to_numpy()
             self._pub = self.catalogo["publico"].to_numpy()
             self._tienda = self.catalogo["tienda"].fillna("").to_numpy()
@@ -148,9 +170,42 @@ class Recomendador:
         seq = np.array([[0] * (LARGO_SASREC - len(s)) + s], dtype=np.int64)
         return self.sasrec.run(None, {"secuencia": seq, "candidatos": (cand + 1)[None].astype(np.int64)})[0][0]
 
-    def puntuar_reranker(self, hist, pool, sas):
-        """Mismos rasgos y orden que src/reranker.py:rasgos. Devuelve (puntaje, P(acierto top-10)):
-        la probabilidad incluye la clase "ninguno" (el producto que busca no esta en el pool)."""
+    def _rasgos_compartidos(self, hist, pool, sas, estrellas=None):
+        """Los 36 rasgos del re-ranker, calculados con el MISMO modulo que el entrenamiento
+        (models/servir/rasgos.py, copiado de src/rasgos.py)."""
+        if _rasgos is None:
+            raise RuntimeError("falta models/servir/rasgos.py: vuelve a publicar con src/publicar.py")
+        est = [np.asarray(estrellas, dtype=np.float32)] if estrellas is not None and len(estrellas) else None
+        return _rasgos.rasgos([np.asarray(hist, dtype=np.int64)], np.asarray(pool)[None, :],
+                               np.asarray(sas, dtype=np.float32)[None, :], self.items,
+                               self.popularidad, self.catalogo, est)[0]
+
+    def puntuar_reranker(self, hist, pool, sas, estrellas=None):
+        """Devuelve (puntaje, P(acierto top-10)):
+        - formato lineal: la misma cuenta de siempre (softmax con la clase "ninguno").
+        - formato MLP: la red (ONNX) con el objetivo listwise; la confianza es la masa del
+          softmax en el top-10, con el sesgo "ninguno" compitiendo.
+        - formato GBDT: el puntaje de LightGBM; la confianza se toma del calibrador.
+        """
+        rr = self.reranker
+        if self.formato_rr == "mlp":
+            F = self._rasgos_compartidos(hist, pool, sas, estrellas)
+            s = self.red.run(None, {"rasgos": F[None].astype(np.float32)})[0][0]
+            b = float(rr.get("b_ninguno", 0.0))
+            z = np.append(s, b)
+            z = z - z.max()
+            p = np.exp(z); p /= p.sum()
+            conf = float(np.sort(p[:-1])[::-1][:10].sum())
+            return s, conf
+        if self.formato_rr == "gbdt":
+            F = self._rasgos_compartidos(hist, pool, sas, estrellas)
+            s = self.gbdt.predict(F.astype(np.float32))
+            cal = rr.get("calibrador_valores")
+            conf = 0.0
+            if cal:
+                conf = float(np.interp(float(np.sort(s)[::-1][:10].sum()), cal["x"], cal["y"]))
+            return s, conf
+        # formato lineal (original)
         h, c = np.array(hist, dtype=np.int64), pool
         ec, eh = self.items[c], self.items[h]
         sims = ec @ eh.T
@@ -160,7 +215,6 @@ class Recomendador:
                       (self._cat[c][:, None] == self._cat[h][None]).mean(1), self._cat[c] == self._cat[h[-1]],
                       (self._pub[c][:, None] == self._pub[h][None]).mean(1), np.isin(self._tienda[c], tiendas),
                       self._rating[c], self._log_resenas[c]], 1).astype(np.float32)
-        rr = self.reranker
         s = ((F - rr["media"]) / rr["desv"]) @ rr["w"]
         z = np.append(s, rr["b_ninguno"])
         p = np.exp(z - z.max()); p /= p.sum()
@@ -190,7 +244,8 @@ class Recomendador:
             res.append(d)
         return res
 
-    def _rankear(self, q, cand, hist, sensibilidad_precio=0.0, es_regalo=False, k=10, modo="consulta"):
+    def _rankear(self, q, cand, hist, sensibilidad_precio=0.0, es_regalo=False, k=10, modo="consulta",
+                 estrellas=None):
         """modo consulta: manda el coseno con la consulta (SASRec desempata); modo usuario:
         RRF coseno + SASRec, y al pool de similares se suman los populares.
         Devuelve (recomendaciones, traza): la traza cuenta cuantos productos sobreviven a cada
@@ -208,7 +263,7 @@ class Recomendador:
         sas = self.puntuar_sasrec(hist, pool) if hist else None
         confianza = None
         if modo == "usuario" and self.reranker:
-            puntaje, confianza = self.puntuar_reranker(hist, pool, sas)
+            puntaje, confianza = self.puntuar_reranker(hist, pool, sas, estrellas)
             # el softmax admite negativos; los boosts de abajo multiplican, asi que se pasa a (0, 1]
             puntaje = np.exp(puntaje - puntaje.max())
         elif modo == "usuario":
@@ -289,6 +344,7 @@ class Recomendador:
                       sensibilidad_precio=0.0, es_regalo=False, hist=None):
         hist = [int(i) for i in hist] if hist is not None else self.historial(user_id)
         q = self.codificar([PREFIJO_CONSULTA + texto])[0]
+        est = None
         if hist:  # lo que pide ahora pesa mas que lo que compro antes
             est, txt = self._ctx_usuario(user_id, len(hist)) if user_id else (None, None)
             q = 0.75 * q + 0.25 * self.perfil_vector(hist, est, txt)
@@ -296,7 +352,7 @@ class Recomendador:
         cand = self.candidatos(categoria, publico)
         if len(cand) == 0:
             cand = np.arange(len(self.catalogo))
-        recs, traza = self._rankear(q, cand, hist, sensibilidad_precio, es_regalo, k)
+        recs, traza = self._rankear(q, cand, hist, sensibilidad_precio, es_regalo, k, estrellas=est)
         return {"usuario_con_historial": bool(hist), "candidatos_filtrados": int(len(cand)),
                 "traza": traza, "recomendaciones": recs}
 
@@ -469,7 +525,8 @@ class Recomendador:
                     "historial": historial, "recomendaciones": recs,
                     "traza": {"catalogo": len(self.catalogo), "tras_filtro": int(len(cand)),
                               "final": len(recs), "sasrec": False}}
-        recs, traza = self._rankear(self.perfil_vector(hist, estrellas, textos), cand, hist, k=k, modo="usuario")
+        recs, traza = self._rankear(self.perfil_vector(hist, estrellas, textos), cand, hist, k=k,
+                                    modo="usuario", estrellas=estrellas)
         w = self._pesos(hist, estrellas, textos)
         return {"usuario_con_historial": True,
                 "estrategia": "candidatos: similares (two-tower item-to-item) + populares; orden: " + ("re-ranker aprendido (SASRec + similitud + categoria + tienda + popularidad)" if self.reranker else "RRF(item-to-item, SASRec)"),

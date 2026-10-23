@@ -9,6 +9,9 @@ pyarrow
 onnx
 onnxruntime
 onnxscript
+numpy
+scipy
+lightgbm          # re-ranker GBDT (se usa su API nativa: no necesita scikit-learn)
 laya
 fastapi
 uvicorn

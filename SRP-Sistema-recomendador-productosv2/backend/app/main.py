@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import laya_cliente
+from .calidad_cliente import CalidadCliente
 from .recomendador import Recomendador
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,6 +26,7 @@ MODELOS_DIR = os.environ.get("MODELOS_DIR", os.path.join(RAIZ, "models", "servir
 app = FastAPI(title="SRP v2 - Transformers + Laya",
               description="Two-tower Transformer para recuperar, SASRec para re-rankear, Laya para entender texto.")
 rec = Recomendador(MODELOS_DIR)
+calidad_cliente = CalidadCliente(MODELOS_DIR)
 
 
 def _precalentar():
@@ -98,10 +100,15 @@ def metricas():
     leer = lambda ruta: _json.load(open(ruta, encoding="utf-8")) if os.path.exists(ruta) else None
     laya = {os.path.basename(r)[8:-5]: leer(r) for r in glob.glob(os.path.join(RAIZ, "data", "laya", "reporte_*.json"))}
     tt = leer(os.path.join(tt_dir, "metricas.json")) or {}
+    evaluacion = leer(os.path.join(RAIZ, "models", "evaluacion", "evaluacion.json"))
     return {"version": rec.version, "two_tower_test": m.get("two_tower_test"),
             "two_tower_val": tt.get("historial_val"),
             "comparacion": m.get("comparacion_usuarios_eval"),
             "catalogo_completo": leer(os.path.join(sasrec_dir, "metricas_catalogo_completo.json")),
+            "evaluacion": evaluacion,
+            "calidad_resena": m.get("calidad_resena"),
+            "confiabilidad": m.get("confiabilidad"),
+            "pool_servicio": m.get("pool_servicio"),
             "laya": laya, "laya_afinado": laya_cliente.estado()["afinado"]}
 
 
@@ -199,13 +206,27 @@ def similares(product_id: str, k: int = Query(10, ge=1, le=50)):
 
 @app.post("/resenas/analizar")
 async def analizar_resena(r: Resena):
-    """Laya (idealmente el checkpoint afinado con las resenas del proyecto) convierte una
-    resena sin estrellas en satisfaccion estimada y probabilidad de recomendar."""
+    """Estima las estrellas y si el cliente recomendaria el producto.
+
+    Hay dos motores:
+      - el modelo PROPIO, afinado por nosotros sobre las resenas del dataset (src/calidad.py):
+        RMSE 0.63 estrellas y 96.8 % de acierto en la decision "recomendaria" (12,723 resenas
+        de test). Es el que se usa para responder.
+      - Laya, que responde preguntas tipadas; sin afinar acierta el 37 % y por eso sus
+        respuestas se devuelven aparte, como referencia.
+    """
+    propio = calidad_cliente.predecir(r.texto)
+    laya = None
     try:
         resp = await laya_cliente.preguntar_resena({"producto": r.producto or "", "resena": r.texto})
+        a = resp["answers"]
+        laya = {"rating_estimado": round(1 + float(a["satisfaccion"]["score"]), 2),
+                "recomendaria": round(float(a["recomendaria"]["noul"]), 4),
+                "checkpoint": laya_cliente.CHECKPOINT_RESENAS}
     except Exception as e:
-        raise HTTPException(503, f"Laya no disponible: {type(e).__name__}: {e}")
-    a = resp["answers"]
-    return {"rating_estimado": round(1 + float(a["satisfaccion"]["score"]), 2),
-            "recomendaria": round(float(a["recomendaria"]["noul"]), 4),
-            "checkpoint": laya_cliente.CHECKPOINT_RESENAS, "detalle": a}
+        laya = {"error": f"{type(e).__name__}: {e}"}
+    if propio is None:
+        if laya is None or "error" in laya:
+            raise HTTPException(503, "No hay ningun modelo de analisis de resenas disponible")
+        return {"modelo": "laya", **laya}
+    return {"modelo": "calidad_propia", **propio, "laya": laya}

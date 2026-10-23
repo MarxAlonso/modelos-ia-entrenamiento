@@ -723,6 +723,7 @@ async function pintarResultados() {
   try {
     const m = await api("/metricas");
     const tt = m.two_tower_test || {}, cmp = m.comparacion || {}, cc = m.catalogo_completo || {};
+    const ev = m.evaluacion || {};
     const g = [];
     g.push(grafico({ titulo: "Búsqueda por texto (cliente nuevo)", pregunta: "Con la reseña de un cliente nuevo como consulta: ¿qué tan seguido aparece el producto que compró entre los 10 primeros de 71,214? (recall@10)",
       filas: [{ n: "Encoder sin afinar", v: 0.0381 }, { n: "Two-tower afinado", v: tt.busqueda_texto_usuario_nuevo?.["recall@10_catalogo"] ?? 0, nuestro: true }],
@@ -736,6 +737,36 @@ async function pintarResultados() {
       filas: [{ n: "Lo más comprado", v: cmp.popularidad?.["hr@10"] }, { n: "SASRec + popularidad", v: cmp.sasrec?.["hr@10"], nuestro: true },
               { n: "Two-tower + SASRec", v: cmp["fusion_two_tower+sasrec"]?.["hr@10"] }, { n: "Solo parecidos", v: cmp.two_tower?.["hr@10"] }],
       lectura: "Con negativos al azar casi todos son productos raros, y eso favorece a lo popular (Krichene & Rendle, 2020). Por eso decidimos con la métrica sobre el catálogo completo." }));
+
+    // ------------------------------------------------ evaluacion centralizada (src/evaluacion.py)
+    const t1 = ev.modelos_1_99 || {};
+    if (Object.keys(t1).length) {
+      const filas = Object.entries(t1).map(([k, v]) => ({ n: k, v: v["hr@10"] }));
+      g.push(grafico({ titulo: "Ranking: modelo final vs. líneas base", pregunta: "HR@10 en el protocolo 1+99 (3,864 clientes de evaluación), con empates rotos: el acierto exige que el producto real esté por delante de los demás",
+        filas, nuestro: true,
+        formato: (v) => v.toFixed(4),
+        lectura: "El re-ranker aprendido (red neuronal con objetivo listwise) sube el HR@10 de 0.47 (lo más comprado) a 0.78. Los intervalos de confianza por bootstrap están en models/evaluacion/resumen.md." }));
+    }
+    const cal = m.calidad_resena || {};
+    if (cal.satisfaccion) {
+      const s = cal.satisfaccion, r = cal.recomendaria_sin_neutros || {};
+      g.push(grafico({ titulo: "Calidad de la reseña (modelo afinado)", pregunta: "¿El modelo acierta las estrellas y la opinión del cliente? (12,723 reseñas de test, nunca vistas en el entrenamiento)",
+        filas: [{ n: "Acierto exacto de estrellas", v: s.accuracy_exacta },
+                { n: "Acierto dentro de ±1 estrella", v: s.accuracy_dentro_1 },
+                { n: "Acierto: ¿recomendaría? (4-5★ vs 1-2★)", v: r.accuracy },
+                { n: "Base: predecir siempre 4-5★", v: r.base_mayoritaria }],
+        formato: pct, nuestro: true,
+        lectura: `RMSE ${s.rmse} estrellas y MAE ${s.mae}. El binario acierta el ${(r.accuracy * 100).toFixed(1)} % de las veces (F1 ${r.f1}, AUC ${r.auc}) frente al ${(r.base_mayoritaria * 100).toFixed(1)} % de la clase mayoritaria.` }));
+    }
+    const conf = m.confiabilidad || {};
+    const sel = conf.selectivo_90_top10 || (m.pool_servicio && Object.values(m.pool_servicio)[0]?.confianza?.selectivo_90_top10);
+    if (sel && sel.precision) {
+      g.push(grafico({ titulo: "Predicción selectiva (el sistema se abstiene)", pregunta: "Cuando el modelo tiene confianza alta, ¿con qué frecuencia acierta? Umbral elegido sin ver los datos de prueba",
+        filas: [{ n: "Precisión en el tramo de alta confianza", v: sel.precision },
+                { n: "Cobertura (de consultas a las que responde)", v: sel.cobertura }],
+        formato: pct, nuestro: true,
+        lectura: `Con un umbral de ${sel.umbral} el sistema acierta el ${(sel.precision * 100).toFixed(1)} % de las veces en el ${(sel.cobertura * 100).toFixed(1)} % de los clientes con más confianza, y se abstiene en el resto: es la forma honesta de garantizar un acierto del 90 %.` }));
+    }
     const base = m.laya["laya-multilingual"], basec = m.laya["laya-multilingual_consultas_compra"];
     if (base || basec) {
       const filas = [];
@@ -760,16 +791,20 @@ $("analizar").onclick = analizar;
 async function analizar() {
   const texto = $("textoResena").value.trim();
   if (texto.length < 3) return;
-  $("resenaRes").innerHTML = `<div class="vacio" style="margin-top:1rem">🧭 Laya está leyendo la reseña…</div>`;
+  $("resenaRes").innerHTML = `<div class="vacio" style="margin-top:1rem">🧭 Leyendo la reseña…</div>`;
   try {
     const r = await api("/resenas/analizar", { method: "POST", body: JSON.stringify({ texto }) });
-    const e = Math.round(r.rating_estimado);
+    const estrellas = r.estrellas ?? Math.round(r.rating_estimado);
+    const rec = r.recomendaria;
+    const laya = r.laya && !r.laya.error
+      ? `<div class="nota" style="margin-top:.6rem">Laya (sin afinar) diría ${r.laya.rating_estimado?.toFixed(1)}★ y ${pct(r.laya.recomendaria)} de recomendar: por eso la respuesta la da el modelo propio, afinado con las reseñas del dataset (96,8 % de acierto).</div>`
+      : "";
     $("resenaRes").innerHTML = `<div class="resena-res">
-      <div class="tarjeta-panel"><h3>Estrellas estimadas</h3><div class="estrellas">${"★".repeat(e)}<span style="opacity:.25">${"★".repeat(5 - e)}</span></div>
-        <div class="nota">${r.rating_estimado.toFixed(1)} de 5</div></div>
-      <div class="tarjeta-panel"><h3>¿Lo recomendaría?</h3><div style="font-size:1.6rem;font-weight:700">${pct(r.recomendaria)}</div>
-        <div class="medidor"><div style="width:${pct(r.recomendaria)}"></div></div><div class="nota" style="margin-top:.4rem">probabilidad de que sí</div></div>
-    </div><div class="nota" style="margin-top:.6rem">Modelo: ${esc(r.checkpoint)}</div>`;
+      <div class="tarjeta-panel"><h3>Estrellas estimadas</h3><div class="estrellas">${"★".repeat(estrellas)}<span style="opacity:.25">${"★".repeat(5 - estrellas)}</span></div>
+        <div class="nota">${estrellas} de 5 · confianza ${pct(r.confianza ?? 0)}</div></div>
+      <div class="tarjeta-panel"><h3>¿Lo recomendaría?</h3><div style="font-size:1.6rem;font-weight:700">${pct(rec)}</div>
+        <div class="medidor"><div style="width:${pct(rec)}"></div></div><div class="nota" style="margin-top:.4rem">probabilidad de que sí</div></div>
+    </div><div class="nota" style="margin-top:.6rem">Modelo: ${esc(r.modelo ?? "laya")}</div>${laya}`;
   } catch (err) { $("resenaRes").innerHTML = `<div class="vacio">Error: ${esc(err.message)}</div>`; }
 }
 
@@ -783,11 +818,14 @@ async function analizar() {
   const inicial = location.hash.slice(1);
   if (document.getElementById("v-" + inicial)) ir(inicial);
   await cargarPersonas();
-  const cliente = new URLSearchParams(location.search).get("cliente");  // /app/?cliente=ID#historial
-  if (cliente) elegir(cliente);
+  const params = new URLSearchParams(location.search);
+  const cliente = params.get("cliente");  // /app/?cliente=ID#historial  (+ &prueba=1 corre la prueba de acierto)
+  if (cliente) { await elegir(cliente); if (params.get("prueba")) hacerPrueba(); }
   else if (st.personas[0]) elegir(st.personas[0].user_id);
-  const q = new URLSearchParams(location.search).get("q");  // /app/?q=...#busqueda
+  const q = params.get("q");  // /app/?q=...#busqueda
   if (q) { $("consulta").value = q; buscarConsulta(); }
+  const resena = params.get("resena");  // /app/?resena=...#resenas
+  if (resena) { $("textoResena").value = resena; analizar(); }
 })();
 </script>
 </body>

@@ -72,9 +72,19 @@ def publico_de(titulo: str) -> str:
     return PUBLICO_UNISEX
 
 
-def hr_ndcg(puntajes, k=K):
-    """puntajes [n, 100] con la columna 0 = producto real. Devuelve (HR@k, NDCG@k)."""
+def hr_ndcg(puntajes, k=K, semilla=42):
+    """puntajes [n, 100] con la columna 0 = producto real. Devuelve (HR@k, NDCG@k).
+
+    OJO con los empates: si dos candidatos tienen el mismo puntaje, el que esta en la
+    columna 0 no puede contarse como "ranking por encima" sin rigor. Un modelo que
+    devuelve la misma puntuacion a miles de productos (un GBDT con pocas hojas, un
+    ranking por popularidad) inflaria la metrica. Por eso se rompen los empates con un
+    epsilon aleatorio minimo (1e-9), igual que hace la linea base de popularidad con 1e-6:
+    el acierto entonces exige que el producto real este por delante de los demas.
+    """
     import numpy as np
-    rango = (puntajes[:, 1:] > puntajes[:, :1]).sum(1)  # cuantos negativos le ganan
+    eps = np.random.default_rng(semilla).random(puntajes.shape) * 1e-9
+    p = puntajes + eps
+    rango = (p[:, 1:] > p[:, :1]).sum(1)  # cuantos negativos le ganan
     hit = rango < k
     return float(hit.mean()), float(np.where(hit, 1.0 / np.log2(rango + 2), 0.0).mean())

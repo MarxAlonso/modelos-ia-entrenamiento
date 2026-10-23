@@ -11,5 +11,11 @@ models/two_tower/
 models/sasrec/
 models/servir/
 models/laya_srp/
+models/calidad/
+models/evaluacion/
+models/reranker/
+models/reranker_mlp/
+# Logs de entrenamiento y backend (no versionar)
+logs/
 
 version.md
