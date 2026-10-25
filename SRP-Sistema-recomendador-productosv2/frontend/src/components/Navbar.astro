@@ -1,0 +1,130 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title = 'SRP v2 — Recomendador de Productos' } = Astro.props;
+---
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-logo" aria-label="SRP v2 Inicio">
+      <span class="logo-icon">🛍️</span>
+      <span class="logo-text">SRP v2</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="/" class="nav-link">Inicio</a>
+      <a href="/buscar" class="nav-link">Buscar productos</a>
+      <a href="/resenas" class="nav-link">Analizar reseñas</a>
+      <a href="/metricas" class="nav-link">Métricas del modelo</a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="/" class="btn btn-primary btn-small">Recomendar por usuario</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #111827;
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover {
+    color: #2563eb;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  .btn-small {
+    padding: 0.4rem 0.875rem;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .nav-container {
+      padding: 0 1rem;
+    }
+  }
+</style>

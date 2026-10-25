@@ -1,0 +1,169 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Métricas del modelo" description="Métricas de evaluación del modelo SRP v2">
+  <Navbar />
+  
+  <div class="container">
+    <div class="page-header">
+      <h1>Métricas del modelo</h1>
+      <p>Resultados de evaluación del sistema recomendador SRP v2.</p>
+    </div>
+
+    <div id="metricas-container">
+      <div class="empty-state">Cargando métricas...</div>
+    </div>
+  </div>
+
+  <Footer />
+
+  <script>
+    async function cargarMetricas() {
+      const container = document.getElementById('metricas-container');
+      
+      try {
+        const res = await fetch('/api/metricas');
+        if (!res.ok) throw new Error('No se pudieron cargar las métricas');
+        const data = await res.json();
+
+        const evalData = data.evaluacion || {};
+        const confiabilidad = evalData.confiabilidad || {};
+        const modelos = evalData.modelos_1_99 || {};
+        const gbdt = modelos.reranker_gbdt || {};
+        const calidad = evalData.calidad_resena || {};
+
+        container.innerHTML = `
+          <div class="grid-4">
+            <div class="stat-card">
+              <div class="stat-value">${gbdt.hr_at_10?.toFixed(4) || 'N/A'}</div>
+              <div class="stat-label">HR@10 (GBDT)</div>
+              <div class="stat-change">↑ vs popularidad</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${confiabilidad.selectivo_90_top10?.precision?.toFixed(3) || 'N/A'}</div>
+              <div class="stat-label">Precisión selectiva 90%</div>
+              <div class="stat-change">top-10</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${calidad.satisfaccion?.rmse?.toFixed(4) || 'N/A'}</div>
+              <div class="stat-label">RMSE reseñas</div>
+              <div class="stat-change">estrellas 1-5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${(calidad.recomendaria_sin_neutros?.accuracy || 0) * 100}.toFixed(2)}%</div>
+              <div class="stat-label">Accuracy "recomendaría"</div>
+              <div class="stat-change">F1: ${calidad.recomendaria_sin_neutros?.f1?.toFixed(3) || 'N/A'}</div>
+            </div>
+          </div>
+
+          <h2 style="margin-top: 3rem;">Comparación de modelos (HR@10)</h2>
+          <div class="card" style="margin-top: 1rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Modelo</th>
+                  <th>HR@10</th>
+                  <th>NDCG@10</th>
+                  <th>HR@1</th>
+                  <th>Categoría@1</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${Object.entries(modelos).map(([nombre, m]) => `
+                  <tr>
+                    <td>${nombre}</td>
+                    <td>${m.hr_at_10?.toFixed(4) || 'N/A'}</td>
+                    <td>${m.ndcg_at_10?.toFixed(4) || 'N/A'}</td>
+                    <td>${m.hr_at_1?.toFixed(4) || 'N/A'}</td>
+                    <td>${m.categoria_at_1?.toFixed(4) || 'N/A'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <h2 style="margin-top: 3rem;">Confiabilidad (predicción selectiva)</h2>
+          <div class="card" style="margin-top: 1rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Umbral</th>
+                  <th>Precisión</th>
+                  <th>Cobertura</th>
+                  <th>Umbral de confianza</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Selectivo 90 top-10</td>
+                  <td>${confiabilidad.selectivo_90_top10?.precision?.toFixed(3) || 'N/A'}</td>
+                  <td>${(confiabilidad.selectivo_90_top10?.cobertura || 0) * 100}.toFixed(1)}%</td>
+                  <td>${confiabilidad.selectivo_90_top10?.umbral?.toFixed(3) || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td>Selectivo 90 top-1</td>
+                  <td>${confiabilidad.selectivo_90_top1?.precision?.toFixed(3) || 'N/A'}</td>
+                  <td>${(confiabilidad.selectivo_90_top1?.cobertura || 0) * 100}.toFixed(1)}%</td>
+                  <td>${confiabilidad.selectivo_90_top1?.umbral?.toFixed(3) || 'N/A'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `<div class="card" style="color: #dc2626;"><h3>Error</h3><p>${err.message}</p></div>`;
+      }
+    }
+
+    cargarMetricas();
+  </script>
+
+  <style>
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    .stat-change {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #166534;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+</BaseLayout>

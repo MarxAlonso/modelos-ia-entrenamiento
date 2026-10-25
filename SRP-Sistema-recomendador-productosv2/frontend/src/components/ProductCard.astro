@@ -1,0 +1,212 @@
+---
+interface Props {
+  product: {
+    product_id: string;
+    titulo: string;
+    categoria: string;
+    publico: string;
+    precio?: number | null;
+    rating_promedio?: number;
+    numero_resenas?: number;
+    puntaje?: number;
+    similitud?: number;
+    porque?: any;
+  };
+  index?: number;
+}
+---
+
+<article class="product-card">
+  <div class="card-rank">{Astro.props.index ?? ''}</div>
+  <div class="card-body">
+    <h3 class="card-title">{product.titulo}</h3>
+    <div class="card-meta">
+      <span class="chip">{product.categoria}</span>
+      <span class="chip">{product.publico}</span>
+      {product.precio !== null && product.precio !== undefined && (
+        <span class="chip price">$${product.precio}</span>
+      )}
+    </div>
+    <div class="card-rating">
+      <span class="stars">{'★'.repeat(Math.round(product.rating_promedio || 0))}{'☆'.repeat(5 - Math.round(product.rating_promedio || 0))}</span>
+      <span class="rating-text">{product.rating_promedio?.toFixed(1)}★</span>
+      {product.numero_resenas !== undefined && product.numero_resenas !== null && (
+        <span class="review-count">({product.numero_resenas} reseñas)</span>
+      )}
+    </div>
+    <div class="card-score">
+      <span class="score-label">Puntaje</span>
+      <span class="score-value">{product.puntaje?.toFixed(2)}</span>
+    </div>
+    {product.porque && (
+      <div class="card-why">
+        <span class="why-label">Por qué lo recomendamos:</span>
+        {product.porque.parecido_a && (
+          <span class="why-text">Parecido a: {product.porque.parecido_a.titulo} (sim. {product.porque.parecido_a.similitud?.toFixed(2)})</span>
+        )}
+        {product.porque.popular && (
+          <span class="why-text">Popular: puesto #{product.porque.popular.puesto} ({product.porque.popular.compras} compras)</span>
+        )}
+      </div>
+    )}
+    <a href={`/producto/${product.product_id}`} class="card-link">Ver detalles →</a>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .card-rank {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .chip {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .chip.price {
+    background: #f0fdf4;
+    color: #166534;
+  }
+
+  .card-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .stars {
+    font-size: 1.1rem;
+    color: #fbbf24;
+  }
+
+  .rating-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .review-count {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  .card-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .score-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .score-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #2563eb;
+  }
+
+  .card-why {
+    margin-top: 0.5rem;
+    padding: 0.625rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    color: #4b5563;
+  }
+
+  .why-label {
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .why-text {
+    margin: 0.125rem 0;
+  }
+
+  .card-link {
+    margin-top: auto;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .card-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .product-card {
+      padding: 1rem;
+    }
+
+    .card-rank {
+      top: 0.75rem;
+      right: 0.75rem;
+    }
+  }
+</style>
