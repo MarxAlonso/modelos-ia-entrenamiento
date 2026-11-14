@@ -1,11 +1,14 @@
 ---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
 interface Props {
   title: string;
   description?: string;
-  children: any;
+  activo?: 'inicio' | 'perfil' | 'metricas' | 'resenas';
 }
 
-const { title, description = '', children } = Astro.props;
+const { title, description = '', activo = 'inicio' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site || 'https://srp-demo.pages.dev');
 ---
 
@@ -15,303 +18,324 @@ const canonical = new URL(Astro.url.pathname, Astro.site || 'https://srp-demo.pa
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title} | SRP v2</title>
+    <meta name="theme-color" content="#E4572E" />
+    <title>{title} · SRP</title>
     <link rel="canonical" href={canonical.href} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical.href} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <style>
-      :root {
-        --color-primary: 37 99 235;
-        --color-primary-dark: 29 78 216;
-        --color-secondary: 124 58 237;
-        --color-bg: 249 250 251;
-        --color-surface: 255 255 255;
-        --color-text: 17 24 39;
-        --color-text-muted: 75 85 99;
-        --color-border: 229 231 235;
-        --radius: 0.75rem;
-        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background: rgb(var(--color-bg));
-        color: rgb(var(--color-text));
-        line-height: 1.6;
-      }
-
-      a {
-        color: rgb(var(--color-primary));
-        text-decoration: none;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-
-      h1, h2, h3, h4 {
-        font-weight: 700;
-        line-height: 1.3;
-        margin: 0 0 1rem;
-      }
-
-      h1 { font-size: 2.5rem; }
-      h2 { font-size: 1.875rem; }
-      h3 { font-size: 1.5rem; }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
-
-      .page-header {
-        text-align: center;
-        padding: 3rem 0 2rem;
-        max-width: 700px;
-        margin: 0 auto;
-      }
-
-      .page-header h1 {
-        font-size: 2.75rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, rgb(var(--color-primary)) 0%, rgb(var(--color-secondary)) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .page-header p {
-        font-size: 1.125rem;
-        color: rgb(var(--color-text-muted));
-        margin-bottom: 2rem;
-      }
-
-      .grid-2 {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-      }
-
-      .grid-3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-      }
-
-      .grid-4 {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-      }
-
-      .card {
-        background: rgb(var(--color-surface));
-        border: 1px solid rgb(var(--color-border));
-        border-radius: var(--radius);
-        padding: 1.5rem;
-        box-shadow: var(--shadow);
-      }
-
-      .stat-card {
-        text-align: center;
-        padding: 2rem 1.5rem;
-      }
-
-      .stat-value {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: rgb(var(--color-text));
-        margin-bottom: 0.25rem;
-      }
-
-      .stat-label {
-        font-size: 0.875rem;
-        color: rgb(var(--color-text-muted));
-        font-weight: 500;
-      }
-
-      .stat-change {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #166534;
-        margin-top: 0.25rem;
-      }
-
-      .table-container {
-        overflow-x: auto;
-        margin-top: 1rem;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: rgb(var(--color-surface));
-        border-radius: var(--radius);
-        overflow: hidden;
-      }
-
-      th, td {
-        padding: 0.875rem 1rem;
-        text-align: left;
-        border-bottom: 1px solid rgb(var(--color-border));
-      }
-
-      th {
-        background: #f9fafb;
-        font-weight: 600;
-        color: rgb(var(--color-text-muted));
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      tr:last-child td {
-        border-bottom: none;
-      }
-
-      tr:hover td {
-        background: #f9fafb;
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.1875rem 0.625rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-      }
-
-      .badge-success {
-        background: #f0fdf4;
-        color: #166534;
-      }
-
-      .badge-info {
-        background: #eff6ff;
-        color: #1d4ed8;
-      }
-
-      .badge-warning {
-        background: #fefce8;
-        color: #a16207;
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.625rem 1.25rem;
-        border-radius: var(--radius);
-        font-weight: 600;
-        font-size: 0.95rem;
-        text-decoration: none;
-        transition: all 0.2s;
-        cursor: pointer;
-        border: none;
-      }
-
-      .btn-primary {
-        background: rgb(var(--color-primary));
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background: rgb(var(--color-primary-dark));
-        text-decoration: none;
-      }
-
-      .btn-outline {
-        border: 1px solid rgb(var(--color-border));
-        background: white;
-        color: rgb(var(--color-text));
-      }
-
-      .btn-outline:hover {
-        border-color: rgb(var(--color-primary));
-        background: #f9fafb;
-      }
-
-      .search-box {
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        position: relative;
-      }
-
-      .search-box input {
-        width: 100%;
-        padding: 0.875rem 1.25rem;
-        border: 2px solid rgb(var(--color-border));
-        border-radius: var(--radius);
-        font-size: 1rem;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-
-      .search-box input:focus {
-        border-color: rgb(var(--color-primary));
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-      }
-
-      .search-box button {
-        position: absolute;
-        right: 0.5rem;
-        top: 0.5rem;
-        background: rgb(var(--color-primary));
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .search-box button:hover {
-        background: rgb(var(--color-primary-dark));
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: rgb(var(--color-text-muted));
-      }
-
-      .empty-state h3 {
-        color: rgb(var(--color-text));
-        margin-bottom: 0.5rem;
-      }
-
-      @media (max-width: 768px) {
-        .grid-2, .grid-3, .grid-4 {
-          grid-template-columns: 1fr;
-        }
-
-        h1 { font-size: 2rem; }
-        .page-header h1 { font-size: 2rem; }
-
-        .search-box button {
-          position: relative;
-          right: auto;
-          top: auto;
-          width: 100%;
-          margin-top: 1rem;
-        }
-      }
-    </style>
+    <meta property="og:image" content="/3d/perfiles/mujer-calzado.webp" />
   </head>
   <body>
-    <slot />
+    <Navbar activo={activo} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
+
+<style is:global>
+  :root {
+    --bg: #fbf7f3;
+    --surface: #ffffff;
+    --ink: #2a2421;
+    --ink-2: #5a504a;
+    --ink-3: #8b8178;
+    --line: #eadfd3;
+    --terra: #e4572e;
+    --terra-d: #c9431c;
+    --terra-s: #fde9e1;
+    --teal: #2a9d8f;
+    --teal-s: #dff2ef;
+    --sun: #ffc857;
+    --sun-s: #fff3d6;
+    --indigo: #5b5bd6;
+    --indigo-s: #e8e8fb;
+    --radio: 22px;
+    --sombra-1: 0 1px 2px rgba(42, 36, 33, 0.05), 0 8px 24px rgba(42, 36, 33, 0.06);
+    --sombra-2: 0 2px 4px rgba(42, 36, 33, 0.06), 0 22px 50px rgba(42, 36, 33, 0.13);
+    --fuente: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Roboto, Arial, sans-serif;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--fuente);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    min-height: 70vh;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  .contenedor {
+    width: min(1180px, 100% - 2.5rem);
+    margin-inline: auto;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+
+  .lead {
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    color: var(--ink-2);
+    max-width: 38em;
+  }
+
+  /* botones */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.85rem 1.5rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  }
+  .btn:focus-visible,
+  .chip-btn:focus-visible,
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--terra) 55%, white);
+    outline-offset: 3px;
+  }
+  .btn-primario {
+    background: var(--terra);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(228, 87, 46, 0.35);
+  }
+  .btn-primario:hover {
+    background: var(--terra-d);
+    transform: translateY(-2px);
+  }
+  .btn-suave {
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid var(--line);
+  }
+  .btn-suave:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--terra-s);
+    color: var(--terra-d);
+  }
+  .chip.verde {
+    background: var(--teal-s);
+    color: #1c6f65;
+  }
+  .chip.sol {
+    background: var(--sun-s);
+    color: #8a5a00;
+  }
+  .chip.indigo {
+    background: var(--indigo-s);
+    color: #3b3ba8;
+  }
+  .chip.gris {
+    background: #f1ebe4;
+    color: var(--ink-2);
+  }
+
+  .tarjeta {
+    background: var(--surface);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-1);
+    border: 1px solid rgba(234, 223, 211, 0.7);
+  }
+
+  /* ilustración 3D sobre un fondo pastel, con sombra de contacto */
+  .arte {
+    position: relative;
+    display: grid;
+    place-items: center;
+    border-radius: calc(var(--radio) - 4px);
+    background: var(--tinte, var(--sun-s));
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .arte::before {
+    content: '';
+    position: absolute;
+    inset: auto 12% 9% 12%;
+    height: 11%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(42, 36, 33, 0.28), rgba(42, 36, 33, 0));
+    filter: blur(3px);
+    z-index: 0;
+    transition: transform 0.35s, opacity 0.35s;
+  }
+  .arte::after {
+    content: '';
+    position: absolute;
+    width: 86%;
+    aspect-ratio: 1;
+    left: 7%;
+    top: 4%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+    z-index: 0;
+  }
+  .arte > img {
+    position: relative;
+    z-index: 1;
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 10px 10px rgba(42, 36, 33, 0.12));
+  }
+  .arte.flota > img {
+    animation: flotar 6s ease-in-out infinite;
+  }
+  @keyframes flotar {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2.5%);
+    }
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .sub {
+    color: var(--ink-3);
+    font-size: 0.9rem;
+  }
+  .barra {
+    flex: 1;
+    height: 6px;
+    border-radius: 99px;
+    background: #f1ebe4;
+    overflow: hidden;
+  }
+  .barra i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--terra), #ffa45f);
+  }
+
+  .esqueleto {
+    background: linear-gradient(100deg, #f1e9e0 30%, #fbf6f0 50%, #f1e9e0 70%);
+    background-size: 200% 100%;
+    animation: brillo 1.3s linear infinite;
+    border-radius: 14px;
+  }
+  @keyframes brillo {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .vacio {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--ink-2);
+  }
+  .vacio h3 {
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .aviso {
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    background: var(--sun-s);
+    color: #6b4700;
+    border: 1px solid #f1d58c;
+    font-size: 0.95rem;
+  }
+  .aviso code {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>

@@ -2,12 +2,41 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="404 - No encontrado" description="Página no encontrada">
-  <div class="container">
-    <div class="empty-state" style="text-align: center; padding: 4rem 2rem;">
-      <h1 style="font-size: 4rem; margin: 0;">404</h1>
-      <h2>Página no encontrada</h2>
-      <p>La página que buscas no existe. Vuelve al <a href="/">inicio</a>.</p>
+<BaseLayout title="Página no encontrada" description="Esta página no existe">
+  <section class="contenedor nf">
+    <div class="arte flota" style="--tinte:#fff3d6">
+      <img src="/3d/productos/otros-1.webp" alt="Caja de regalo 3D vacía" width="360" height="360" />
     </div>
-  </div>
+    <div>
+      <p class="eyebrow">Error 404</p>
+      <h1>Esta página no existe</h1>
+      <p class="lead">Quizá el enlace cambió. Vuelve al inicio y arma tu perfil de nuevo.</p>
+      <a class="btn btn-primario" href="/">Volver al inicio</a>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .nf {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding-top: clamp(3rem, 8vw, 6rem);
+  }
+  .nf h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    margin: 0.8rem 0;
+  }
+  .nf .btn {
+    margin-top: 1.5rem;
+  }
+  .nf .arte {
+    aspect-ratio: 1;
+  }
+  @media (max-width: 700px) {
+    .nf {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

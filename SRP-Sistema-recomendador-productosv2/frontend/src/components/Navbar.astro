@@ -1,130 +1,114 @@
 ---
-export interface Props {
-  title?: string;
+interface Props {
+  activo?: 'inicio' | 'perfil' | 'metricas' | 'resenas';
 }
-
-const { title = 'SRP v2 — Recomendador de Productos' } = Astro.props;
+const { activo = 'inicio' } = Astro.props;
+const enlaces = [
+  { id: 'inicio', href: '/', texto: 'Inicio' },
+  { id: 'resenas', href: '/resenas/', texto: 'Reseñas' },
+  { id: 'metricas', href: '/metricas/', texto: 'Métricas' },
+];
 ---
 
-<nav class="navbar">
-  <div class="nav-container">
-    <a href="/" class="nav-logo" aria-label="SRP v2 Inicio">
-      <span class="logo-icon">🛍️</span>
-      <span class="logo-text">SRP v2</span>
+<header class="barra">
+  <div class="contenedor barra-in">
+    <a href="/" class="logo" aria-label="SRP · Inicio">
+      <span class="logo-marca" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+          <path d="M8 11h16l-1.4 12.2a2 2 0 0 1-2 1.8H11.4a2 2 0 0 1-2-1.8L8 11Z" fill="#fff" />
+          <path d="M12 11V9.5a4 4 0 0 1 8 0V11" stroke="#fff" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="logo-texto">SRP<small>recomendador</small></span>
     </a>
 
-    <div class="nav-links">
-      <a href="/" class="nav-link">Inicio</a>
-      <a href="/buscar" class="nav-link">Buscar productos</a>
-      <a href="/resenas" class="nav-link">Analizar reseñas</a>
-      <a href="/metricas" class="nav-link">Métricas del modelo</a>
-    </div>
+    <nav class="enlaces" aria-label="Principal">
+      {enlaces.map((e) => (
+        <a href={e.href} class:list={['enlace', { activo: activo === e.id }]} aria-current={activo === e.id ? 'page' : undefined}>
+          {e.texto}
+        </a>
+      ))}
+    </nav>
 
-    <div class="nav-actions">
-      <a href="/" class="btn btn-primary btn-small">Recomendar por usuario</a>
-    </div>
+    <a href="/#elegir" class="btn btn-primario cta">Armar mi perfil</a>
   </div>
-</nav>
+</header>
 
 <style>
-  .navbar {
+  .barra {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid #e5e7eb;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
   }
-
-  .nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+  .barra-in {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 4rem;
+    gap: 1rem;
+    height: 4.2rem;
   }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: #111827;
-  }
-
-  .logo-icon {
-    font-size: 1.5rem;
-  }
-
-  .logo-text {
-    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  .nav-link {
-    text-decoration: none;
-    color: #4b5563;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-  }
-
-  .nav-link:hover {
-    color: #2563eb;
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .btn {
+  .logo {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    gap: 0.65rem;
+  }
+  .logo-marca {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #ff7d4f, var(--terra) 55%, var(--terra-d));
+    box-shadow: 0 8px 18px rgba(228, 87, 46, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  .logo-texto {
+    display: flex;
+    flex-direction: column;
+    font-weight: 800;
+    font-size: 1.15rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .logo-texto small {
+    font-size: 0.62rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-    border: none;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 0.2rem;
   }
-
-  .btn-primary {
-    background: #2563eb;
-    color: white;
+  .enlaces {
+    display: flex;
+    gap: 0.25rem;
   }
-
-  .btn-primary:hover {
-    background: #1d4ed8;
+  .enlace {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--ink-2);
+    transition: background 0.15s, color 0.15s;
   }
-
-  .btn-small {
-    padding: 0.4rem 0.875rem;
-    font-size: 0.85rem;
+  .enlace:hover {
+    background: #f1ebe4;
+    color: var(--ink);
   }
-
-  @media (max-width: 768px) {
-    .nav-links {
+  .enlace.activo {
+    background: var(--ink);
+    color: #fff;
+  }
+  .cta {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.92rem;
+  }
+  @media (max-width: 720px) {
+    .cta {
       display: none;
     }
-
-    .nav-container {
-      padding: 0 1rem;
+    .logo-texto small {
+      display: none;
     }
   }
 </style>

@@ -6,6 +6,7 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   adapter: cloudflare(),
   site: 'https://srp-demo.pages.dev',
-  trailingSlash: 'always',
+  // 'ignore': las rutas /api/... (proxy al backend) funcionan con o sin barra final
+  trailingSlash: 'ignore',
   build: { format: 'directory' },
 });

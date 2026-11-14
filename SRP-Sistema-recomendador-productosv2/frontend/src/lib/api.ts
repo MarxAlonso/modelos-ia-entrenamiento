@@ -1,73 +1,49 @@
-// Cliente de API para consumir el backend del SRP v2 a través de Cloudflare Pages Functions
-// Las rutas /api/* son proxy funciones que redirigen al backend FastAPI
-
+// Cliente de la API del SRP v2. Todas las rutas pasan por el proxy /api/* (ver src/pages/api/[...ruta].ts),
+// que las reenvía al backend FastAPI con la misma ruta.
 export const API_BASE = '/api';
 
-export async function salud() {
-  const res = await fetch(`${API_BASE}/salud`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
+export class ErrorApi extends Error {
+  constructor(message: string, public estado = 0, public sinBackend = false) {
+    super(message);
+  }
+}
+
+async function pedir<T = any>(ruta: string, init?: RequestInit): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${ruta}`, init);
+  } catch {
+    throw new ErrorApi('No se pudo conectar', 0, true);
+  }
+  if (res.status === 502) throw new ErrorApi('El backend del modelo no está disponible', 502, true);
+  if (!res.ok) throw new ErrorApi(`Error ${res.status}`, res.status);
   return res.json();
 }
 
-export async function recomendarUsuario(userId: string, k = 10) {
-  const res = await fetch(`${API_BASE}/recomendar/usuario/${encodeURIComponent(userId)}?k=${k}`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
+const post = (cuerpo: unknown): RequestInit => ({
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(cuerpo),
+});
+
+export const salud = () => pedir('/salud');
+export const metricas = () => pedir('/metricas');
+export const escenarios = () => pedir('/escenarios');
+export const perfilUsuario = (id: string) => pedir(`/usuarios/${encodeURIComponent(id)}/perfil`);
+
+export interface OpcionesUsuario {
+  k?: number;
+  publico?: string;
+  categoria?: string;
+}
+export function recomendarUsuario(id: string, { k = 12, publico, categoria }: OpcionesUsuario = {}) {
+  const q = new URLSearchParams({ k: String(k) });
+  if (publico) q.set('publico', publico);
+  if (categoria) q.set('categoria', categoria);
+  return pedir(`/recomendar/usuario/${encodeURIComponent(id)}?${q}`);
 }
 
-export async function recomendarConsulta(texto: string, k = 10, userId?: string, historialIds?: string[], usarLaya = false) {
-  const body: any = { texto, k, usar_laya: usarLaya };
-  if (userId) body.user_id = userId;
-  if (historialIds) body.historial_ids = historialIds;
+export const recomendarConsulta = (texto: string, k = 6, userId?: string) =>
+  pedir('/recomendar/consulta', post({ texto, k, user_id: userId, usar_laya: false }));
 
-  const res = await fetch(`${API_BASE}/recomendar`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function analizarResena(texto: string, producto?: string) {
-  const body: any = { texto };
-  if (producto) body.producto = producto;
-
-  const res = await fetch(`${API_BASE}/resenas`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function metricas() {
-  const res = await fetch(`${API_BASE}/metricas`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function usuariosEjemplo(n = 5, minimo = 3) {
-  const res = await fetch(`${API_BASE}/usuarios/ejemplo?n=${n}&minimo=${minimo}`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function productosBuscar(q: string, k = 20) {
-  const res = await fetch(`${API_BASE}/productos/buscar?q=${encodeURIComponent(q)}&k=${k}`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function productosSimilares(productId: string, k = 10) {
-  const res = await fetch(`${API_BASE}/productos/${encodeURIComponent(productId)}/similares?k=${k}`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
-
-export async function escenario() {
-  const res = await fetch(`${API_BASE}/escenarios`);
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return res.json();
-}
+export const analizarResena = (texto: string) => pedir('/resenas/analizar', post({ texto }));

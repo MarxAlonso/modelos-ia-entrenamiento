@@ -1,27 +1,26 @@
 # Despliegue de SRP v2 Frontend a Cloudflare Pages
 
-Este frontend de Astro consume la API del backend FastAPI (modelo entrenado) a través de Cloudflare Pages Functions.
+Este frontend de Astro consume la API del backend FastAPI (modelo entrenado) a través de un proxy (endpoint de Astro en `src/pages/api/[...ruta].ts`).
 
 ## Estructura
 
 ```
 frontend/
+  public/3d/         Ilustraciones 3D (WebP con transparencia) hechas con Blender
+  blender/           Scripts de Blender que generan esas imágenes (ver blender/README.md)
   src/
-    pages/           Rutas de Astro (estáticas)
-    components/      Componentes reutilizables
-    layouts/         Layout base
-    lib/             Cliente de API
-    functions/       Cloudflare Pages Functions (proxy a API backend)
-      api/
-        salud.ts                 GET /api/salud
-        metricas.ts              GET /api/metricas
-        recomendar.ts            POST /api/recomendar
-        recomendar/usuario/[userId].ts  GET /api/recomendar/usuario/:userId
-        resenas.ts               POST /api/resenas
+    pages/           Rutas: / (elegir género y perfil), /perfil (recomendaciones), /metricas, /resenas
+      api/[...ruta].ts   Proxy genérico: /api/<ruta> -> <API_URL>/<ruta> (backend FastAPI)
+    components/      Navbar y Footer
+    layouts/         Layout base y sistema de diseño (CSS global)
+    lib/             api.ts (cliente), arte.ts (producto -> ilustración 3D, perfiles), ui.ts (formato)
   astro.config.mjs   Configuración con adapter @astrojs/cloudflare
   wrangler.jsonc     Configuración de Wrangler
   .dev.vars          Variables de entorno para desarrollo local
 ```
+
+El navegador solo habla con este origen (`/api/...`); el proxy reenvía al backend con la misma ruta, así que no hay CORS
+ni se expone la URL del backend.
 
 ## Variables de entorno
 
@@ -30,7 +29,7 @@ El frontend necesita saber la URL del backend FastAPI. Configura `API_URL` en:
 ### Desarrollo local
 Archivo `frontend/.dev.vars`:
 ```
-API_URL=http://localhost:8011
+API_URL=http://localhost:8000
 ```
 
 ### Producción (Cloudflare Pages)
@@ -92,6 +91,6 @@ Los modelos entrenados están en `models/servir/`:
 
 ## Notas
 
-- El frontend es estático (HTML/CSS/JS) con funciones de servidor para el proxy de API.
+- Las páginas son estáticas (HTML/CSS/JS); solo el proxy `/api/*` corre en el servidor (`prerender = false`).
 - Los modelos ONNX son demasiado grandes para incluirlos en el frontend estático; se consumen a través de la API backend.
-- Para desarrollo local, ejecuta el backend FastAPI en `localhost:8011` y el frontend con `npm run dev`.
+- Para desarrollo local, ejecuta el backend FastAPI en `localhost:8000` (`iniciar_demo.cmd` lo levanta) y el frontend con `npm run dev`.

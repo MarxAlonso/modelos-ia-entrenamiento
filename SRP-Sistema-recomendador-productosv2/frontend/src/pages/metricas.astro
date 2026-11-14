@@ -1,169 +1,255 @@
 ---
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Métricas del modelo" description="Métricas de evaluación del modelo SRP v2">
-  <Navbar />
-  
-  <div class="container">
-    <div class="page-header">
-      <h1>Métricas del modelo</h1>
-      <p>Resultados de evaluación del sistema recomendador SRP v2.</p>
-    </div>
+<BaseLayout
+  title="Métricas del modelo"
+  description="Qué tan bueno es el recomendador: ranking, confiabilidad y calidad de reseñas, con sus límites."
+  activo="metricas"
+>
+  <section class="contenedor cab-m">
+    <p class="eyebrow">Evaluación</p>
+    <h1>Qué tan bueno es, y qué tan bien lo medimos</h1>
+    <p class="lead">
+      Todas las cifras salen de <code>src/evaluacion.py</code>: mismo protocolo, sin fuga de datos y con los empates
+      rotos. Aquí van con sus límites.
+    </p>
+  </section>
 
-    <div id="metricas-container">
-      <div class="empty-state">Cargando métricas...</div>
+  <div class="contenedor" id="contenido">
+    <div class="tarjetas">
+      {Array.from({ length: 4 }).map(() => <div class="esqueleto" style="height:150px;border-radius:22px"></div>)}
     </div>
   </div>
 
-  <Footer />
-
   <script>
-    async function cargarMetricas() {
-      const container = document.getElementById('metricas-container');
-      
+    import { metricas } from '../lib/api';
+    import { esc, num, pct } from '../lib/ui';
+
+    const cont = document.getElementById('contenido')!;
+
+    const NOMBRES: Record<string, string> = {
+      popularidad: 'Lo más popular (línea base)',
+      two_tower_item_to_item: 'Two-tower (parecidos)',
+      sasrec: 'SASRec (secuencia)',
+      reranker_lineal: 'Re-ranker lineal',
+      reranker_mlp: 'Re-ranker MLP',
+      reranker_gbdt: 'Re-ranker GBDT (publicado)',
+    };
+
+    function curvaSvg(curva: { cobertura: number; precision: number }[]) {
+      const W = 520, H = 230, p = 34;
+      const x = (c: number) => p + c * (W - p - 10);
+      const y = (v: number) => H - p - ((v - 0.7) / 0.3) * (H - p - 12);
+      const pts = curva.map((c) => `${x(c.cobertura).toFixed(1)},${y(Math.max(0.7, c.precision)).toFixed(1)}`).join(' ');
+      const meta = y(0.9);
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Precisión frente a cobertura">
+        ${[0.7, 0.8, 0.9, 1].map((v) => `<line x1="${p}" x2="${W - 10}" y1="${y(v)}" y2="${y(v)}" stroke="#eadfd3" /><text x="${p - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="#8b8178">${Math.round(v * 100)}</text>`).join('')}
+        ${[0, 0.5, 1].map((c) => `<text x="${x(c)}" y="${H - 12}" text-anchor="middle" font-size="11" fill="#8b8178">${Math.round(c * 100)} %</text>`).join('')}
+        <line x1="${p}" x2="${W - 10}" y1="${meta}" y2="${meta}" stroke="#2a9d8f" stroke-dasharray="5 4" />
+        <text x="${p + 6}" y="${meta - 6}" font-size="11" fill="#2a9d8f">meta: 90 %</text>
+        <polyline points="${pts}" fill="none" stroke="#e4572e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+      </svg>`;
+    }
+
+    async function cargar() {
       try {
-        const res = await fetch('/api/metricas');
-        if (!res.ok) throw new Error('No se pudieron cargar las métricas');
-        const data = await res.json();
+        const d = await metricas();
+        const ev = d.evaluacion || {};
+        const m = ev.modelos_1_99 || {};
+        const conf = ev.confiabilidad || {};
+        const cal = ev.calidad_resena || d.calidad_resena || {};
+        const pool = ev.pool_servicio || {};
+        const gbdt = m.reranker_gbdt?.['hr@10'], pop = m.popularidad?.['hr@10'];
 
-        const evalData = data.evaluacion || {};
-        const confiabilidad = evalData.confiabilidad || {};
-        const modelos = evalData.modelos_1_99 || {};
-        const gbdt = modelos.reranker_gbdt || {};
-        const calidad = evalData.calidad_resena || {};
+        const orden = ['popularidad', 'two_tower_item_to_item', 'sasrec', 'reranker_lineal', 'reranker_mlp', 'reranker_gbdt'];
+        const barras = orden
+          .filter((k) => m[k])
+          .map((k) => {
+            const v = m[k]['hr@10'];
+            const ic = m[k]['ic95_hr@10'];
+            const gana = k === 'reranker_gbdt';
+            return `<div class="fila${gana ? ' gana' : ''}">
+              <span class="et">${esc(NOMBRES[k] || k)}</span>
+              <div class="pista"><i style="width:${(v * 100).toFixed(1)}%"></i>${ic ? `<u style="left:${(ic[0] * 100).toFixed(1)}%;width:${((ic[1] - ic[0]) * 100).toFixed(1)}%" title="IC 95 %: ${num(ic[0], 3)} – ${num(ic[1], 3)}"></u>` : ''}</div>
+              <b>${num(v, 3)}</b></div>`;
+          }).join('');
 
-        container.innerHTML = `
-          <div class="grid-4">
-            <div class="stat-card">
-              <div class="stat-value">${gbdt.hr_at_10?.toFixed(4) || 'N/A'}</div>
-              <div class="stat-label">HR@10 (GBDT)</div>
-              <div class="stat-change">↑ vs popularidad</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${confiabilidad.selectivo_90_top10?.precision?.toFixed(3) || 'N/A'}</div>
-              <div class="stat-label">Precisión selectiva 90%</div>
-              <div class="stat-change">top-10</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${calidad.satisfaccion?.rmse?.toFixed(4) || 'N/A'}</div>
-              <div class="stat-label">RMSE reseñas</div>
-              <div class="stat-change">estrellas 1-5</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${(calidad.recomendaria_sin_neutros?.accuracy || 0) * 100}.toFixed(2)}%</div>
-              <div class="stat-label">Accuracy "recomendaría"</div>
-              <div class="stat-change">F1: ${calidad.recomendaria_sin_neutros?.f1?.toFixed(3) || 'N/A'}</div>
-            </div>
+        const sat = cal.satisfaccion || {};
+        const rec = cal.recomendaria_sin_neutros || {};
+        const t10 = conf.selectivo_90_top10 || {};
+        const t1 = conf.selectivo_90_top1 || {};
+
+        cont.innerHTML = `
+          <div class="tarjetas">
+            <article class="tarjeta stat"><span class="chip">Ranking · 1 + 99</span><strong>${num(gbdt, 3)}</strong><p>HR@10 del re-ranker GBDT. La lista de populares logra ${num(pop, 3)}.</p></article>
+            <article class="tarjeta stat"><span class="chip sol">Catálogo completo</span><strong>${pct(pool.reranker_mlp?.['hr@10'] ?? 0)}</strong><p>recall@10 entre los 71 214 productos (populares: ${pct(pool.popularidad?.['hr@10'] ?? 0)}).</p></article>
+            <article class="tarjeta stat"><span class="chip verde">Reseñas</span><strong>${num(sat.rmse, 3)}</strong><p>RMSE en estrellas; ${pct(sat.accuracy_dentro_1)} acierta dentro de ±1 estrella.</p></article>
+            <article class="tarjeta stat"><span class="chip indigo">¿Recomendaría?</span><strong>${pct(rec.accuracy)}</strong><p>accuracy (AUC ${num(rec.auc, 3)}; clase mayoritaria ${pct(rec.base_mayoritaria)}).</p></article>
           </div>
 
-          <h2 style="margin-top: 3rem;">Comparación de modelos (HR@10)</h2>
-          <div class="card" style="margin-top: 1rem;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Modelo</th>
-                  <th>HR@10</th>
-                  <th>NDCG@10</th>
-                  <th>HR@1</th>
-                  <th>Categoría@1</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${Object.entries(modelos).map(([nombre, m]) => `
-                  <tr>
-                    <td>${nombre}</td>
-                    <td>${m.hr_at_10?.toFixed(4) || 'N/A'}</td>
-                    <td>${m.ndcg_at_10?.toFixed(4) || 'N/A'}</td>
-                    <td>${m.hr_at_1?.toFixed(4) || 'N/A'}</td>
-                    <td>${m.categoria_at_1?.toFixed(4) || 'N/A'}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
+          <div class="dos">
+            <section class="tarjeta panel">
+              <h2>Ranking: ¿la compra real queda en el top-10?</h2>
+              <p class="sub">${num(ev.modelos_1_99 ? 3864 : 0, 0)} clientes de evaluación · 1 producto real + 99 al azar · barra fina = IC 95 % (bootstrap)</p>
+              <div class="barras">${barras}</div>
+            </section>
+
+            <section class="tarjeta panel">
+              <h2>Confiabilidad: sabe cuándo no sabe</h2>
+              <p class="sub">Precisión (HR@10) frente a qué porción de clientes responde el sistema.</p>
+              ${conf.curva ? curvaSvg(conf.curva) : ''}
+              <ul class="puntos">
+                <li><b>${pct(t10.precision ?? 0)}</b> de precisión en top-10 respondiendo al ${pct(t10.cobertura ?? 0, 0)} de los clientes.</li>
+                <li><b>${pct(t1.precision ?? 0)}</b> de precisión en el puesto #1 respondiendo solo al ${pct(t1.cobertura ?? 0)} (se abstiene en el resto).</li>
+              </ul>
+            </section>
           </div>
 
-          <h2 style="margin-top: 3rem;">Confiabilidad (predicción selectiva)</h2>
-          <div class="card" style="margin-top: 1rem;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Umbral</th>
-                  <th>Precisión</th>
-                  <th>Cobertura</th>
-                  <th>Umbral de confianza</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Selectivo 90 top-10</td>
-                  <td>${confiabilidad.selectivo_90_top10?.precision?.toFixed(3) || 'N/A'}</td>
-                  <td>${(confiabilidad.selectivo_90_top10?.cobertura || 0) * 100}.toFixed(1)}%</td>
-                  <td>${confiabilidad.selectivo_90_top10?.umbral?.toFixed(3) || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td>Selectivo 90 top-1</td>
-                  <td>${confiabilidad.selectivo_90_top1?.precision?.toFixed(3) || 'N/A'}</td>
-                  <td>${(confiabilidad.selectivo_90_top1?.cobertura || 0) * 100}.toFixed(1)}%</td>
-                  <td>${confiabilidad.selectivo_90_top1?.umbral?.toFixed(3) || 'N/A'}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        `;
-      } catch (err) {
-        container.innerHTML = `<div class="card" style="color: #dc2626;"><h3>Error</h3><p>${err.message}</p></div>`;
+          <section class="tarjeta honesto">
+            <h2>La lectura honesta</h2>
+            <p>
+              El protocolo 1 + 99 es el de los papers y compara contra solo 99 productos al azar: por eso 0,95 se ve alto.
+              Contra el catálogo completo (71 214 productos) la próxima compra exacta es difícil para cualquier sistema:
+              el 91 % de los clientes tiene una sola reseña. Lo que sí garantiza el modelo es <b>ordenar mejor que lo más
+              popular</b> y <b>decir cuándo está seguro</b>. La compra real entra a los 600 candidatos solo en el
+              ${pct(pool.real_en_pool ?? 0)} de los casos: mejorar esa recuperación es el siguiente paso.
+            </p>
+          </section>`;
+      } catch (e: any) {
+        cont.innerHTML = e?.sinBackend
+          ? `<div class="aviso"><strong>No se pudo conectar con el modelo.</strong><br />Inicia el backend (<code>iniciar_demo.cmd</code>, puerto 8000) y recarga.</div>`
+          : `<div class="aviso">${esc(e?.message || 'Error')}</div>`;
       }
     }
-
-    cargarMetricas();
+    cargar();
   </script>
-
-  <style>
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 2rem 1.5rem;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: #111827;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      font-size: 0.875rem;
-      color: #4b5563;
-      font-weight: 500;
-    }
-
-    .stat-change {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #166534;
-      margin-top: 0.25rem;
-    }
-
-    @media (max-width: 768px) {
-      .grid-4 { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (max-width: 480px) {
-      .grid-4 { grid-template-columns: 1fr; }
-    }
-  </style>
 </BaseLayout>
+
+<style is:global>
+  .cab-m {
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  .cab-m h1 {
+    font-size: clamp(2rem, 4.4vw, 3.2rem);
+    max-width: 18em;
+  }
+  .cab-m code,
+  .honesto code {
+    background: #f1ebe4;
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+  .tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.1rem;
+  }
+  .stat {
+    padding: 1.3rem;
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .stat strong {
+    font-size: 2.6rem;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .stat p {
+    color: var(--ink-2);
+    font-size: 0.9rem;
+  }
+  .dos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+  }
+  .panel {
+    padding: 1.5rem;
+  }
+  .panel h2 {
+    font-size: 1.25rem;
+  }
+  .panel .sub {
+    color: var(--ink-3);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 1.1rem;
+  }
+  .barras {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .fila {
+    display: grid;
+    grid-template-columns: 11.5rem 1fr 3.2rem;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.88rem;
+  }
+  .fila .et {
+    color: var(--ink-2);
+  }
+  .fila.gana .et,
+  .fila.gana b {
+    color: var(--terra-d);
+    font-weight: 800;
+  }
+  .pista {
+    position: relative;
+    height: 16px;
+    background: #f4eee7;
+    border-radius: 99px;
+  }
+  .pista i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 99px;
+    background: #c9bdb1;
+  }
+  .gana .pista i {
+    background: linear-gradient(90deg, var(--terra), #ffa45f);
+  }
+  .pista u {
+    position: absolute;
+    top: 6px;
+    height: 4px;
+    background: rgba(42, 36, 33, 0.65);
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .puntos {
+    margin: 0.8rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--ink-2);
+    font-size: 0.92rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .honesto {
+    margin-top: 1.2rem;
+    padding: 1.6rem;
+    background: linear-gradient(135deg, #fff7e5, #fff);
+  }
+  .honesto h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+  }
+  .honesto p {
+    color: var(--ink-2);
+    max-width: 62em;
+  }
+  @media (max-width: 560px) {
+    .fila {
+      grid-template-columns: 1fr 3rem;
+    }
+    .fila .et {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

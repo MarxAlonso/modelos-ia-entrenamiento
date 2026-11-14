@@ -31,25 +31,17 @@ Ver `CLOUDFLARE_DEPLOY.md` para instrucciones completas.
 
 Crea `.dev.vars` con:
 ```
-API_URL=http://localhost:8011
+API_URL=http://localhost:8000
 ```
 
 ## Páginas
 
 | Ruta | Descripción |
 |---|---|
-| `/` | Inicio con buscador de recomendaciones por usuario |
-| `/recomendar/[userId]` | Recomendaciones para un usuario específico |
-| `/resenas` | Analizador de reseñas (estrellas + recomendaría) |
-| `/metricas` | Métricas de evaluación del modelo |
-| `/404` | Página no encontrada |
+| `/` | Elegir si eres hombre o mujer (personajes 3D) y tu perfil de compra (6 escenas 3D) |
+| `/perfil/?g=mujer&p=relojes` | Tu perfil, "Pregúntale a la IA", lo más probable que compres y recomendaciones con arte 3D |
+| `/metricas/` | Ranking, confiabilidad y calidad de reseñas, con sus límites |
+| `/resenas/` | Estrellas estimadas y probabilidad de "recomendaría" para una reseña |
 
-## API Functions (proxy a backend)
-
-| Ruta | Método | Descripción |
-|---|---|---|
-| `/api/salud` | GET | Estado del modelo |
-| `/api/recomendar/usuario/:userId` | GET | Recomendaciones por usuario |
-| `/api/recomendar` | POST | Recomendaciones por consulta de texto |
-| `/api/resenas` | POST | Análisis de reseñas |
-| `/api/metricas` | GET | Métricas de evaluación |
+Necesita el backend en marcha (`iniciar_demo.cmd`, puerto 8000). Las imágenes de `public/3d/` se regeneran con
+`blender/` (ver `blender/README.md`).

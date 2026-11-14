@@ -1,0 +1,755 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Tus recomendaciones"
+  description="Recomendaciones personalizadas con ilustraciones 3D, tu perfil y un asistente que explica el modelo."
+  activo="perfil"
+>
+  <div class="contenedor cab">
+    <a class="volver" href="/#elegir">← Cambiar perfil</a>
+    <div class="cab-texto">
+      <p class="eyebrow" id="cab-eyebrow">Tus recomendaciones</p>
+      <h1 id="cab-titulo">Cargando tu perfil…</h1>
+    </div>
+  </div>
+
+  <div class="contenedor rejilla">
+    <aside class="lateral">
+      <article class="tarjeta panel-perfil" id="perfil">
+        <div class="esqueleto" style="height:210px"></div>
+        <div class="esqueleto" style="height:22px;width:60%;margin-top:1rem"></div>
+        <div class="esqueleto" style="height:60px;margin-top:.8rem"></div>
+      </article>
+
+      <article class="tarjeta panel-ia" id="ia" hidden>
+        <header class="ia-cab">
+          <span class="ia-ins">IA</span>
+          <h2>Pregúntale a la IA</h2>
+        </header>
+        <p class="ia-sub">Responde solo con tu historial y lo que calculó el modelo. No ve tu compra oculta.</p>
+        <div class="preguntas">
+          <button class="pregunta" data-q="gustar" type="button">¿Qué productos me van a gustar?</button>
+          <button class="pregunta" data-q="proxima" type="button">¿Qué sería lo más probable que compre después?</button>
+        </div>
+        <form class="libre" id="libre" autocomplete="off">
+          <label class="sr-only" for="texto-libre">Escribe lo que buscas</label>
+          <input id="texto-libre" name="texto" placeholder="O escribe lo que buscas: «aretes de plata»" minlength="2" />
+          <button class="btn btn-primario" type="submit">Buscar</button>
+        </form>
+        <div class="respuesta" id="respuesta" aria-live="polite"></div>
+        <p class="ia-nota">Las respuestas se arman con reglas a partir de las salidas del modelo; no es un chatbot generativo.</p>
+      </article>
+    </aside>
+
+    <div class="principal">
+      <section id="destacado" aria-label="Lo más probable"></section>
+
+      <section class="bloque">
+        <div class="bloque-cab">
+          <h2>Recomendado para ti</h2>
+          <p id="recs-sub" class="sub"></p>
+        </div>
+        <div id="recs" class="recs">
+          {Array.from({ length: 6 }).map(() => <div class="esqueleto" style="height:360px;border-radius:22px"></div>)}
+        </div>
+      </section>
+
+      <section class="bloque">
+        <div class="bloque-cab">
+          <h2>Lo que compró este perfil</h2>
+          <p class="sub">De la más antigua a la más reciente. El % es cuánto pesa cada compra en la recomendación.</p>
+        </div>
+        <div id="hist" class="hist"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    import { escenarios, recomendarUsuario, recomendarConsulta, metricas, ErrorApi } from '../lib/api';
+    import { perfilPorId, artePerfil, TINTE, arteProducto } from '../lib/arte';
+    import {
+      esc, corto, num, pct, estrellas, fecha, nombreCategoria, etiquetaPublico, palabrasFrecuentes, textoPorque, tarjetaProducto,
+    } from '../lib/ui';
+
+    const q = new URLSearchParams(location.search);
+    const genero = q.get('g') === 'hombre' ? 'hombre' : q.get('g') === 'mujer' ? 'mujer' : null;
+    const perfil = perfilPorId(q.get('p') || '');
+    if (!genero || !perfil) location.replace('/#elegir');
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const estado: { data?: any; metricas?: any; usuario?: any } = {};
+
+    function aviso(msg: string, sinBackend = false) {
+      const html = sinBackend
+        ? `<div class="aviso"><strong>No se pudo conectar con el modelo.</strong><br />Inicia el backend (doble clic en <code>iniciar_demo.cmd</code>, puerto 8000) y recarga esta página.</div>`
+        : `<div class="aviso">${esc(msg)}</div>`;
+      $('recs').innerHTML = html;
+      $('perfil').innerHTML = '';
+    }
+
+    async function cargar() {
+      if (!genero || !perfil) return;
+      $('cab-eyebrow').textContent = `${genero === 'mujer' ? 'Mujer' : 'Hombre'} · ${perfil.titulo}`;
+      $('cab-titulo').textContent = 'Tus recomendaciones';
+      document.title = `Tus recomendaciones · SRP`;
+
+      try {
+        // escenarios (se calculan una vez en el backend) -> cliente de ejemplo de este perfil
+        let lista: any[] | null = null;
+        try { lista = JSON.parse(sessionStorage.getItem('srp.escenarios') || 'null'); } catch {}
+        if (!lista) {
+          lista = await escenarios();
+          try { sessionStorage.setItem('srp.escenarios', JSON.stringify(lista)); } catch {}
+        }
+        const cliente = lista!.find((e) => e.categoria === perfil.categoria);
+        if (!cliente) throw new ErrorApi('No hay un cliente de ejemplo para este perfil');
+        const [data, met] = await Promise.all([
+          recomendarUsuario(cliente.user_id, { k: 12, publico: genero }),
+          metricas().catch(() => null),
+        ]);
+        estado.data = data;
+        estado.metricas = met;
+        estado.usuario = cliente;
+        pintar();
+      } catch (e: any) {
+        aviso(e?.message || 'Error al cargar', !!e?.sinBackend);
+      }
+    }
+
+    function pintar() {
+      const { data, metricas: met } = estado;
+      const recs: any[] = data.recomendaciones || [];
+      const hist: any[] = data.historial || [];
+      const maxP = Math.max(...recs.map((r) => r.puntaje || 0), 1e-6);
+
+      // ---------- Tu perfil
+      const tiendas = new Set(hist.map((h) => h.tienda).filter(Boolean));
+      const palabras = palabrasFrecuentes(hist.map((h) => h.titulo), 4);
+      const afin = data.traza?.influencia_historial?.afinidad;
+      const ev = met?.evaluacion;
+      const hrModelo = ev?.modelos_1_99?.reranker_gbdt?.['hr@10'];
+      const hrPop = ev?.modelos_1_99?.popularidad?.['hr@10'];
+      const nEval = ev?.confiabilidad?.selectivo_90_top10?.n_seleccionados;
+      const bloqueMetrica = hrModelo
+        ? `<div class="metrica">
+             <strong>${pct(hrModelo)}</strong>
+             <p>de los casos de prueba con historial (${num(nEval || 3864, 0)} clientes) tenían su producto real entre las 10 primeras recomendaciones
+             <span class="gris">(lista de populares: ${pct(hrPop)})</span>.</p>
+             <a class="mas" href="/metricas/">Qué significa este número →</a>
+           </div>`
+        : '';
+      $('perfil').innerHTML = `
+        <div class="arte flota perfil-arte" style="--tinte:${perfil!.tinte}">
+          <img src="${artePerfil(genero!, perfil!.id)}" alt="Personaje 3D: ${esc(perfil!.titulo)}" width="480" height="480" />
+        </div>
+        <h2>Tu perfil</h2>
+        <div class="chips">
+          <span class="chip">${esc(nombreCategoria(afin?.categoria || perfil!.categoria))}</span>
+          <span class="chip verde">${genero === 'mujer' ? 'Mujer' : 'Hombre'}</span>
+        </div>
+        <p class="sub">Perfil armado con las compras de un cliente real de ejemplo con estos gustos (el dataset es anónimo).</p>
+        <dl class="datos">
+          <div><dt>${hist.length}</dt><dd>compras previas</dd></div>
+          <div><dt>${tiendas.size}</dt><dd>${tiendas.size === 1 ? 'tienda' : 'tiendas'}</dd></div>
+          ${afin ? `<div><dt>${Math.round((afin.frac_categoria || 0) * 100)} %</dt><dd>en ${esc(nombreCategoria(afin.categoria))}</dd></div>` : ''}
+        </dl>
+        ${palabras.length ? `<p class="repite">Lo que más se repite en lo que compró: <strong>${palabras.map(esc).join(', ')}</strong></p>` : ''}
+        ${bloqueMetrica}`;
+      $('ia').hidden = false;
+
+      // ---------- Lo más probable (destacado)
+      const top = recs[0];
+      if (top) {
+        const conf = data.traza?.confianza_top10;
+        $('destacado').innerHTML = `
+          <div class="tarjeta destacado">
+            <div class="dest-arte arte flota" style="--tinte:${TINTE[top.categoria] || '#fff3d6'}">
+              <img src="${arteProducto(top)}" alt="Ilustración 3D de ${esc(nombreCategoria(top.categoria))}" width="520" height="520" />
+            </div>
+            <div class="dest-texto">
+              <p class="eyebrow">Lo más probable que compres después</p>
+              <h2>${esc(corto(top.titulo, 120))}</h2>
+              <div class="chips"><span class="chip">${esc(nombreCategoria(top.categoria))}</span><span class="chip gris">${esc(etiquetaPublico(top.publico))}</span>${top.precio != null ? `<span class="chip sol">$${num(Number(top.precio), 2)}</span>` : ''}</div>
+              <div class="estrellas"><span>${estrellas(top.rating_promedio)}</span> <b>${num(Number(top.rating_promedio || 0), 1)}</b> <small>(${num(Number(top.numero_resenas || 0), 0)} ${Number(top.numero_resenas) === 1 ? 'reseña' : 'reseñas'})</small></div>
+              <p class="porque grande">${esc(textoPorque(top))}</p>
+              ${conf != null ? `<p class="conf">Confianza calibrada de que tu próxima compra esté entre las 10 primeras: <strong>${pct(conf)}</strong>. Con 71 214 productos, acertar es difícil: el modelo prefiere decirte cuánto sabe.</p>` : ''}
+            </div>
+          </div>`;
+      }
+
+      // ---------- Recomendaciones
+      $('recs-sub').textContent = `${recs.length} productos · ${data.traza?.tras_filtro ? num(data.traza.tras_filtro, 0) : '71 214'} candidatos para ${genero === 'mujer' ? 'mujer' : 'hombre'} y unisex → 600 → ${recs.length}`;
+      $('recs').innerHTML = recs.slice(1).map((p, i) => tarjetaProducto(p, i + 2, { maxPuntaje: maxP })).join('');
+
+      // ---------- Historial
+      $('hist').innerHTML = hist
+        .map((h, i) => `
+          <article class="h-item" style="--tinte:${TINTE[h.categoria] || '#fff3d6'}">
+            <div class="arte"><span class="rank">${i + 1}</span><img src="${arteProducto(h)}" alt="" width="240" height="240" /></div>
+            <h4 title="${esc(h.titulo)}">${esc(corto(h.titulo, 48))}</h4>
+            <div class="estrellas"><span>${estrellas(h.estrellas)}</span></div>
+            <small>${esc(fecha(h.fecha))}${h.peso != null ? ` · pesa ${Math.round(h.peso * 100)} %` : ''}</small>
+          </article>`)
+        .join('');
+    }
+
+    // ---------- Pregúntale a la IA
+    const resp = () => $('respuesta');
+    function pensar(fn: () => string) {
+      resp().innerHTML = '<div class="pensando"><i></i><i></i><i></i></div>';
+      setTimeout(() => { resp().innerHTML = fn(); }, 650);
+    }
+
+    function respuestaGustar(): string {
+      const { data } = estado;
+      const recs: any[] = (data.recomendaciones || []).slice(0, 3);
+      const afin = data.traza?.influencia_historial?.afinidad;
+      const intro = afin
+        ? `Por lo que compraste (sobre todo <b>${esc(nombreCategoria(afin.categoria))}</b>, el ${Math.round(afin.frac_categoria * 100)} % de tu historial), creo que te van a gustar:`
+        : 'Por tu historial, creo que te van a gustar:';
+      const items = recs.map((p) => `<li><b>${esc(corto(p.titulo, 64))}</b><br /><span>${esc(textoPorque(p, false))}</span></li>`).join('');
+      return `<p>${intro}</p><ol class="lista-ia">${items}</ol>
+        <p class="peq">El orden lo decide un re-ranker que combina 36 señales (secuencia de compras, parecido, categoría, tienda, popularidad…).</p>`;
+    }
+
+    function respuestaProxima(): string {
+      const { data } = estado;
+      const p = (data.recomendaciones || [])[0];
+      if (!p) return '<p>No tengo suficiente información para decir qué compraría después.</p>';
+      const conf = data.traza?.confianza_top10;
+      return `<p>Lo más probable es <b>${esc(corto(p.titulo, 80))}</b> (${esc(nombreCategoria(p.categoria))}).</p>
+        <p class="peq">${esc(textoPorque(p, false))}.</p>
+        ${conf != null ? `<p>Pero sé honesto contigo: entre 71 214 productos, adivinar la próxima compra exacta es difícil. El modelo estima <b>${pct(conf)}</b> de probabilidad de que esté entre las 10 primeras.</p>` : ''}`;
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.pregunta').forEach((b) =>
+      b.addEventListener('click', () => {
+        if (!estado.data) return;
+        document.querySelectorAll('.pregunta').forEach((x) => x.classList.toggle('on', x === b));
+        pensar(b.dataset.q === 'gustar' ? respuestaGustar : respuestaProxima);
+      }),
+    );
+
+    $('libre').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const input = $('texto-libre') as HTMLInputElement;
+      const texto = input.value.trim();
+      if (texto.length < 2 || !estado.usuario) return;
+      document.querySelectorAll('.pregunta').forEach((x) => x.classList.remove('on'));
+      resp().innerHTML = '<div class="pensando"><i></i><i></i><i></i></div>';
+      try {
+        const r = await recomendarConsulta(texto, 5, estado.usuario.user_id);
+        const items = (r.recomendaciones || []).map((p: any) => `
+          <li class="mini">
+            <span class="arte" style="--tinte:${TINTE[p.categoria] || '#fff3d6'}"><img src="${arteProducto(p)}" alt="" width="96" height="96" /></span>
+            <span><b>${esc(corto(p.titulo, 58))}</b><br /><small>${esc(nombreCategoria(p.categoria))} · ${esc(etiquetaPublico(p.publico))}${p.precio != null ? ' · $' + num(Number(p.precio), 2) : ''}</small></span>
+          </li>`).join('');
+        resp().innerHTML = items
+          ? `<p>Para «${esc(texto)}», mezclando tu historial, esto es lo más cercano:</p><ul class="lista-mini">${items}</ul>`
+          : '<p>No encontré nada parecido a eso.</p>';
+      } catch (e: any) {
+        resp().innerHTML = `<div class="aviso">${e?.sinBackend ? 'No hay conexión con el modelo.' : esc(e?.message || 'Error')}</div>`;
+      }
+    });
+
+    cargar();
+  </script>
+</BaseLayout>
+
+<style is:global>
+  /* ---------- cabecera ---------- */
+  .cab {
+    padding-top: 1.6rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .volver {
+    width: fit-content;
+    font-weight: 600;
+    color: var(--ink-2);
+    padding: 0.4rem 0.9rem 0.4rem 0.6rem;
+    border-radius: 999px;
+    transition: background 0.15s;
+  }
+  .volver:hover {
+    background: #f1ebe4;
+  }
+  .cab h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .rejilla {
+    display: grid;
+    grid-template-columns: 380px minmax(0, 1fr);
+    gap: 2rem;
+    align-items: stretch;
+    margin-top: 1.4rem;
+  }
+  /* la columna izquierda se estira; el panel de IA queda fijo mientras se recorre la lista */
+  .lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    min-width: 0;
+  }
+  .panel-ia {
+    position: sticky;
+    top: 5.4rem;
+  }
+
+  /* ---------- panel de perfil ---------- */
+  .panel-perfil {
+    padding: 0.9rem;
+  }
+  .perfil-arte {
+    aspect-ratio: 1.12;
+    margin-bottom: 1rem;
+  }
+  .panel-perfil h2 {
+    font-size: 1.55rem;
+    padding-inline: 0.4rem;
+  }
+  .panel-perfil .chips,
+  .panel-perfil .sub,
+  .panel-perfil .datos,
+  .panel-perfil .repite,
+  .panel-perfil .metrica {
+    margin-inline: 0.4rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .sub {
+    color: var(--ink-3);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .datos {
+    display: flex;
+    gap: 1.4rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .datos div {
+    display: flex;
+    flex-direction: column;
+  }
+  .datos dt {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .datos dd {
+    margin: 0;
+    color: var(--ink-3);
+    font-size: 0.82rem;
+  }
+  .repite {
+    margin-top: 1rem;
+    color: var(--ink-2);
+    font-size: 0.93rem;
+  }
+  .repite strong {
+    color: var(--ink);
+  }
+  .metrica {
+    margin-top: 1.1rem;
+    margin-bottom: 0.3rem;
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    background: linear-gradient(150deg, var(--teal-s), #f4fbf9);
+  }
+  .metrica strong {
+    font-size: 2.2rem;
+    letter-spacing: -0.04em;
+    color: #1c6f65;
+    line-height: 1;
+  }
+  .metrica p {
+    margin-top: 0.3rem;
+    font-size: 0.88rem;
+    color: var(--ink-2);
+  }
+  .metrica .gris {
+    color: var(--ink-3);
+  }
+  .metrica .mas {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1c6f65;
+  }
+  .metrica .mas:hover {
+    text-decoration: underline;
+  }
+
+  /* ---------- panel de IA ---------- */
+  .panel-ia {
+    padding: 1.3rem;
+    background: linear-gradient(160deg, #2a2421, #3a2d27);
+    color: #fff;
+    border: 0;
+    box-shadow: var(--sombra-2);
+  }
+  .panel-ia[hidden] {
+    display: none;
+  }
+  .ia-cab {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .ia-cab h2 {
+    font-size: 1.25rem;
+  }
+  .ia-ins {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 10px;
+    background: linear-gradient(140deg, #ffd166, var(--terra));
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #2a2421;
+  }
+  .ia-sub {
+    color: #cfc4ba;
+    font-size: 0.9rem;
+    margin: 0.6rem 0 1rem;
+  }
+  .preguntas {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .pregunta {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  .pregunta:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateX(3px);
+  }
+  .pregunta.on {
+    background: #fff;
+    color: var(--ink);
+    border-color: #fff;
+  }
+  .libre {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+  .libre input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 0.95rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font: inherit;
+  }
+  .libre input::placeholder {
+    color: #b3a79c;
+  }
+  .libre .btn {
+    padding: 0.7rem 1.1rem;
+    box-shadow: none;
+  }
+  .respuesta {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #f4ede6;
+  }
+  .respuesta:empty {
+    display: none;
+  }
+  .respuesta p {
+    margin-bottom: 0.6rem;
+  }
+  .respuesta b {
+    color: #fff;
+  }
+  .respuesta .peq {
+    font-size: 0.82rem;
+    color: #cfc4ba;
+  }
+  .lista-ia {
+    padding-left: 1.2rem;
+    margin: 0 0 0.7rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .lista-ia span {
+    color: #cfc4ba;
+    font-size: 0.85rem;
+  }
+  .lista-mini {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .lista-mini .mini {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+  }
+  .lista-mini .arte {
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 12px;
+  }
+  .lista-mini small {
+    color: #cfc4ba;
+  }
+  .ia-nota {
+    margin-top: 0.9rem;
+    font-size: 0.75rem;
+    color: #a99c90;
+  }
+  .panel-ia .aviso {
+    background: rgba(255, 200, 87, 0.16);
+    color: #ffe3a6;
+    border-color: rgba(255, 200, 87, 0.3);
+  }
+  .pensando {
+    display: flex;
+    gap: 0.3rem;
+    padding: 0.4rem 0;
+  }
+  .pensando i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #ffd166;
+    animation: salto 0.9s infinite;
+  }
+  .pensando i:nth-child(2) { animation-delay: 0.15s; }
+  .pensando i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes salto {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* ---------- principal ---------- */
+  .principal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.6rem;
+    min-width: 0;
+  }
+  .destacado {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1.6rem;
+    padding: 1rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff, #fff7f1);
+  }
+  .dest-arte {
+    aspect-ratio: 1;
+  }
+  .dest-texto {
+    display: grid;
+    align-content: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.8rem 0.6rem 0;
+  }
+  .dest-texto h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  }
+  .porque {
+    color: var(--ink-2);
+    font-size: 0.88rem;
+  }
+  .porque.grande {
+    font-size: 1rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+    background: var(--sun-s);
+    color: #6b4700;
+  }
+  .conf {
+    font-size: 0.88rem;
+    color: var(--ink-3);
+  }
+  .conf strong {
+    color: var(--ink);
+  }
+
+  .bloque-cab {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.1rem;
+  }
+  .bloque-cab h2 {
+    font-size: 1.7rem;
+  }
+
+  .recs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.2rem;
+  }
+  .prod {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 0.6rem 0.6rem 1rem;
+    box-shadow: var(--sombra-1);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .prod:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-2);
+  }
+  .prod:hover .arte img {
+    transform: scale(1.06) rotate(-2deg);
+  }
+  .prod .arte {
+    aspect-ratio: 1.05;
+  }
+  .rank {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    min-width: 1.9rem;
+    height: 1.9rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    font-weight: 800;
+    font-size: 0.82rem;
+    box-shadow: 0 2px 8px rgba(42, 36, 33, 0.15);
+  }
+  .prod-cuerpo {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.8rem 0.6rem 0;
+  }
+  .prod h3 {
+    font-size: 0.98rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em;
+  }
+  .estrellas {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+  }
+  .estrellas span {
+    color: #f4a316;
+    letter-spacing: 0.04em;
+  }
+  .estrellas small {
+    color: var(--ink-3);
+  }
+  .afinidad {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    color: var(--ink-3);
+  }
+  .barra {
+    flex: 1;
+    height: 6px;
+    border-radius: 99px;
+    background: #f1ebe4;
+    overflow: hidden;
+  }
+  .barra i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--terra), #ffa45f);
+  }
+
+  .hist {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0.4rem 0.2rem 1rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .h-item {
+    flex: 0 0 190px;
+    scroll-snap-align: start;
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 0.5rem 0.5rem 0.9rem;
+    box-shadow: var(--sombra-1);
+  }
+  .h-item .arte {
+    aspect-ratio: 1.1;
+    border-radius: 16px;
+  }
+  .h-item h4 {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    padding: 0.3rem 0.3rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em;
+    letter-spacing: 0;
+  }
+  .h-item .estrellas,
+  .h-item small {
+    padding-inline: 0.3rem;
+  }
+  .h-item small {
+    color: var(--ink-3);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 1020px) {
+    .rejilla {
+      grid-template-columns: 1fr;
+    }
+    .panel-ia {
+      position: static;
+    }
+    .destacado {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
