@@ -3802,5 +3802,610 @@
         }
       }
     }
+  },
+  {
+    "version": "srp-20261031-1219",
+    "creado": "2026-10-31T12:19:16",
+    "two_tower": "v001_20261001-2256",
+    "sasrec": "v003_20261003-1048",
+    "reranker": "v002_20261003-1104",
+    "metricas": {
+      "two_tower_test": {
+        "n": 12723,
+        "hr@10": 0.18643401713432367,
+        "ndcg@10": 0.09639795972422656,
+        "recall@100_catalogo": 0.008331368387958815,
+        "popularidad": {
+          "hr@10": 0.47386622651890276,
+          "ndcg@10": 0.3478406963288455
+        },
+        "busqueda_texto_usuario_nuevo": {
+          "n": 8659,
+          "recall@10_catalogo": 0.08026330985102206
+        }
+      },
+      "comparacion_usuarios_eval": {
+        "azar": {
+          "hr@10": 0.104,
+          "ndcg@10": 0.046,
+          "categoria@1": 0.2453,
+          "categoria@3": 0.5124
+        },
+        "popularidad": {
+          "hr@10": 0.4736,
+          "ndcg@10": 0.3443,
+          "categoria@1": 0.3701,
+          "categoria@3": 0.6346
+        },
+        "sasrec": {
+          "hr@10": 0.4788,
+          "ndcg@10": 0.3542,
+          "categoria@1": 0.4211,
+          "categoria@3": 0.6718
+        },
+        "reranker": {
+          "hr@10": 0.5072,
+          "ndcg@10": 0.3707,
+          "categoria@1": 0.4441,
+          "categoria@3": 0.6791
+        }
+      },
+      "catalogo_completo": {
+        "protocolo": "recall@10 contra los 71,214 productos, via el pool del backend (600)",
+        "real_dentro_del_pool": 0.2459,
+        "popularidad": 0.0411,
+        "sasrec": 0.0461,
+        "rrf_similitud+sasrec (backend actual)": 0.0445,
+        "reranker": 0.0523,
+        "ece_top10": 0.0124,
+        "selectivo_20": {
+          "precision": 0.197,
+          "cobertura": 0.0262,
+          "umbral": 0.1192
+        },
+        "selectivo_30": {
+          "precision": 0.2804,
+          "cobertura": 0.0129,
+          "umbral": 0.3154
+        },
+        "selectivo_50": {
+          "precision": 0.25,
+          "cobertura": 0.001,
+          "umbral": 0.3694
+        },
+        "pesos": {
+          "sasrec": 0.5091,
+          "log_pop": 0.6947,
+          "tt_media": 0.1433,
+          "tt_max": -0.028,
+          "tt_ultima": 0.5116,
+          "cat_frac": 0.2483,
+          "cat_ultima": -0.2436,
+          "pub_frac": -0.0351,
+          "tienda": 0.2182,
+          "rating": 0.1412,
+          "log_resenas": 0.1986,
+          "ninguno": 7.9912
+        }
+      },
+      "confianza": {
+        "ece_top10": 0.0272,
+        "por_decil": [
+          {
+            "conf_media": 0.309,
+            "acierto_real": 0.287,
+            "n": 387
+          },
+          {
+            "conf_media": 0.358,
+            "acierto_real": 0.306,
+            "n": 386
+          },
+          {
+            "conf_media": 0.39,
+            "acierto_real": 0.324,
+            "n": 386
+          },
+          {
+            "conf_media": 0.421,
+            "acierto_real": 0.426,
+            "n": 387
+          },
+          {
+            "conf_media": 0.455,
+            "acierto_real": 0.474,
+            "n": 386
+          },
+          {
+            "conf_media": 0.492,
+            "acierto_real": 0.526,
+            "n": 386
+          },
+          {
+            "conf_media": 0.538,
+            "acierto_real": 0.581,
+            "n": 387
+          },
+          {
+            "conf_media": 0.592,
+            "acierto_real": 0.585,
+            "n": 386
+          },
+          {
+            "conf_media": 0.67,
+            "acierto_real": 0.684,
+            "n": 386
+          },
+          {
+            "conf_media": 0.818,
+            "acierto_real": 0.879,
+            "n": 387
+          }
+        ],
+        "selectivo_70": {
+          "precision": 0.6979,
+          "cobertura": 0.3531,
+          "umbral": 0.5359
+        },
+        "selectivo_80": {
+          "precision": 0.8045,
+          "cobertura": 0.1758,
+          "umbral": 0.6438
+        },
+        "selectivo_90": {
+          "precision": 0.8895,
+          "cobertura": 0.0842,
+          "umbral": 0.7437
+        }
+      },
+      "calidad_resena": {
+        "satisfaccion": {
+          "n": 12723,
+          "rmse": 0.6343,
+          "mae": 0.2876,
+          "accuracy_exacta": 0.76,
+          "accuracy_dentro_1": 0.9602,
+          "accuracy_dentro_2": 0.994,
+          "r2": 0.7674,
+          "distribucion_predicha": [
+            950,
+            840,
+            1450,
+            1689,
+            7794
+          ],
+          "distribucion_real": [
+            1112,
+            822,
+            1346,
+            1970,
+            7473
+          ]
+        },
+        "recomendaria_sin_neutros": {
+          "accuracy": 0.9677,
+          "precision": 0.9817,
+          "recall": 0.9793,
+          "f1": 0.9805,
+          "auc": 0.9922,
+          "brier": 0.0248,
+          "n": 11377,
+          "tp": 9248,
+          "fp": 172,
+          "fn": 195,
+          "tn": 1762,
+          "base_mayoritaria": 0.83
+        },
+        "recomendaria_negativo": {
+          "accuracy": 0.0323,
+          "precision": 0.0183,
+          "recall": 0.0889,
+          "f1": 0.0303,
+          "auc": 0.0078,
+          "brier": 0.9427,
+          "n": 11377,
+          "tp": 172,
+          "fp": 9248,
+          "fn": 1762,
+          "tn": 195,
+          "base_mayoritaria": 0.83
+        },
+        "recomendaria_3_como_negativo": {
+          "accuracy": 0.9118,
+          "precision": 0.9089,
+          "recall": 0.9793,
+          "f1": 0.9428,
+          "auc": 0.9749,
+          "brier": 0.0702,
+          "n": 12723,
+          "tp": 9248,
+          "fp": 927,
+          "fn": 195,
+          "tn": 2353,
+          "base_mayoritaria": 0.7422
+        }
+      },
+      "evaluacion": {
+        "generado": "2026-10-22T21:20:23",
+        "notas": {
+          "empates": "hr_ndcg rompe los empates con un epsilon aleatorio; la version 'pesimista' cuenta el empate como fallo.",
+          "fuga": "rating_promedio y numero_resenas recalculados con el split train solamente.",
+          "protocolo": "1 positivo + 99 negativos al azar, @10, sobre 3,864 usuarios de evaluacion (leave-last-out, los mismos que en src/sasrec.py)."
+        },
+        "modelos_1_99": {
+          "popularidad": {
+            "hr@10": 0.4726,
+            "hr@10_pesimista": 0.4726,
+            "ic95_hr@10": [
+              0.4568,
+              0.4886
+            ],
+            "ndcg@10": 0.3435,
+            "hr@1": 0.2308,
+            "categoria@1": 0.3693
+          },
+          "sasrec": {
+            "hr@10": 0.4788,
+            "hr@10_pesimista": 0.4788,
+            "ic95_hr@10": [
+              0.4622,
+              0.4938
+            ],
+            "ndcg@10": 0.3542,
+            "hr@1": 0.2412,
+            "categoria@1": 0.4211
+          },
+          "two_tower_item_to_item": {
+            "hr@10": 0.249,
+            "hr@10_pesimista": 0.249,
+            "ic95_hr@10": [
+              0.2358,
+              0.2614
+            ],
+            "ndcg@10": 0.1462,
+            "hr@1": 0.0707,
+            "categoria@1": 0.3657
+          },
+          "reranker_lineal": {
+            "hr@10": 0.4816,
+            "hr@10_pesimista": 0.4816,
+            "ic95_hr@10": [
+              0.4656,
+              0.4974
+            ],
+            "ndcg@10": 0.3616,
+            "hr@1": 0.2526,
+            "categoria@1": 0.4433
+          },
+          "reranker_gbdt": {
+            "hr@10": 0.9501,
+            "hr@10_pesimista": 0.9501,
+            "ic95_hr@10": [
+              0.9428,
+              0.9565
+            ],
+            "ndcg@10": 0.8488,
+            "hr@1": 0.7505,
+            "categoria@1": 0.8168
+          },
+          "reranker_mlp": {
+            "hr@10": 0.8191,
+            "hr@10_pesimista": 0.8191,
+            "ic95_hr@10": [
+              0.8069,
+              0.8295
+            ],
+            "ndcg@10": 0.5717,
+            "hr@1": 0.3597,
+            "categoria@1": 0.5199
+          }
+        },
+        "pool_servicio": {
+          "protocolo": "pool del servicio (600 = 300 populares + 300 similares), recall@10 contra los 71,214 productos del catalogo",
+          "real_en_pool": 0.2466,
+          "popularidad": {
+            "hr@10": 0.0411
+          },
+          "reranker_mlp": {
+            "hr@10": 0.0673,
+            "hr@10_pesimista": 0.0673,
+            "ndcg@10": 0.0346,
+            "hr@1": 0.0088,
+            "confianza_media": 0.8849,
+            "ece": 0.8176,
+            "selectivo_90": {
+              "precision": null,
+              "cobertura": 0.0,
+              "umbral": null
+            }
+          }
+        },
+        "confiabilidad": {
+          "ece_top10": 0.1697,
+          "selectivo_90_top10": {
+            "precision": 0.9501,
+            "cobertura": 1.0,
+            "umbral": 0.7089,
+            "n_seleccionados": 3864
+          },
+          "selectivo_90_top1": {
+            "precision": 0.9043,
+            "cobertura": 0.0243,
+            "umbral": 0.9574,
+            "n_seleccionados": 94
+          },
+          "curva": [
+            {
+              "cobertura": 0.0003,
+              "precision": 1.0,
+              "confianza": 1.0
+            },
+            {
+              "cobertura": 0.0259,
+              "precision": 1.0,
+              "confianza": 0.9574
+            },
+            {
+              "cobertura": 0.0515,
+              "precision": 1.0,
+              "confianza": 0.9259
+            },
+            {
+              "cobertura": 0.0771,
+              "precision": 0.9933,
+              "confianza": 0.9032
+            },
+            {
+              "cobertura": 0.1027,
+              "precision": 0.9874,
+              "confianza": 0.8458
+            },
+            {
+              "cobertura": 0.1284,
+              "precision": 0.9819,
+              "confianza": 0.8458
+            },
+            {
+              "cobertura": 0.154,
+              "precision": 0.9849,
+              "confianza": 0.8458
+            },
+            {
+              "cobertura": 0.1796,
+              "precision": 0.9841,
+              "confianza": 0.8458
+            },
+            {
+              "cobertura": 0.2052,
+              "precision": 0.9836,
+              "confianza": 0.8438
+            },
+            {
+              "cobertura": 0.2308,
+              "precision": 0.9821,
+              "confianza": 0.8438
+            },
+            {
+              "cobertura": 0.2565,
+              "precision": 0.9828,
+              "confianza": 0.8438
+            },
+            {
+              "cobertura": 0.2821,
+              "precision": 0.9835,
+              "confianza": 0.8125
+            },
+            {
+              "cobertura": 0.3077,
+              "precision": 0.9832,
+              "confianza": 0.8125
+            },
+            {
+              "cobertura": 0.3333,
+              "precision": 0.9814,
+              "confianza": 0.8075
+            },
+            {
+              "cobertura": 0.359,
+              "precision": 0.9827,
+              "confianza": 0.8075
+            },
+            {
+              "cobertura": 0.3846,
+              "precision": 0.9812,
+              "confianza": 0.8075
+            },
+            {
+              "cobertura": 0.4102,
+              "precision": 0.9804,
+              "confianza": 0.8075
+            },
+            {
+              "cobertura": 0.4358,
+              "precision": 0.9792,
+              "confianza": 0.8075
+            },
+            {
+              "cobertura": 0.4614,
+              "precision": 0.9798,
+              "confianza": 0.7692
+            },
+            {
+              "cobertura": 0.4871,
+              "precision": 0.9777,
+              "confianza": 0.7692
+            },
+            {
+              "cobertura": 0.5129,
+              "precision": 0.9778,
+              "confianza": 0.7514
+            },
+            {
+              "cobertura": 0.5386,
+              "precision": 0.9779,
+              "confianza": 0.7514
+            },
+            {
+              "cobertura": 0.5642,
+              "precision": 0.9775,
+              "confianza": 0.7514
+            },
+            {
+              "cobertura": 0.5898,
+              "precision": 0.9763,
+              "confianza": 0.7514
+            },
+            {
+              "cobertura": 0.6154,
+              "precision": 0.9756,
+              "confianza": 0.7514
+            },
+            {
+              "cobertura": 0.641,
+              "precision": 0.9738,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.6667,
+              "precision": 0.9709,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.6923,
+              "precision": 0.9701,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.7179,
+              "precision": 0.9668,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.7435,
+              "precision": 0.9645,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.7692,
+              "precision": 0.9627,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.7948,
+              "precision": 0.9619,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.8204,
+              "precision": 0.9606,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.846,
+              "precision": 0.959,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.8716,
+              "precision": 0.9581,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.8973,
+              "precision": 0.9553,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.9229,
+              "precision": 0.9529,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.9485,
+              "precision": 0.9523,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 0.9741,
+              "precision": 0.9509,
+              "confianza": 0.7089
+            },
+            {
+              "cobertura": 1.0,
+              "precision": 0.9501,
+              "confianza": 0.7089
+            }
+          ]
+        },
+        "calidad_resena": {
+          "version": "v001_20261021-2213",
+          "satisfaccion": {
+            "n": 12723,
+            "rmse": 0.6343,
+            "mae": 0.2876,
+            "accuracy_exacta": 0.76,
+            "accuracy_dentro_1": 0.9602,
+            "accuracy_dentro_2": 0.994,
+            "r2": 0.7674,
+            "distribucion_predicha": [
+              950,
+              840,
+              1450,
+              1689,
+              7794
+            ],
+            "distribucion_real": [
+              1112,
+              822,
+              1346,
+              1970,
+              7473
+            ]
+          },
+          "recomendaria_sin_neutros": {
+            "accuracy": 0.9677,
+            "precision": 0.9817,
+            "recall": 0.9793,
+            "f1": 0.9805,
+            "auc": 0.9922,
+            "brier": 0.0248,
+            "n": 11377,
+            "tp": 9248,
+            "fp": 172,
+            "fn": 195,
+            "tn": 1762,
+            "base_mayoritaria": 0.83
+          },
+          "recomendaria_negativo": {
+            "accuracy": 0.0323,
+            "precision": 0.0183,
+            "recall": 0.0889,
+            "f1": 0.0303,
+            "auc": 0.0078,
+            "brier": 0.9427,
+            "n": 11377,
+            "tp": 172,
+            "fp": 9248,
+            "fn": 1762,
+            "tn": 195,
+            "base_mayoritaria": 0.83
+          },
+          "recomendaria_3_como_negativo": {
+            "accuracy": 0.9118,
+            "precision": 0.9089,
+            "recall": 0.9793,
+            "f1": 0.9428,
+            "auc": 0.9749,
+            "brier": 0.0702,
+            "n": 12723,
+            "tp": 9248,
+            "fp": 927,
+            "fn": 195,
+            "tn": 2353,
+            "base_mayoritaria": 0.7422
+          }
+        }
+      }
+    }
   }
 ]

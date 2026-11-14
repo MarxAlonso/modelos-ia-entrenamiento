@@ -68,7 +68,9 @@ def main():
     sr = os.path.join(MODELOS, "sasrec", args.sasrec) if args.sasrec else ultima_version("sasrec")
     m_sr = json.load(open(os.path.join(sr, "metricas.json"), encoding="utf-8"))
     origen_tt = m_sr.get("two_tower_version", m_sr.get("two_tower"))  # v001-v002 lo guardaban en "two_tower"
-    if not isinstance(origen_tt, str) or os.path.normpath(origen_tt) != os.path.normpath(tt):
+    # se compara el nombre de la version (vNNN_fecha), no la ruta: el proyecto puede cambiar de carpeta
+    nombre_version = lambda ruta: os.path.basename(os.path.normpath(ruta.replace("\\", "/")))
+    if not isinstance(origen_tt, str) or nombre_version(origen_tt) != nombre_version(tt):
         raise SystemExit(f"El SASRec {sr} se entreno sobre los embeddings de {origen_tt}, no de {tt}.")
     m_tt = json.load(open(os.path.join(tt, "metricas.json"), encoding="utf-8"))
 

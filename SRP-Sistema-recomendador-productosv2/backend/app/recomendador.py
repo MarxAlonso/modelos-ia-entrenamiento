@@ -42,6 +42,13 @@ LARGO_SASREC = 10
 HIST_MAX = 5
 POOL = 300
 PESO_SASREC_EN_CONSULTA = 0.3
+# Recomendacion calibrada (Steck, RecSys 2018): en el top-k del modo usuario se reserva una cuota
+# para cada categoria del historial, proporcional a cuanto la compra. ALFA = fraccion del top-k
+# que se reparte asi; el resto queda libre por puntaje. 0.5 sale de los datos: un cliente que
+# compro todo en una categoria vuelve a comprar en ella el 50.7 % de las veces (211 clientes),
+# mientras que el re-ranker solo le daba ~30 % de su categoria (los 300 populares son casi todos
+# ropa). SRP_CALIBRACION=0 lo desactiva.
+ALFA_CALIBRACION = float(os.environ.get("SRP_CALIBRACION", "0.5"))
 
 
 def rrf(puntajes, pesos, k=60):
@@ -286,7 +293,10 @@ class Recomendador:
         if es_regalo:  # para regalar conviene lo probado
             confiable = (cat["rating_promedio"].to_numpy() >= 4) & (cat["numero_resenas"].to_numpy() >= 5)
             puntaje = puntaje * (1 + 0.1 * confiable)
-        top = self._sin_repetidos(pool, np.argsort(-puntaje), hist, k)
+        if modo == "usuario" and hist and ALFA_CALIBRACION > 0:
+            top = self._calibrado(pool, np.argsort(-puntaje), hist, k)
+        else:
+            top = self._sin_repetidos(pool, np.argsort(-puntaje), hist, k)
         recs = self._salida(pool[top], puntaje[top], sim[top], None if sas is None else sas[top])
         self._explicar(recs, pool[top], hist, sim[top] if modo == "consulta" else None)
         traza.update(final=len(recs), sasrec=sas is not None, reranker=confianza is not None)
@@ -324,6 +334,47 @@ class Recomendador:
             if puesto < 500:
                 razones["popular"] = {"puesto": puesto + 1, "compras": int(self.popularidad[items[j]])}
             r["porque"] = razones
+
+    def _calibrado(self, pool, orden, hist, k, alfa=None):
+        """Como _sin_repetidos, pero respetando cuotas por categoria: cada categoria c del
+        historial (salvo "otros") tiene round(k * alfa * fraccion_c) lugares reservados, que se
+        llenan con sus productos de mayor puntaje; los lugares libres van al mayor puntaje sin
+        importar la categoria. El resultado conserva el orden por puntaje."""
+        alfa = ALFA_CALIBRACION if alfa is None else alfa
+        if getattr(self, "_cat", None) is None:
+            self._cat = self.catalogo["categoria"].to_numpy()
+        cats = self._cat
+        vals, cuentas = np.unique(cats[np.asarray(hist)], return_counts=True)
+        cuota = {c: int(round(k * alfa * n / len(hist))) for c, n in zip(vals, cuentas) if c != "otros"}
+        libres = k - sum(cuota.values())
+        clave = lambda i: self.titulos[i][:60].lower()
+        vistos = {clave(i) for i in hist}
+        usados = dict.fromkeys(cuota, 0)
+        elegidos, sobrantes = [], []
+        for j in orden:
+            i = int(pool[j])
+            c = clave(i)
+            if c in vistos:
+                continue
+            ci = cats[i]
+            if ci in cuota and usados[ci] < cuota[ci]:
+                usados[ci] += 1
+            elif libres > 0:
+                libres -= 1
+            else:
+                sobrantes.append(j)  # por si alguna cuota no se puede llenar
+                continue
+            vistos.add(c)
+            elegidos.append(j)
+            if len(elegidos) == k:
+                break
+        for j in sobrantes:  # cuotas que el pool no alcanzo a cubrir
+            if len(elegidos) == k:
+                break
+            elegidos.append(j)
+        posicion = {int(j): r for r, j in enumerate(orden)}
+        elegidos.sort(key=lambda j: posicion[int(j)])
+        return np.array(elegidos, dtype=np.int64)
 
     def _sin_repetidos(self, pool, orden, hist, k):
         """Amazon publica el mismo producto con varios ids (tallas, colores): se deja una sola

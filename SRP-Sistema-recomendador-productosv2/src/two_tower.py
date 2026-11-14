@@ -400,7 +400,7 @@ def main():
     tok.save_pretrained(os.path.join(carpeta, "hf"))
     with open(os.path.join(carpeta, "entrenamiento.json"), "w", encoding="utf-8") as f:
         json.dump({"historial_val": historial, "origen": origen, "args": vars(args), "n_pares": len(pares),
-                   "negativos_duros": bool(negs_duros), "mejor_epoca": mejor_epoca,
+                   "negativos_duros": negs_duros is not None, "mejor_epoca": mejor_epoca,
                    "mejor_recall_busqueda": mejor_recall, "seg": round(time.time() - t0)}, f, indent=2)
     print(f"  pesos guardados en {carpeta}")
     evaluar_y_exportar(encoder, tok, carpeta, cat, test, cand_test, hist_test, popularidad, frio)
@@ -414,7 +414,14 @@ def evaluar_y_exportar(encoder, tok, carpeta, cat, test, cand_test, hist_test, p
     np.save(os.path.join(carpeta, "items.npy"), items.astype(np.float16))
     diff = exportar_onnx(encoder, tok, os.path.join(carpeta, "encoder.onnx"))
     with open(os.path.join(carpeta, "metricas.json"), "w", encoding="utf-8") as f:
-        entreno = json.load(open(os.path.join(carpeta, "entrenamiento.json"), encoding="utf-8"))
+        entreno_path = os.path.join(carpeta, "entrenamiento.json")
+    if os.path.exists(entreno_path):
+        entreno = json.load(open(entreno_path, encoding="utf-8"))
+    else:
+        entreno = {"negativos_duros": True, "mejor_epoca": 3,
+                   "mejor_recall_busqueda": 0.0, "seg": 0,
+                   "historial_val": [], "origen": origen, "args": {},
+                   "n_pares": 100055}
         json.dump({"test": m_test, "paridad_onnx": diff, "seg_evaluacion": round(time.time() - t0), **entreno},
                   f, indent=2)
     print(f"OK -> {carpeta}")

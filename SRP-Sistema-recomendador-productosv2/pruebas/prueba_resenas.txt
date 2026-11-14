@@ -1,0 +1,13 @@
+PS> python pruebas\prueba_sistema.py --resenas
+
+>> POST /resenas/analizar  "La talla vino muy pequeña y la tela se siente barata, no lo volvería a comprar."
+   estrellas = 2  (confianza 0.48)   P(recomendaría) = 0.011   modelo = calidad_propia
+
+>> POST /resenas/analizar  "Me encantó, la calidad es excelente y llegó antes de lo esperado."
+   estrellas = 5  (confianza 0.92)   P(recomendaría) = 0.999   modelo = calidad_propia
+
+>> POST /resenas/analizar  "Está bien por el precio, aunque el color es distinto al de la foto."
+   estrellas = 4  (confianza 0.67)   P(recomendaría) = 0.993   modelo = calidad_propia
+
+>> POST /resenas/analizar  "Beautiful watch, works perfectly and looks expensive. Love it!"
+   estrellas = 5  (confianza 0.98)   P(recomendaría) = 0.999   modelo = calidad_propia
